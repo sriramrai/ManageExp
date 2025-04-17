@@ -1,0 +1,109 @@
+<template>
+    <lightning-spinner if:true={isLoading}></lightning-spinner>
+    <div class="" if:false={isLoading}>
+        <template if:true={errorMessage}>
+            <span style="color: red;font-weight: bold;">{errorMessage}</span>
+        </template>
+        <template if:false={errorMessage}>
+            <lightning-layout multiple-rows>
+                <lightning-layout-item flexibility="grow" size="12" small-device-size="6" padding="around-small">
+                    <lightning-combobox
+                            name="progress"
+                            label="Operation type"
+                            value={fdvalue}
+                            placeholder="Select Progress"
+                            options={fdOptions}
+                            onchange={handleChange}
+                    ></lightning-combobox>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="grow" size="12" small-device-size="6" padding="around-small">
+                    <lightning-input type="date" name="Date__c" label="*Operation date" value={dataObj.Date__c}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="number" name="Amount__c" label="*Amount" onfocusout={amountChange}></lightning-input>
+                </lightning-layout-item>
+                <template if:true={showTenure}>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-input type="number" name="Rate__c" label="*Rate" step="0.01"></lightning-input>
+                    </lightning-layout-item>
+                </template>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="number" name="Maturity_Amt" label="Maturity Amt" value={expectedMaturity} disabled="true"></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            
+            <template if:true={showTenure}>
+                <lightning-layout multiple-rows>
+                    <lightning-layout-item flexibility="auto" size="12" small-device-size="4" padding="around-small">
+                        <lightning-input type="number" name="Tenure_Yr__c" label="Tenure Year" value={dataObj.Tenure_Yr__c}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto" size="12" small-device-size="4" padding="around-small">
+                        <lightning-input type="number" name="Tenure_Mnt__c" label="Tenure Month" value={dataObj.Tenure_Mnt__c}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto" size="12" small-device-size="4" padding="around-small">
+                        <lightning-input type="number" name="Tenure_Day__c" label="Tenure Day" value={dataObj.Tenure_Day__c}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+
+            <lightning-layout vertical-align="center">
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="toggle" label="TDS Applicable" name="IS_TDS__c" onchange={handleToggle}></lightning-input>
+                </lightning-layout-item>
+                <template if:true={dataObj.IS_TDS__c}>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <lightning-input type="number" name="TDS_Deducted__c" label="TDS Amount" value={dataObj.TDS_Deducted__c} required></lightning-input>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-textarea name="Comment__c" label="Comment" ></lightning-textarea>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small">
+                    <lightning-file-upload
+                        label="Attach File"
+                        name="fileuploader"
+                        accept={acceptFormats}
+                        record-id={ivtid}
+                        onuploadfinished={handleUploadFinished}
+                        required
+                    >
+                    </lightning-file-upload>
+                    <span>{filename}</span>
+                    <span if:true={filename}>
+                        <lightning-button-icon 
+                            icon-name="utility:delete" 
+                            alternative-text="Delete"
+                            file-field-name="Original_ContentDocumentId_fileupload__c"
+                            file-field-value="test"
+                            class="slds-m-left_xx-small" 
+                            title="Delete"
+                            onclick={deleteFile}
+                        ></lightning-button-icon></span>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-button label="Cancel" title="Cancel" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-button variant="brand" label="Save" title="Successful action" onclick={handleSave} class="slds-m-left_x-small" disabled={disableSave}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+    </div>
+    <!-- <div class="modal-footer">
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-button label="Cancel" title="Cancel" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-button variant="brand" label="Save" title="Successful action" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div> -->
+</template>

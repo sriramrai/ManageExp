@@ -1,0 +1,77 @@
+<template>
+    <template if:true={dataList}>
+        <table class="slds-table" style="margin: 5px;">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="A/C No.">A/C No.</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Start Date">Start Date</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Maturity Date">Maturity Date</div>
+                    </th>
+                    <!-- <th class="" scope="col">
+                        <div class="slds-truncate" title="Rate(%)">Rate(%)</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Principle">Principle</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Maaturity">Maturity</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="FY Tenure">FY Tenure</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Int./Month">Int./Month</div>
+                    </th> -->
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="FY Int.">FY Int.</div>
+                    </th>
+                    <!-- <th class="" scope="col">
+                        <div class="slds-truncate" title="TDS">TDS</div>
+                    </th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={dataList} for:item="data">
+                    <tr key={data.recordId} class="slds-hint-parent">
+                        <td data-label="A/C No." scope="row">
+                            <div class="slds-truncate" title={data.acno}>{data.acno}</div>
+                        </td>
+                        <td data-label="Start Date" scope="row">
+                            <div class="slds-truncate" title={data.startDate}>{data.startDate}</div>
+                        </td>
+                        <td data-label="Maturity Date" scope="row">
+                            <div class="slds-truncate" title={data.endDate}>{data.endDate}</div>
+                        </td>
+                        <!-- <td data-label="Rate(%)" scope="row">
+                            <div class="slds-truncate" title={data.roi}>{data.roi}</div>
+                        </td>
+                        <td data-label="Principle" scope="row">
+                            <div class="slds-truncate" title={data.principle}>{data.principle}</div>
+                        </td>
+                        <td data-label="Maturity" scope="row">
+                            <div class="slds-truncate" title={data.maturity}>{data.maturity}</div>
+                        </td>
+                        <td data-label="FY Tenure" scope="row">
+                            <div class="slds-truncate" title={data.fyTenure}>{data.fyTenure}</div>
+                        </td>
+                        <td data-label="Int./Month" scope="row">
+                            <div class="slds-truncate" title={data.fyintPM}>{data.fyintPM}</div>
+                        </td> -->
+                        <td data-label="FY Int." scope="row">
+                            <div class="slds-truncate" title={data.fyIntrest}>{data.fyIntrest}</div>
+                        </td>
+                        <!-- <td data-label="TDS" scope="row">
+                            <div class="slds-truncate" title={data.tds}>{data.tds}</div>
+                        </td> -->
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+        <c-pagination records={allrecords} onupdate={updaterecords}></c-pagination>
+    </template>
+</template>

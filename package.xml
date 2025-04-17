@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	<types>
+		<members>*</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>operateFDAura</members>
+		<name>AuraDefinitionBundle</name>
+	</types>
+	<types>
+		<members>mylabs</members>
+		<members>testlab</members>
+		<name>CustomLabel</name>
+	</types>
+	<types>
+		<members>Expense_Line_Item__c</members>
+		<members>Expense__c</members>
+		<members>Investment_Line_Items__c</members>
+		<members>Investment__c</members>
+		<members>Payment__c</members>
+		<members>Testing_Switch__c</members>
+		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>Expense_Line_Item__c</members>
+		<members>Expense_Management</members>
+		<members>Expense__c</members>
+		<members>Investment_Dashboard</members>
+		<members>Investment__c</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>Expense_Line_Item_Record_Page</members>
+		<members>Expense_Line_Item_Record_Page1</members>
+		<members>Expense_Management</members>
+		<members>Expense_Record_Page</members>
+		<members>Investment_Dashboard</members>
+		<members>Investment_Record_Page</members>
+		<name>FlexiPage</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>GlobalValueSet</name>
+	</types>
+	<types>
+		<members>Expense_Line_Item__c-Expense Line Item Layout</members>
+		<members>Expense__c-Expense Layout</members>
+		<members>Investment_Line_Items__c-Investment Line Item Layout</members>
+		<members>Investment__c-Investment Layout</members>
+		<members>Investment__c-Stock Layout</members>
+		<members>Payment__c-Payment Layout</members>
+		<name>Layout</name>
+	</types>
+	<types>
+		<members>creditCardMonitor</members>
+		<members>declarationComp</members>
+		<members>editExpenseForm</members>
+		<members>expenseByView</members>
+		<members>expenseDetailsV2</members>
+		<members>expenseDiff</members>
+		<members>expenseHeaderV2</members>
+		<members>expenseMain</members>
+		<members>expenseMoreActionModal</members>
+		<members>expenseServices</members>
+		<members>fixedDepositeReport</members>
+		<members>fyIntrestDetails</members>
+		<members>fyIntrestMonitor</members>
+		<members>investmentHistory</members>
+		<members>maturitySoon</members>
+		<members>newExpenseModal</members>
+		<members>operatefds</members>
+		<members>pagination</members>
+		<members>summrizerComponent</members>
+		<members>utilityClass</members>
+		<name>LightningComponentBundle</name>
+	</types>
+	<types>
+		<members>ExpenseManager</members>
+		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>Investment__c.Operate</members>
+		<name>QuickAction</name>
+	</types>
+	<types>
+		<members>Investment__c.Investment</members>
+		<members>Investment__c.Stock</members>
+		<name>RecordType</name>
+	</types>
+	<version>63.0</version>
+</Package>

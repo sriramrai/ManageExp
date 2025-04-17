@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sriram__c</fullName>
+    <externalId>false</externalId>
+    <label>Sriram</label>
+    <summarizedField>Expense_Line_Item__c.Amount__c</summarizedField>
+    <summaryFilterItems>
+        <field>Expense_Line_Item__c.Debited_By__c</field>
+        <operation>equals</operation>
+        <value>Sriram</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Expense_Line_Item__c.Expense__c</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,41 @@
+<template>
+    <lightning-card >
+        <div class="card-body">
+            <lightning-combobox
+            name="acno"
+            label="Select A/c"
+            value={selectedFd}
+            options={allFds}
+            onchange={handleChange}></lightning-combobox>
+            <!-- <p class="slds-p-horizontal_small">{fetchedResponse}</p> -->
+        <p class="slds-p-horizontal_small">
+            <template if:true={dataList}>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">Maturity Date</th>
+                            <th scope="col">Principle</th>
+                            <th scope="col">Maturity Amount</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col">TDS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={dataList} for:item="obj">
+                            <tr key={obj.startDate}>
+                                <td data-label="Date" scope="row">{obj.startDate}</td>
+                                <td data-label="Date" scope="row">{obj.maturityDate}</td>
+                                <td data-label="Date" scope="row">{obj.principle}</td>
+                                <td data-label="Date" scope="row">{obj.maturedAmount}</td>
+                                <td data-label="Date" scope="row">{obj.rate}</td>
+                                <td data-label="Date" scope="row">{obj.tds}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+        </p>
+        </div>
+    </lightning-card>
+</template>

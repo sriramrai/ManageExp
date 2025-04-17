@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stock</fullName>
+    <active>true</active>
+    <label>Stock</label>
+    <picklistValues>
+        <picklist>Bank__c</picklist>
+        <values>
+            <fullName>AXIS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>NPS</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>PPF</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SBI</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>SC</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>
