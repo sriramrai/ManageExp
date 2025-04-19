@@ -1,0 +1,12 @@
+.padding-around {
+    padding: 5px;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.textInput{
+    -webkit-text-fill-color: red;
+    font-weight: bold;
+}

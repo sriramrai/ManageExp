@@ -1,7 +1,64 @@
 <template>
-    <lightning-card>
-        <p class="slds-p-horizontal_small">I am declaration page and changes from scratch org test
-            Demoing to Ragini tiwari only changes deploying
-        </p>
+    <lightning-card title="Declaration">
+        <lightning-button label={actionLabel} slot="actions" onclick={declareIncome}></lightning-button>
+        <div class="slds-p-horizontal_small">
+            <lightning-layout horizontal-align="center">
+                <lightning-layout-item padding="around-small" size="6">
+                    <lightning-combobox
+                            name="fiscalyear"
+                            label="Fiscal Year"
+                            value={fyValue}
+                            placeholder="Select Fiscal Year"
+                            options={options}
+                            onchange={handleChange}
+                            variant = "label-hidden"
+                            required
+                    ></lightning-combobox>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={enableCreate}>
+                <lightning-record-edit-form  object-api-name="Income__c" record-id={recordId} onsuccess={saveSucceeded}>
+                    <template for:each={fieldList} for:item="currentItem">
+                        <lightning-input-field 
+                            key={currentItem.key} 
+                            field-name={currentItem.name} 
+                            disabled={currentItem.disabled}
+                            value={currentItem.value}
+                            ></lightning-input-field>
+                    </template>
+
+                    <div class="slds-var-m-top_medium align-center">
+                        <lightning-button class="padding-around" variant="brand" type="submit" label="Save">
+                        </lightning-button>
+                        <lightning-button class="padding-around" variant="neutral" label="cancel" onclick={handleCancel}>
+                        </lightning-button>
+                    </div>                
+                </lightning-record-edit-form>
+            </template>
+
+            <template if:true={data}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="Start Date" value={data.Start_Date__c} disabled="true"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="End Date" value={data.End_Date__c} disabled="true"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="Salary" value={data.Salary__c} disabled="true"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="Other" value={data.Other__c} disabled="true"></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input label="FD Interest" disabled="true" value={incomeFromIntrest}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" padding="around-small">
+                        <lightning-input class="textInput" label="Total" disabled="true" value={totalIncome}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+
+        </div>
     </lightning-card>
 </template>
