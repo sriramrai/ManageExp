@@ -1,0 +1,32 @@
+<template>
+    <lightning-spinner if:true={isLoading}></lightning-spinner>
+    <div class="" if:false={isLoading}>
+        <template if:true={errorMessage}>
+            <span style="color: red;font-weight: bold;">{errorMessage}</span>
+        </template>
+        <template if:false={errorMessage}>
+            <lightning-layout multiple-rows>
+                <lightning-layout-item flexibility="grow" size="12" small-device-size="6" padding="around-small">
+                    <lightning-input type="date" name="Date__c" label="*Invested date" value={dataObj.Date__c}></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="number" name="Amount__c" label="*Amount"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="number" name="Rate__c" label="*Rate" step="0.01" value={dataObj.Rate__c} disabled="true"></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-input type="number" name="Maturity_Amt" label="Maturity Amt" value={expectedMaturity} disabled="true"></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-button label="Cancel" title="Cancel" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-button variant="brand" label="Save" title="Successful action" onclick={handleSave} class="slds-m-left_x-small" disabled={disableSave}></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,48 @@
+<template>
+    <lightning-card>
+        <!-- <h3 slot="title">
+            <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
+            Total
+        </h3> -->
+        <div slot="footer">
+    
+        </div>
+        <p class="slds-p-horizontal_small">
+            <template if:true={total}>
+                <table class="slds-table">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Bank">Bank</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Deposite">Deposite</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Matured">Matured</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={total} for:item="total">
+                            <tr key={total.type} class="slds-hint-parent">
+                                <td data-label="Bank" scope="row">
+                                    <div class="slds-truncate" title={total.type}>{total.type}</div>
+                                </td>
+                                <td data-label="Deposite">
+                                    <div class="slds-truncate" title={total.deposited}><b>{total.deposited}</b></div>
+                                </td>
+                                <td data-label="Matured">
+                                    <div class="slds-truncate" title={total.maturedamount}><b>{total.maturedamount}</b></div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template if:true={errorMessge}>
+                <span style="color: red;">{errorMessge}</span>
+            </template>
+       </p>
+    </lightning-card>
+</template>

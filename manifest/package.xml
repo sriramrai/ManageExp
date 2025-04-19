@@ -18,6 +18,10 @@
 		<name>CustomTab</name>
 	</types>
 	<types>
+		<members>Fiscal_Year</members>
+		<name>GlobalValueSet</name>
+	</types>
+	<types>
 		<members>Earning__c-Earning Layout</members>
 		<members>Income__c-Income Layout</members>
 		<members>Salary_Structure__c-Salary Structur Layout</members>
