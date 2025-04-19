@@ -8,3 +8,6 @@
 string tempvar = 'Enter_your_name_here';
 System.debug('Hello World!');
 System.debug('My name is ' + tempvar);
+
+System.debug(DataProvider.getAllInvestments());
+System.debug(InvestmentController.getFYIntrest('2025-2026'));

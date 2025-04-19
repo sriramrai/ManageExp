@@ -25,7 +25,7 @@ public with sharing class DataProvider {
     public static List<Investment__c> getAllInvestments() {
         String query = 'SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, ';
         query += ' Rate__c, Bank__c, TAX_SAVER__c, Maturity_Date__c, Month__c, Year__c, Day__c ';
-        query += ' FROM Investment__c WHERE Bank__c NOT IN (\'PPF\', \'NPS\') AND RecordTypeId = \'012GA000001USEVYA4\' AND ';
+        query += ' FROM Investment__c WHERE Bank__c NOT IN (\'PPF\', \'NPS\') AND RecordType.Name = \'Investment\' AND ';
         if(isTestMode()) {
             query += ' is_Test__c = true';
         }else {
