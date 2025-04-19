@@ -1,0 +1,17 @@
+<template>
+    <lightning-modal-header label={headerText}></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-record-edit-form object-api-name="Expense_Line_Item__c"
+         onsuccess={handleSuccess}
+         record-id={content}>
+            <lightning-input-field field-name="Expense__c"></lightning-input-field>
+            <lightning-input-field field-name="Date__c"></lightning-input-field>
+            <lightning-input-field field-name="Amount__c"></lightning-input-field>
+            <lightning-input-field field-name="Debited_By__c"></lightning-input-field>
+            <lightning-input-field field-name="Source__c"></lightning-input-field>
+            <lightning-input-field field-name="Payment_Due_Date__c"></lightning-input-field>
+            <lightning-input-field field-name="Details__c"></lightning-input-field>
+            <lightning-button type="submit" variant="brand" name="update" label="Update" class="slds-align_absolute-center"></lightning-button>
+        </lightning-record-edit-form>
+    </lightning-modal-body>
+</template>

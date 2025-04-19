@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Gpay</fullName>
+        <default>true</default>
+        <label>Gpay</label>
+    </customValue>
+    <customValue>
+        <fullName>Phone</fullName>
+        <default>false</default>
+        <label>Phone</label>
+    </customValue>
+    <customValue>
+        <fullName>Axis CC</fullName>
+        <default>false</default>
+        <label>Axis CC</label>
+    </customValue>
+    <customValue>
+        <fullName>ICICI CC</fullName>
+        <default>false</default>
+        <label>ICICI CC</label>
+    </customValue>
+    <customValue>
+        <fullName>Cash</fullName>
+        <default>false</default>
+        <label>Cash</label>
+    </customValue>
+    <customValue>
+        <fullName>Apay</fullName>
+        <default>false</default>
+        <label>Apay</label>
+    </customValue>
+    <customValue>
+        <fullName>Pluxee</fullName>
+        <default>false</default>
+        <label>Pluxee</label>
+    </customValue>
+    <masterLabel>Payment source</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

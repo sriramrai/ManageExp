@@ -1,0 +1,29 @@
+.margin-around-large {
+    margin: 50Px;
+}
+
+.padding-around {
+    padding: 5px;
+}
+
+.large-text {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.card-border {
+    border: 2px solid rgb(101, 153, 205);
+}
+
+.diff-data {
+    float: right;
+    padding-right: 5px;
+    font-weight: bold;
+    color: red;
+}
+
+.medium-font {
+    margin: 5px; 
+    font-weight: bold; 
+    font-size: medium;
+}
