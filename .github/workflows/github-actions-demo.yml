@@ -44,4 +44,4 @@ jobs:
           sfdx force:auth:jwt:grant -i 3MVG9WiZ4_mwZLgcyV0rcMax7Fah.JVsTC2uF98TpT0bc.eZchPzK0UqFIfcZYe1NzjNXpn3DJFL1YTh00T52 -f asset/server.key --username test-r9rpgmzoc6ys@example.com -d -a HubOrg
       - name: Validate Source Code Against Salesforce ORG
         run: |
-          sf project deploy validate --source-dir force-app
+          sf project deploy validate --source-dir force-app -o HubOrg
