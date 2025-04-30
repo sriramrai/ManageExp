@@ -15,7 +15,7 @@ public with sharing class ExpenseManagerUtil {
         List<Salary_Structure__c> salary = new List<Salary_Structure__c>(
             [SELECT Basic__c, Conveyance__c, Food_Allowance__c, EPF_Contribution__c, Fiscal_Year__c,
             HRA__c, Income_Tax__c, Labor_Welfare_Fund__c, LTA__c, Medical_Allowance__c, Professional_Tax__c,
-            Project_Allowance__c
+            Project_Allowance__c, Telephone_Allowance__c
             FROM Salary_Structure__c
             WHERE Fiscal_Year__c = :fy]
         );
@@ -39,7 +39,7 @@ public with sharing class ExpenseManagerUtil {
                 [
                     SELECT Id, Credit_Date__c, Basic__c, Conveyance__c, Food_Allowance__c, EPF_Contribution__c, Fiscal_Year__c,
                     HRA__c, Income_Tax__c, Labor_Welfare_Fund__c, LTA__c, Medical_Allowance__c, Professional_Tax__c,
-                    Project_Allowance__c, Bonus__c
+                    Project_Allowance__c, Bonus__c, Telephone_Allowance__c
                     FROM Earning__c
                     WHERE Credit_Date__c >= :sdt AND Credit_Date__c <= :edt
                 ]

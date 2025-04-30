@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>DataProvider</members>
 		<members>ExpenseManagerUtil</members>
 		<name>ApexClass</name>
 	</types>
 	<types>
-		<members>Earning__c</members>
-		<members>Income__c</members>
-		<members>Salary_Structure__c</members>
-		<name>CustomObject</name>
-	</types>
-	<types>
-		<members>Earning__c</members>
-		<members>Income__c</members>
-		<members>Salary_Structure__c</members>
-		<name>CustomTab</name>
+		<members>Earning__c.Telephone_Allowance__c</members>
+		<members>Salary_Structure__c.Telephone_Allowance__c</members>
+		<name>CustomField</name>
 	</types>
 	<types>
 		<members>Fiscal_Year</members>

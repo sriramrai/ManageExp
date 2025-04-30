@@ -30,7 +30,7 @@ const getFYForExpManager = () => {
 }
 
 const getSalaryAmountFields = () => {
-    return ['Basic__c', 'Conveyance__c', 'Project_Allowance__c', 'Food_Allowance__c', 'HRA__c', 'Income_Tax__c', 'Labor_Welfare_Fund__c', 'LTA__c', 'Medical_Allowance__c', 'Professional_Tax__c'];
+    return ['Basic__c', 'Conveyance__c', 'Project_Allowance__c', 'Food_Allowance__c', 'HRA__c', 'Income_Tax__c', 'Labor_Welfare_Fund__c', 'LTA__c', 'Medical_Allowance__c', 'Professional_Tax__c', 'Telephone_Allowance__c'];
 }
 
 const getMonthOptionForExpManager = () => {
