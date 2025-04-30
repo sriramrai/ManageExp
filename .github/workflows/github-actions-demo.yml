@@ -40,7 +40,7 @@ jobs:
           openssl enc -nosalt -aes-256-cbc -d -in asset/server.key.enc -out asset/server.key -base64 -K DE3B4F6346E0CFA95CA695168A0FD8DA4D06AE808A0AFA9A4DBD2502D5DD6FE7 -iv AC767FEDCF2105140E84B62495C3F43A
       - name: Authenticate Salesforce OR
         run: |
-          sfdx force:auth:jwt:grant --clientid HUB_CONSUMER_KEY --jwtkeyfile asset/server.key --username HUB_USER_NAME --setdefaultdevhubusername -a HubOrg
+          sfdx force:auth:jwt:grant --clientid 3MVG9WiZ4_mwZLgcyV0rcMax7Fah.JVsTC2uF98TpT0bc.eZchPzK0UqFIfcZYe1NzjNXpn3DJFL1YTh00T52 --jwtkeyfile asset/server.key --username test-r9rpgmzoc6ys@example.com --testscratchorg -a HubOrg
       - name: Validate Source Code Against Salesforce ORG
         run: |
           sfdx force:source:deploy -p force-app -c -u HubOrg
