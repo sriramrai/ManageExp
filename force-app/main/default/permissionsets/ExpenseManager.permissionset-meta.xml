@@ -83,6 +83,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Earning__c.Telephone_Allowance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Expense_Line_Item__c.Details__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -344,6 +349,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Salary_Structure__c.Project_Allowance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Salary_Structure__c.Telephone_Allowance__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
