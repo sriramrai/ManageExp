@@ -28,7 +28,7 @@ jobs:
           
       - name: Install NPM
         run: |
-          npm install
+          npm install --legacy-peer-deps
       # Install the SFDX CLI using npm command
       - name: Install the SFDX CLI
         run: |
