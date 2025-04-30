@@ -1,0 +1,57 @@
+<template>
+    <lightning-card>
+        <p class="slds-p-horizontal_small">
+            <c-expense-header-v2 
+                ondatachanged={datachangedHandler} 
+                onnewrecord={newrecordHandler} 
+                onsearchevent={searchHandler}
+                total={total}>
+            </c-expense-header-v2>
+            <lightning-tabset active-tab-value="Ragini">
+                <lightning-tab label="Ragini" onactive={activeTabHandler} value="Ragini">
+                    <template if:true={displayRagini}>
+                        <c-expense-details-v2 
+                            entity="Ragini" 
+                            fromdate={fromDate} 
+                            todate={toDate} 
+                            onupdatetotal={totalUpdateHandler}
+                            onitemselected={selectedItemHandler}>
+                        </c-expense-details-v2>
+                    </template>
+                </lightning-tab>
+
+                <lightning-tab label="Papa" onactive={activeTabHandler} value="Papa">
+                    <template if:true={displayPapa}>
+                        <c-expense-details-v2 
+                            entity="Papa" 
+                            fromdate={fromDate} 
+                            todate={toDate} 
+                            onupdatetotal={totalUpdateHandler}
+                            onitemselected={selectedItemHandler}>
+                        </c-expense-details-v2>
+                    </template>
+                </lightning-tab>
+
+                <lightning-tab label="Other" onactive={activeTabHandler} value="Other">
+                    <template if:true={displayOther}>
+                        <c-expense-details-v2 
+                        entity="Other" 
+                        fromdate={fromDate} 
+                        todate={toDate} 
+                        onupdatetotal={totalUpdateHandler}
+                        onitemselected={selectedItemHandler}>
+                    </c-expense-details-v2>
+                    </template>
+                </lightning-tab>
+                
+                <lightning-tab label="Month View">
+                    <c-expense-by-view viewmode="Month" onupdatetotal={totalUpdateHandler}></c-expense-by-view>
+                </lightning-tab>
+
+                <lightning-tab label="Day View">
+                    <c-expense-by-view viewmode="Day"></c-expense-by-view>
+                </lightning-tab>
+            </lightning-tabset>    
+        </p>
+    </lightning-card>
+</template>

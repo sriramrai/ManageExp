@@ -1,0 +1,4 @@
+.radio-combo-inline .slds-form-element__control .slds-radio
+{
+    display: inline-block !important;
+}
