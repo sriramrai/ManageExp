@@ -33,7 +33,8 @@ jobs:
       # Install the SFDX CLI using npm command
       - name: Install the SFDX CLI
         run: |
-          npm install sfdx-cli --global
+          npm install --global @salesforce/cli
+          sf --version
           sfdx force --help
       - name: Decrypt the server.key.enc file & store inside assets folder
         run: |
