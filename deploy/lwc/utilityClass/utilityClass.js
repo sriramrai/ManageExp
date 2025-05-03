@@ -30,7 +30,7 @@ const getFYForExpManager = () => {
 }
 
 const getSalaryAmountFields = () => {
-    return ['Basic__c', 'Conveyance__c', 'Project_Allowance__c', 'Food_Allowance__c', 'HRA__c', 'Income_Tax__c', 'Labor_Welfare_Fund__c', 'LTA__c', 'Medical_Allowance__c', 'Professional_Tax__c'];
+    return ['Basic__c', 'Conveyance__c', 'Project_Allowance__c', 'Food_Allowance__c', 'HRA__c', 'Income_Tax__c', 'Labor_Welfare_Fund__c', 'LTA__c', 'Medical_Allowance__c', 'Professional_Tax__c', 'Telephone_Allowance__c'];
 }
 
 const getMonthOptionForExpManager = () => {
@@ -50,4 +50,19 @@ const getMonthOptionForExpManager = () => {
     ];
 }
 
-export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields};
+const toString = (data) => {
+    return JSON.stringify(data);
+}
+
+const deepClone = (data) => {
+    return JSON.parse(JSON.stringify(data));
+}
+
+const isValidValue = (data) => {
+    if(data != '' && typeof(data) != undefined && data != null) {
+        return true;
+    }
+    return false;
+}
+
+export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue};

@@ -35,6 +35,7 @@
         <members>Earning__c.Net_Total__c</members>
         <members>Earning__c.Professional_Tax__c</members>
         <members>Earning__c.Project_Allowance__c</members>
+        <members>Earning__c.Telephone_Allowance__c</members>
         <members>Expense_Line_Item__c.Amount__c</members>
         <members>Expense_Line_Item__c.Date__c</members>
         <members>Expense_Line_Item__c.Debited_By__c</members>
@@ -115,6 +116,7 @@
         <members>Salary_Structure__c.Medical_Allowance__c</members>
         <members>Salary_Structure__c.Professional_Tax__c</members>
         <members>Salary_Structure__c.Project_Allowance__c</members>
+        <members>Salary_Structure__c.Telephone_Allowance__c</members>
         <members>Testing_Switch__c.Test_Mode__c</members>
         <name>CustomField</name>
     </types>
@@ -177,6 +179,8 @@
         <name>Layout</name>
     </types>
     <types>
+        <members>createNewFutureInvestment</members>
+        <members>createNewRecordModal</members>
         <members>creditCardMonitor</members>
         <members>declarationComp</members>
         <members>editExpenseForm</members>
@@ -189,14 +193,18 @@
         <members>expenseMoreActionModal</members>
         <members>expenseServices</members>
         <members>fixedDepositeReport</members>
+        <members>futureInvestmentList</members>
         <members>fyIntrestDetails</members>
         <members>fyIntrestMonitor</members>
         <members>investmentHistory</members>
+        <members>investmentList</members>
         <members>manageEarning</members>
+        <members>manageInvestment</members>
         <members>maturitySoon</members>
         <members>newExpenseModal</members>
         <members>operatefds</members>
         <members>pagination</members>
+        <members>renewalModal</members>
         <members>summrizerComponent</members>
         <members>utilityClass</members>
         <name>LightningComponentBundle</name>

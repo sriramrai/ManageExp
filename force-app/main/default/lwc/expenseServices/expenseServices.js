@@ -35,6 +35,8 @@ export default class ExpenseServices extends NavigationMixin(LightningElement) {
                 return 'c:declarationComp';
             case 'Earning' : 
                 return 'c:manageEarning';
+            case 'Investment' :
+                return 'c:manageInvestment';
             default:
                 return null;
         }

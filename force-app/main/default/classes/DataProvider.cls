@@ -22,9 +22,21 @@ public with sharing class DataProvider {
                                         ]);
     }
 
+    public static List<FutureInvestmentWrapper> getAllFutureInvestments() {
+        List<FutureInvestmentWrapper> wrapperList = new List<FutureInvestmentWrapper>();
+        for(Investment__c ivt : [SELECT Id, Start_Date__c, Amount__c, Account_Number__c, Maturity_Date__c, Bank__c,
+                                    (SELECT Id, Date__c, Amount__c FROM Investment_Line_Items__r ORDER BY Date__c DESC)
+                                    FROM Investment__c
+                                    WHERE Bank__c IN ('NPS', 'PPF') AND Account_Number__c IN ('1893PPF0000000138', '110168495351')]) {
+            FutureInvestmentWrapper fiw = new FutureInvestmentWrapper(ivt);
+            wrapperList.add(fiw);
+        }
+        return wrapperList;
+    }
+
     public static List<Investment__c> getAllInvestments() {
         String query = 'SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, ';
-        query += ' Rate__c, Bank__c, TAX_SAVER__c, Maturity_Date__c, Month__c, Year__c, Day__c ';
+        query += ' Rate__c, Bank__c, TAX_SAVER__c, Maturity_Date__c, Month__c, Year__c, Day__c, RecordTypeId, RecordType.Name ';
         query += ' FROM Investment__c WHERE Bank__c NOT IN (\'PPF\', \'NPS\') AND RecordType.Name = \'Investment\' AND ';
         if(isTestMode()) {
             query += ' is_Test__c = true';
@@ -123,5 +135,66 @@ public with sharing class DataProvider {
         ]);
 
         return expenses;
+    }
+
+    /* [SELECT Id, Start_Date__c, Amount__c, Account_Number__c, Maturity_Date__c, Bank__c,
+                                    (SELECT Id, Date__c, Amount__c FROM Investment_Line_Items__r)
+                                    FROM Investment__c
+                                    WHERE Bank__c IN ('NPS', 'PPF')] */
+
+    public class FutureInvestmentWrapper {
+        @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public String accountNumber {get; set;}
+        @AuraEnabled public Decimal amount {get; set;}
+        @AuraEnabled public String bankName {get; set;} 
+        @AuraEnabled public Date startDate {get; set;}
+        @AuraEnabled public Date maturityDate {get; set;}
+        @AuraEnabled public Integer numberOfInvestments {get; set;}
+        @AuraEnabled public List<FutureInvestmentLinesWrapper> lines {get; set;}
+        public FutureInvestmentWrapper() {}
+        public FutureInvestmentWrapper(Investment__c ivt) {
+            this.recordId = ivt.Id;
+            this.accountNumber = ivt.Account_Number__c;
+            this.amount = ivt.Amount__c;
+            this.bankName = ivt.Bank__c;
+            this.startDate = ivt.Start_Date__c;
+            this.maturityDate = ivt.Maturity_Date__c;
+            this.numberOfInvestments = ivt.Investment_Line_Items__r.size();
+            this.lines = new List<FutureInvestmentLinesWrapper>();
+            for(Investment_Line_Items__c ivtLine : ivt.Investment_Line_Items__r) {
+                FutureInvestmentLinesWrapper fw = new FutureInvestmentLinesWrapper(ivtLine);
+                this.lines.add(fw);
+            }
+        }
+    }
+
+    public class FutureInvestmentLinesWrapper {
+        @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public Date contributionDate {get; set;}
+        @AuraEnabled public Decimal contributionAmount {get; set;}
+        @AuraEnabled public String taggedFY {get; set;}
+        @AuraEnabled public String recordURL {get; set;}
+        public FutureInvestmentLinesWrapper() {}
+        public FutureInvestmentLinesWrapper(Investment_Line_Items__c lineItem){
+            this.recordId = lineItem.Id;
+            this.recordURL = '/'+this.recordId;
+            this.contributionDate = lineItem.Date__c;
+            this.contributionAmount = lineItem.Amount__c;
+            this.taggedFY = tagFiscalYear();
+        }
+
+        private String tagFiscalYear() {
+            Integer year = this.contributionDate.year();
+            Integer month = this.contributionDate.month();
+            Integer startYr, endYr;
+            if(month <= 3) {
+                startYr = year-1;
+                endYr = year;
+            }else {
+                startYr = year;
+                endYr = year+1;
+            }
+            return String.valueOf(startYr) + ' - ' + String.valueOf(endYr);
+        }
     }
 }

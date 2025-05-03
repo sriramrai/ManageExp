@@ -11,3 +11,5 @@ System.debug('My name is ' + tempvar);
 
 System.debug(DataProvider.getAllInvestments());
 System.debug(InvestmentController.getFYIntrest('2025-2026'));
+
+System.debug('Data*** : '+JSON.serialize(DataProvider.getAllFutureInvestments()));

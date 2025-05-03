@@ -62,8 +62,8 @@ export default class DeclarationComp extends LightningElement {
     }else {
       fiscalYear = this.fyValue;
       let splittedYear = fiscalYear.split('-');
-      startDate = "20"+splittedYear[0]+"-"+"04-01";
-      endDate = "20"+splittedYear[1]+"-"+"03-31";
+      startDate = splittedYear[0]+"-"+"04-01";
+      endDate = splittedYear[1]+"-"+"03-31";
     }
     return [
         { key : 1, name : 'Start_Date__c', disabled: true, value: startDate},

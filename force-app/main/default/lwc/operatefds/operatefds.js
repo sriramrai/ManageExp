@@ -5,6 +5,7 @@ import getIvt from '@salesforce/apex/InvestmentController.getinvestment';
 import postIvt from '@salesforce/apex/InvestmentController.postData';
 import operatePPF from './operatePPF.html';
 import operateFD from './operatefds.html';
+import { refreshApex } from '@salesforce/apex';
 const RE_INVEST = 'Re-Invest';
 
 export default class Operatefds extends LightningElement {
@@ -21,9 +22,13 @@ export default class Operatefds extends LightningElement {
     filename;
     uploadeDocumentId;
     contentDocumentId = "069GA000019IABjYAO";
+    investmentRecord;
     
     @wire(getIvt, {'recordId' : '$ivtid'})
-    getRecord({error, data}) {
+    getRecord(result) {
+        this.investmentRecord = result;
+        let data = result.data;
+        let error = result.error;
         if(data) {
             this.isLoading = false;
             this.ivtRecord = data;
@@ -40,6 +45,10 @@ export default class Operatefds extends LightningElement {
             console.error(error);
         }
     };
+
+    connectedCallback() {
+        //refreshApex(this.investmentRecord);
+    }
 
     get acceptFormats() {
         return [".pdf", ".png", ".jpg", ".jpeg"]
@@ -124,7 +133,7 @@ export default class Operatefds extends LightningElement {
         this.closeQuickAction();
     }
 
-    handleSave(event) {
+    @api handleSave() {
         this.disableSave = true;
         this.errorMessage = null;
         this.template.querySelectorAll(["lightning-input", "lightning-textarea"]).forEach(elem => {
@@ -185,6 +194,7 @@ export default class Operatefds extends LightningElement {
     }
 
     closeQuickAction() {
+        refreshApex(this.investmentRecord);
         const closeAction = new CustomEvent('success');
         this.dispatchEvent(closeAction);
     }

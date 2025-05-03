@@ -6,6 +6,7 @@
     <columns>Amount__c</columns>
     <columns>Maturity_Date__c</columns>
     <columns>Rate__c</columns>
+    <columns>Account_Number__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Is_Closed__c</field>
