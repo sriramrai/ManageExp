@@ -33,5 +33,15 @@ jobs:
       # Install the SFDX CLI using npm command
       - name: Install the SFDX CLI
         run: |
-          npm install sfdx-cli --global
+          npm install --global @salesforce/cli
+          sf --version
           sfdx force --help
+      - name: Decrypt the server.key.enc file & store inside assets folder
+        run: |
+          openssl enc -nosalt -aes-256-cbc -d -in asset/server.key.enc -out asset/server.key -base64 -K DE3B4F6346E0CFA95CA695168A0FD8DA4D06AE808A0AFA9A4DBD2502D5DD6FE7 -iv AC767FEDCF2105140E84B62495C3F43A
+      - name: Authenticate Salesforce OR
+        run: |
+          sfdx force:auth:jwt:grant -i 3MVG9WiZ4_mwZLgcyV0rcMax7Fah.JVsTC2uF98TpT0bc.eZchPzK0UqFIfcZYe1NzjNXpn3DJFL1YTh00T52 -f asset/server.key --username test-r9rpgmzoc6ys@example.com -d -a HubOrg
+      - name: Validate Source Code Against Salesforce ORG
+        run: |
+          sfdx project deploy start --source-dir force-app -l NoTestRun --dry-run --ignore-conflicts -o HubOrg

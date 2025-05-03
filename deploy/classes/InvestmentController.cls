@@ -44,11 +44,12 @@ public with sharing class InvestmentController {
     /***
      * @description populate nessasary fields on the Investment during data post
      **/ 
-    private static Investment__c updateInvestment(Investment_Line_Items__c lineItem) {
+    private static Investment__c updateInvestment(Investment_Line_Items__c lineItem, String data) {
+        Map<String, Object> lineItemObj = (Map<String, Object>) JSON.deserializeUntyped(data);
         Investment__c ivt = new Investment__c(Id = lineItem.Investment__c);
         ivt.Amount__c = lineItem.Amount__c;
         ivt.Start_Date__c = lineItem.Date__c;
-        ivt.Rate__c = lineItem.Rate__c;
+        ivt.Rate__c = Decimal.valueOf(lineItemObj.get('Rate__c').toString());
         ivt.Year__c = lineItem.Tenure_Yr__c;
         ivt.Month__c = lineItem.Tenure_Mnt__c;
         ivt.Day__c = lineItem.Tenure_Day__c;
@@ -115,7 +116,7 @@ public with sharing class InvestmentController {
         Investment_Line_Items__c lineItem = createIvtLineItem(recordId, data);
 
         if(lineItem.Type__c.equalsIgnoreCase(RE_INVEST)) {
-            ivt = updateInvestment(lineItem);
+            ivt = updateInvestment(lineItem, data);
         }else {
             ivt.Is_Closed__c = true;
         }

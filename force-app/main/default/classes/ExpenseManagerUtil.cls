@@ -52,4 +52,41 @@ public with sharing class ExpenseManagerUtil {
             throw new AuraHandledException(e.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Investment__c> getAllInvestmentByBank(String bankName) {
+        return DataProvider.getAllInvestments(bankName);
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, List<Investment__c>> getAllInvestMentMap() {
+        return DataProvider.invetmentByBank();
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<DataProvider.FutureInvestmentWrapper> getAllFutureInvestments() {
+        return DataProvider.getAllFutureInvestments();
+    }
+
+    @AuraEnabled
+    public static String postFutureInvestment(String formData) {
+        try {
+            Map<String, Object> fieldValueMap = (Map<String, Object>)JSON.deserializeUntyped(formData);
+            System.debug('inside post future investment *** '+formData);
+            System.debug('inside post future ***** : '+fieldValueMap.get('contributionAmount'));
+            String bank = String.valueOf(fieldValueMap.get('bank'));
+            Investment__c ivt = [SELECT Id, Amount__c FROM Investment__c WHERE Bank__c =: bank AND Account_Number__c IN ('1893PPF0000000138', '110168495351') LIMIT 1];
+            Investment_Line_Items__c lineItem = new Investment_Line_Items__c();
+            lineItem.Investment__c = ivt.Id;
+            lineItem.Date__c = Date.valueOf(String.valueOf(fieldValueMap.get('contributionDate')));
+            lineItem.Amount__c = Decimal.valueOf(String.valueOf(fieldValueMap.get('contributionAmount')));
+            lineItem.Type__c = 'Re-invest';
+            insert lineItem;
+            ivt.Amount__c += lineItem.Amount__c;
+            update ivt;
+            return 'success';
+        }catch(Exception exp) {
+            throw new AuraHandledException('Record Saving Failed '+exp.getMessage());
+        }
+    }
 }

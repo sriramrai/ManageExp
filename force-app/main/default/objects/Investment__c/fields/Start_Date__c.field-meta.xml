@@ -3,7 +3,7 @@
     <fullName>Start_Date__c</fullName>
     <description>FD start date</description>
     <label>Start Date</label>
-    <required>false</required>
+    <required>true</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Date</type>

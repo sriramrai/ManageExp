@@ -83,6 +83,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Earning__c.Telephone_Allowance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Expense_Line_Item__c.Details__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -198,11 +203,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Investment__c.Amount__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Investment__c.Bank__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -288,11 +288,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Investment__c.Start_Date__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Investment__c.TAX_SAVER__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -344,6 +339,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Salary_Structure__c.Project_Allowance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Salary_Structure__c.Telephone_Allowance__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>

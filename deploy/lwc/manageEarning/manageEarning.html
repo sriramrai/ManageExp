@@ -112,6 +112,15 @@
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
+                                field-name="Telephone_Allowance__c" 
+                                value={data.Telephone_Allowance__c}
+                                disabled={disableForm}
+                                onchange={inputChangeHandler}
+                                ></lightning-input-field>
+                                <span class="diff-data">{diffData.Telephone_Allowance__c}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-input-field 
                                 field-name="Medical_Allowance__c" 
                                 value={data.Medical_Allowance__c}
                                 disabled={disableForm}

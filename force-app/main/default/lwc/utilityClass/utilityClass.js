@@ -50,4 +50,19 @@ const getMonthOptionForExpManager = () => {
     ];
 }
 
-export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields};
+const toString = (data) => {
+    return JSON.stringify(data);
+}
+
+const deepClone = (data) => {
+    return JSON.parse(JSON.stringify(data));
+}
+
+const isValidValue = (data) => {
+    if(data != '' && typeof(data) != undefined && data != null) {
+        return true;
+    }
+    return false;
+}
+
+export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue};
