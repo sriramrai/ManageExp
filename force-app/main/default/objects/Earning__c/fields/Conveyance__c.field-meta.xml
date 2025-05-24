@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Conveyance__c</fullName>
     <externalId>false</externalId>
-    <label>Conveyance</label>
+    <label>Personal Allowance</label>
     <precision>10</precision>
     <required>false</required>
     <scale>2</scale>
