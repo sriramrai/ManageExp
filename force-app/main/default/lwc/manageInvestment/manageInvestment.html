@@ -1,6 +1,7 @@
 <template>
-    <lightning-card title={title}>
-        <lightning-button label=New slot="actions" onclick={createInvestment}></lightning-button>
+    <c-navigation-header landing-page="Investment"></c-navigation-header>
+    <lightning-card >
+        <lightning-button label="New" slot="actions" onclick={createInvestment}></lightning-button>
         <lightning-tabset active-tab-value={activeTabName}>
             <lightning-tab label={getSbiLabel} onactive={activeTabHandler} value="SBI">
                 <c-investment-list data-id="SBI" bank-name="sbi" onrefresh={refreshHandler} oncounted={counterHandler}></c-investment-list>
@@ -13,6 +14,9 @@
             </lightning-tab>
             <lightning-tab label="PPF" onactive={activeTabHandler} value="PPF">
                 <c-future-investment-list data-id="PPF" bank-name="PPF"></c-future-investment-list>
+            </lightning-tab>
+            <lightning-tab label="Stock" onactive={activeTabHandler} value="Stock">
+                <c-stock-investment-list data-id="Stock" bank-name="PPF"></c-stock-investment-list>
             </lightning-tab>
         </lightning-tabset>
     </lightning-card>
