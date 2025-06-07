@@ -1,0 +1,91 @@
+<template>
+    <template if:true={stockData}>
+        <lightning-layout multiple-rows="true">
+            <template for:each={stockData} for:item="stock">
+                <lightning-layout-item key={stock.recordId} size="12" small-device-size="12" large-device-size="6" padding="around-small" class="modal-container">
+                    <div class="custom-box">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span><strong>Stock Name</strong></span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span><a href={stock.recordURL} target="_blank">{stock.stockName}</a></span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span><strong>Total Buyed</strong></span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span>{stock.totalBuyed}</span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span><strong>Total Sold</strong></span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span>{stock.totalSold}</span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span><strong>Total Invested</strong></span>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="6" class="text-align-left">
+                                <span>{stock.totalInvested}</span>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout padding="around-medium">
+                            <lightning-layout-item size="2" class="text-align-left">
+                                <a href="javascript:void(0)" onclick={showMore} id={stock.recordId} style="padding-right: 5px;">More</a>
+                                <a href="javascript:void(0)" onclick={buyOrder} id={stock.recordId} style="padding-right: 5px;">Buy</a>
+                                <a href="javascript:void(0)" onclick={sellOrder} id={stock.recordId} style="padding-right: 5px;">Sell</a>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <div class="text-align-left" id={stock.recordId} style="display: none;">
+                            <template if:true={stock.lines}>
+                                <lightning-layout size="12">
+                                    <lightning-layout-item size="3">
+                                        <strong>Date</strong>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="3">
+                                        <strong>Price/S</strong>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2">
+                                        <strong>Qty</strong>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2">
+                                        <strong>Amount</strong>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item size="2">
+                                        <strong>Exec.</strong>
+                                    </lightning-layout-item>
+                                    <!-- <lightning-layout-item size="2">
+                                        <strong>Exchg</strong>
+                                    </lightning-layout-item> -->
+                                </lightning-layout>
+                                <template for:each={stock.lines} for:item="line">
+                                    <lightning-layout key={line.recordId}>
+                                        <lightning-layout-item size="3">
+                                            {line.sdate}
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="3">
+                                            {line.pricePerShare}
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2">
+                                            {line.quantity}
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2">
+                                            {line.amount}
+                                        </lightning-layout-item>
+                                        <lightning-layout-item size="2">
+                                            {line.buySell}
+                                        </lightning-layout-item>
+                                        <!-- <lightning-layout-item size="3">
+                                            {line.exchange}
+                                        </lightning-layout-item> -->
+                                    </lightning-layout>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+    </template>
+</template>

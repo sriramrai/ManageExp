@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Net_Taxable__c</fullName>
     <externalId>false</externalId>
-    <formula>Basic__c + Conveyance__c + HRA__c + LTA__c + Medical_Allowance__c + Project_Allowance__c + Bonus__c</formula>
+    <formula>Basic__c + Conveyance__c + HRA__c + LTA__c + Medical_Allowance__c + Project_Allowance__c + Bonus__c  +  Telephone_Allowance__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Net Taxable</label>
     <precision>18</precision>

@@ -3,8 +3,8 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>expenseServices</componentName>
-                <identifier>c_expenseServices</identifier>
+                <componentName>declarationComp</componentName>
+                <identifier>c_declarationComp</identifier>
             </componentInstance>
         </itemInstances>
         <name>main</name>

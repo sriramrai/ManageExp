@@ -5,9 +5,9 @@
     <inlineHelpText>Amount will be the old amount in before reinvestment.
 Amount will be credited amount after closure</inlineHelpText>
     <label>Amount</label>
-    <precision>18</precision>
+    <precision>11</precision>
     <required>false</required>
-    <scale>0</scale>
+    <scale>2</scale>
     <trackTrending>false</trackTrending>
     <type>Number</type>
     <unique>false</unique>

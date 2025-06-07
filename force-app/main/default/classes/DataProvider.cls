@@ -96,10 +96,11 @@ public with sharing class DataProvider {
         Date startDate = Date.newInstance(today.year(), today.month(), 1);
         Date endDate = Date.newInstance(today.year(), today.month(), lastDay);
         //endDate = endDate.addMonths(3);
+        Id ivtRecordType = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Investment').getRecordTypeId();
         List<Investment__c> ivtList = new List<Investment__c>([
                                             SELECT Id, Bank__c, Account_Number__c, Maturity_Date__c 
                                             FROM Investment__c 
-                                            WHERE Maturity_Date__c <= :endDate AND Is_Closed__c = false AND is_Test__c =: isTestMode()]);
+                                            WHERE Maturity_Date__c <= :endDate AND Is_Closed__c = false AND is_Test__c =: isTestMode() AND RecordTypeId =: ivtRecordType]);
         return ivtList;
     }
 
@@ -137,10 +138,66 @@ public with sharing class DataProvider {
         return expenses;
     }
 
-    /* [SELECT Id, Start_Date__c, Amount__c, Account_Number__c, Maturity_Date__c, Bank__c,
-                                    (SELECT Id, Date__c, Amount__c FROM Investment_Line_Items__r)
-                                    FROM Investment__c
-                                    WHERE Bank__c IN ('NPS', 'PPF')] */
+    @AuraEnabled(cacheable=true)
+    public static List<StockWrapper> getAllStocks() {
+        Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
+        List<StockWrapper> stockList = new List<StockWrapper>();
+        for(Investment__c ivt : [
+            SELECT Id, Account_Number__c, Total_buy__c, Total_Sold__c, Amount__c, 
+                (SELECT Id, Amount__c, Buy_Sell__c, Exchange__c, Quantity__c, Date__c, Per_Share_Price__c FROM Investment_Line_Items__r)
+            FROM Investment__c WHERE RecordTypeId =: stockRT
+        ]) {
+            StockWrapper sw = new StockWrapper(ivt);
+            stockList.add(sw);
+        }
+
+        return stockList;
+    } 
+
+    public class StockWrapper {
+        @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public String stockName {get; set;}
+        @AuraEnabled public Integer totalBuyed {get; set;}
+        @AuraEnabled public Integer totalSold {get; set;}
+        @AuraEnabled public Decimal totalInvested {get; set;}
+        @AuraEnabled public List<StockLinesWrapper> lines {get; set;}
+        @AuraEnabled public String recordURL {get; set;}
+        public StockWrapper() {}
+        public StockWrapper(Investment__c ivt) {
+            this.recordId = ivt.Id;
+            this.recordURL = '/'+this.recordId;
+            this.stockName = ivt.Account_Number__c;
+            this.totalBuyed = Integer.valueOf(ivt.Total_buy__c);
+            this.totalSold = Integer.valueOf(ivt.Total_Sold__c);
+            this.totalInvested = ivt.Amount__c;
+            this.lines = new List<StockLinesWrapper>();
+            for(Investment_Line_Items__c ivtLine : ivt.Investment_Line_Items__r) {
+                StockLinesWrapper sline = new StockLinesWrapper(ivtLine);
+                this.lines.add(sline);
+            }
+        }
+    }
+    public class StockLinesWrapper {
+        @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public Date sdate {get; set;}
+        @AuraEnabled public Decimal amount {get; set;}
+        @AuraEnabled public String buySell {get; set;}
+        @AuraEnabled public String exchange {get; set;}
+        @AuraEnabled public Integer quantity {get; set;}
+        @AuraEnabled public Decimal pricePerShare {get; set;}
+        @AuraEnabled public String recordURL {get; set;}
+        public StockLinesWrapper() {}
+        public StockLinesWrapper(Investment_Line_Items__c ivtLine) {
+            this.recordId = ivtLine.Id;
+            this.recordURL = '/'+this.recordId;
+            this.sdate = ivtLine.Date__c;
+            this.amount = ivtLine.Amount__c;
+            this.buySell = ivtLine.Buy_Sell__c;
+            this.exchange = ivtLine.Exchange__c;
+            this.quantity = Integer.valueOf(ivtLine.Quantity__c);
+            this.pricePerShare = ivtLine.Per_Share_Price__c;
+        }
+    }
 
     public class FutureInvestmentWrapper {
         @AuraEnabled public Id recordId {get; set;}

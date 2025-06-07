@@ -1,5 +1,5 @@
 name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is testing out GitHub Action 🚀
 on: 
   pull_request
 jobs:
@@ -41,7 +41,7 @@ jobs:
           openssl enc -nosalt -aes-256-cbc -d -in asset/server.key.enc -out asset/server.key -base64 -K DE3B4F6346E0CFA95CA695168A0FD8DA4D06AE808A0AFA9A4DBD2502D5DD6FE7 -iv AC767FEDCF2105140E84B62495C3F43A
       - name: Authenticate Salesforce OR
         run: |
-          sfdx force:auth:jwt:grant -i 3MVG9WiZ4_mwZLgcyV0rcMax7Fah.JVsTC2uF98TpT0bc.eZchPzK0UqFIfcZYe1NzjNXpn3DJFL1YTh00T52 -f asset/server.key --username test-r9rpgmzoc6ys@example.com -d -a HubOrg
+          sfdx force:auth:jwt:grant -i 3MVG9d8..z.hDcPIPF8.sGvQITMSwmTy5SAtW6n3QReT8QvfKwa01IBEknP3V28Ivfnu5u8R5yysrDpdSxtYa -f asset/server.key --username sriram@homeexp.app -d -a HubOrg
       - name: Validate Source Code Against Salesforce ORG
         run: |
           sfdx project deploy start --source-dir force-app -l NoTestRun --dry-run --ignore-conflicts -o HubOrg

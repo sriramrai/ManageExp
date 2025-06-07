@@ -124,6 +124,10 @@ export default class ManageEarning extends LightningElement {
         this.disableForm = true;
     }
 
+    handleError(event) {
+        log('Error while saving earning record... : '+event.detail.detail);
+    }
+
     enableEdit() {
         this.disableForm = false;
     }

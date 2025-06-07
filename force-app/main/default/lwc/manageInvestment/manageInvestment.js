@@ -6,6 +6,7 @@ import { NavigationMixin } from "lightning/navigation";
 import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
 import createRecordModal from 'c/createNewRecordModal';
 import createNewFutureInvestmentModal from 'c/createNewFutureInvestment';
+import createStockModal from 'c/createNewStockModal';
 
 export default class ManageInvestment extends NavigationMixin(LightningElement) {
     sbiEntries = [];
@@ -102,21 +103,36 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
         return result;
     }
 
+    async logStock() {
+        const result = await createStockModal.open({
+            size: 'small',
+            description: 'New Stock Registration',
+            content: this.activeTabName
+        });
+        return result;
+    }
+
     async createInvestment(event) {
         let result;
         if(this.fdTabs.indexOf(this.activeTabName) >= 0) {
             result = await this.logFd();
         }else if(this.futureInvestmentTabs.indexOf(this.activeTabName) >= 0) {
             result = await this.logFutureInvestment();
-        }else {
-            log('else block in promise*** : ');
+        }else if(this.activeTabName == 'Stock'){
+            result = await this.logStock();
         }
         
         if(isValidValue(result) && result.STATUS == 'CREATED') {
-            refreshApex(this.provisionedItem);
-            let queryStr = '[data-id='+result.BANK;
-            const investmentListLWC = this.template.querySelector(queryStr);
-            investmentListLWC.newRecordCreatedHandler();
+            if(result.BANK == 'Stock') {
+                let queryStr = '[data-id='+result.BANK;
+                const stockComponent = this.template.querySelector(queryStr);
+                stockComponent.refreshData();
+            }else {
+                refreshApex(this.provisionedItem);
+                let queryStr = '[data-id='+result.BANK;
+                const investmentListLWC = this.template.querySelector(queryStr);
+                investmentListLWC.newRecordCreatedHandler();
+            }
         }
     }
 

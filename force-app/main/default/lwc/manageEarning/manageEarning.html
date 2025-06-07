@@ -1,5 +1,6 @@
 <template>
-    <lightning-card title="Earning">
+    <c-navigation-header landing-page="Earning"></c-navigation-header>
+    <lightning-card title="">
         <!-- <c-expense-manager-header></c-expense-manager-header> -->
         <!-- <lightning-button label={actionLabel} slot="actions" onclick={createEarning}></lightning-button> -->
         <div class="slds-p-horizontal_small">
@@ -52,7 +53,7 @@
             </template>
             
             <template if:true={showCreateSection}>
-                <lightning-record-edit-form object-api-name="Earning__c" record-id={data.Id} density="auto" onsuccess={handleSuccess}>
+                <lightning-record-edit-form object-api-name="Earning__c" record-id={data.Id} density="auto" onsuccess={handleSuccess} onerror={handleError}>
                     <lightning-layout multiple-rows="true" size="12">
                         <lightning-layout-item size="6">
                             <lightning-input-field 
@@ -78,22 +79,6 @@
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
-                                field-name="Conveyance__c" 
-                                value={data.Conveyance__c}
-                                disabled={disableForm}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Conveyance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Project_Allowance__c" 
-                                value={data.Project_Allowance__c}
-                                disabled={disableForm}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Project_Allowance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
                                 field-name="HRA__c" 
                                 value={data.HRA__c}
                                 disabled={disableForm}
@@ -103,12 +88,19 @@
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
-                                field-name="LTA__c" 
-                                value={data.LTA__c}
+                                field-name="Conveyance__c" 
+                                value={data.Conveyance__c}
                                 disabled={disableForm}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.LTA__c}</span>
+                                onchange={inputChangeHandler}></lightning-input-field>
+                                <span class="diff-data">{diffData.Conveyance__c}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-input-field 
+                                field-name="Food_Allowance__c" 
+                                value={data.Food_Allowance__c}
+                                disabled={disableForm}
+                                onchange={inputChangeHandler}></lightning-input-field>
+                                <span class="diff-data">{diffData.Food_Allowance__c}</span>
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
@@ -121,20 +113,43 @@
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
+                                field-name="LTA__c" 
+                                value={data.LTA__c}
+                                disabled={disableForm}
+                                onchange={inputChangeHandler}
+                                ></lightning-input-field>
+                                <span class="diff-data">{diffData.LTA__c}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-input-field 
+                                field-name="Project_Allowance__c" 
+                                value={data.Project_Allowance__c}
+                                disabled={disableForm}
+                                onchange={inputChangeHandler}></lightning-input-field>
+                                <span class="diff-data">{diffData.Project_Allowance__c}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-input-field 
+                                field-name="Bonus__c" 
+                                value={data.Bonus__c}
+                                disabled={disableForm}
+                                ></lightning-input-field>
+                        </lightning-layout-item>
+                        <!-- <lightning-layout-item size="6">
+                            <lightning-input-field 
                                 field-name="Medical_Allowance__c" 
                                 value={data.Medical_Allowance__c}
                                 disabled={disableForm}
                                 onchange={inputChangeHandler}
                                 ></lightning-input-field>
                                 <span class="diff-data">{diffData.Medical_Allowance__c}</span>
-                        </lightning-layout-item>
+                        </lightning-layout-item> -->
                         <lightning-layout-item size="6">
                             <lightning-input-field 
-                                field-name="Food_Allowance__c" 
-                                value={data.Food_Allowance__c}
-                                disabled={disableForm}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Food_Allowance__c}</span>
+                                field-name="EPF_Contribution__c" 
+                                value={data.EPF_Contribution__c}
+                                disabled=true
+                                ></lightning-input-field>
                         </lightning-layout-item>
                         <lightning-layout-item size="6">
                             <lightning-input-field 
@@ -161,13 +176,6 @@
                                 onchange={inputChangeHandler}
                                 ></lightning-input-field>
                                 <span class="diff-data">{diffData.Labor_Welfare_Fund__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Bonus__c" 
-                                value={data.Bonus__c}
-                                disabled={disableForm}
-                                ></lightning-input-field>
                         </lightning-layout-item>
                     </lightning-layout>
                     <template if:true={data.Id}>

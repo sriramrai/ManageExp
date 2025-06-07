@@ -89,4 +89,37 @@ public with sharing class ExpenseManagerUtil {
             throw new AuraHandledException('Record Saving Failed '+exp.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<DataProvider.StockWrapper> getAllStocks() {
+        return DataProvider.getAllStocks();
+    }
+
+    @AuraEnabled
+    public static String manageStock(String stockData) {
+        try {
+            System.debug('inside managestock server....');
+            Investment_Line_Items__c ivtLineItem = (Investment_Line_Items__c)JSON.deserialize(stockData, Investment_Line_Items__c.Class);
+            System.debug('investmentLine Iten**** : '+ivtLineItem);
+            insert ivtLineItem;
+            return 'success';
+        }catch(Exception exp) {
+            throw new AuraHandledException(exp.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static String createStock(String stockData) {
+        try {
+            Investment__c ivt = (Investment__c) JSON.deserialize(stockData, Investment__c.Class);
+            Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
+            ivt.RecordTypeId = stockRT;
+            ivt.Total_Buy__c = 0;
+            System.debug('Investment*** : '+ivt);
+            insert ivt;
+            return 'success';
+        }catch(Exception exp) {
+            throw new AuraHandledException(exp.getMessage());
+        }
+    }
 }
