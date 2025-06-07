@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is testing out Merge Action 🚀
 on:
   pull_request:
     branches:
-      - developement
+      - development
     types:
       - closed
 jobs:
