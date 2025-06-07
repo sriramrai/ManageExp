@@ -23,3 +23,30 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}"
+
+    build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the Source code from the latest commit
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: Install NPM
+        run: |
+          npm install --legacy-peer-deps
+      # Install the SFDX CLI using npm command
+      - name: Install the SFDX CLI
+        run: |
+          npm install --global @salesforce/cli
+          sf --version
+          sfdx force --help
+      - name: Decrypt the server.key.enc file & store inside assets folder
+        run: |
+          openssl enc -nosalt -aes-256-cbc -d -in asset/server.key.enc -out asset/server.key -base64 -K DE3B4F6346E0CFA95CA695168A0FD8DA4D06AE808A0AFA9A4DBD2502D5DD6FE7 -iv AC767FEDCF2105140E84B62495C3F43A
+      - name: Authenticate Salesforce OR
+        run: |
+          sfdx force:auth:jwt:grant -i 3MVG9d8..z.hDcPIPF8.sGvQITMSwmTy5SAtW6n3QReT8QvfKwa01IBEknP3V28Ivfnu5u8R5yysrDpdSxtYa -f asset/server.key --username sriram@homeexp.app -d -a HubOrg
+      - name: Validate Source Code Against Salesforce ORG
+        run: |
+          sfdx project deploy start --source-dir force-app -l NoTestRun --dry-run --ignore-conflicts -o HubOrg
