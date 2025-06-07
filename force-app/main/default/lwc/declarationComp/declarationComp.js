@@ -3,6 +3,9 @@ import getFiscalYear from '@salesforce/apex/ExpenseManagerUtil.getIncome';
 import { refreshApex } from "@salesforce/apex";
 import getFDIncomes from '@salesforce/apex/InvestmentController.getFYIntrest';
 import { log, logError, getFYForExpManager, getMonthOptionForExpManager } from 'c/utilityClass';
+import HideLightningHeader from '@salesforce/resourceUrl/NoHeader';
+import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
+
 
 export default class DeclarationComp extends LightningElement {
   fyValue = '2025-2026';
@@ -49,6 +52,10 @@ export default class DeclarationComp extends LightningElement {
 
   get options() {
     return getFYForExpManager();
+  }
+
+  connectedCallback() {
+    loadStyle(this, HideLightningHeader)
   }
 
   buildFields() {

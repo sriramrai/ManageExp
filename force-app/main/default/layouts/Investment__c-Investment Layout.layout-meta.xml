@@ -16,7 +16,7 @@
                 <field>Account_Number__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Start_Date__c</field>
             </layoutItems>
             <layoutItems>
@@ -34,6 +34,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Details__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Total_buy__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>

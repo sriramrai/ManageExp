@@ -201,11 +201,6 @@
         <field>Investment_Line_Items__c.Tenure_Yr__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!-- <fieldPermissions>
-        <editable>true</editable>
-        <field>Investment__c.Amount__c</field>
-        <readable>true</readable>
-    </fieldPermissions> -->
     <fieldPermissions>
         <editable>true</editable>
         <field>Investment__c.Bank__c</field>
@@ -291,11 +286,6 @@
         <field>Investment__c.Selling_Price__c</field>
         <readable>true</readable>
     </fieldPermissions>
-    <!-- <fieldPermissions>
-        <editable>true</editable>
-        <field>Investment__c.Start_Date__c</field>
-        <readable>true</readable>
-    </fieldPermissions> -->
     <fieldPermissions>
         <editable>true</editable>
         <field>Investment__c.TAX_SAVER__c</field>

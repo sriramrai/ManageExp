@@ -1,4 +1,0 @@
-<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
-    <aura:attribute name="recordId" type="Id" />
-    <c:operatefds ivtid="{!v.recordId}" onsuccess="{!c.closeQuickAction}"></c:operatefds>
-</aura:component>

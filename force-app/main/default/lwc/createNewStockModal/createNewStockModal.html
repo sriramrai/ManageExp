@@ -1,0 +1,26 @@
+<template>
+    <lightning-modal-header label="New"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-layout multiple-rows="true" >
+            <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="12">
+                <lightning-input type="text" label="Name" field-name="Account_Number__c"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="12">
+                <lightning-input type="date" label="Date" field-name="Start_Date__c"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="12">
+                <lightning-input type="Number" label="Quantity" field-name="Quantity__c"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="12">
+                <lightning-input type="Number" label="Price/Share" field-name="Buying_Price__c"></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="6">
+                <lightning-input type="String" label="Exchange" field-name="Exchng__c" value="NSE"></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" onclick={handleOkay} style="margin-right: 5px;"></lightning-button>
+        <lightning-button label="Save" onclick={handleSave} variant="brand"></lightning-button>
+    </lightning-modal-footer> 
+</template>

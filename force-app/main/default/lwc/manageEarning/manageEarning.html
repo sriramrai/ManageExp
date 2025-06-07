@@ -1,5 +1,6 @@
 <template>
-    <lightning-card title="Earning">
+    <c-navigation-header landing-page="Earning"></c-navigation-header>
+    <lightning-card title="">
         <!-- <c-expense-manager-header></c-expense-manager-header> -->
         <!-- <lightning-button label={actionLabel} slot="actions" onclick={createEarning}></lightning-button> -->
         <div class="slds-p-horizontal_small">
@@ -52,7 +53,7 @@
             </template>
             
             <template if:true={showCreateSection}>
-                <lightning-record-edit-form object-api-name="Earning__c" record-id={data.Id} density="auto" onsuccess={handleSuccess}>
+                <lightning-record-edit-form object-api-name="Earning__c" record-id={data.Id} density="auto" onsuccess={handleSuccess} onerror={handleError}>
                     <lightning-layout multiple-rows="true" size="12">
                         <lightning-layout-item size="6">
                             <lightning-input-field 

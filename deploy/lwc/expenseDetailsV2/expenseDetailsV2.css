@@ -1,5 +1,0 @@
-.overflow-div {
-    white-space: nowrap;
-    /* text-overflow: ellipsis; */
-    overflow: scroll;
-}

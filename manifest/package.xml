@@ -6,8 +6,15 @@
 	</types>
 	<types>
 		<members>Earning__c.Telephone_Allowance__c</members>
+		<members>Investment_Line_Items__c.Buy_Sell__c</members>
+		<members>Investment_Line_Items__c.Exchange__c</members>
+		<members>Investment_Line_Items__c.Per_Share_Price__c</members>
 		<members>Salary_Structure__c.Telephone_Allowance__c</members>
 		<name>CustomField</name>
+	</types>
+	<types>
+		<members>Expense_Management</members>
+		<name>FlexiPage</name>
 	</types>
 	<types>
 		<members>Fiscal_Year</members>
@@ -27,6 +34,10 @@
 	<types>
 		<members>ExpenseManager</members>
 		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>StaticResource</name>
 	</types>
 	<version>63.0</version>
 </Package>
