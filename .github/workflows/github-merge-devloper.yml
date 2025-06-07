@@ -44,4 +44,4 @@ jobs:
           sfdx force:auth:jwt:grant -i 3MVG9d8..z.hDcPIPF8.sGvQITMSwmTy5SAtW6n3QReT8QvfKwa01IBEknP3V28Ivfnu5u8R5yysrDpdSxtYa -f asset/server.key --username sriram@homeexp.app -d -a HubOrg
       - name: Validate Source Code Against Salesforce ORG
         run: |
-          sfdx project deploy start --source-dir force-app -l NoTestRun --dry-run --ignore-conflicts -o HubOrg
+          sfdx project deploy start --source-dir force-app -l NoTestRun --ignore-conflicts -o HubOrg
