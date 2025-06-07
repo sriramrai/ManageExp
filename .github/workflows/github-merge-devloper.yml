@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is testing out Merge Action 🚀
 on:
   push:
     branches:
-      -developement
+      - developement
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
