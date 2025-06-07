@@ -1,0 +1,4 @@
+name: GitHub Merge Demo
+run-name: ${{ github.actor }} is testing out Merge Action 🚀
+on: [push]
+branch: developement
