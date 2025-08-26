@@ -2,3 +2,7 @@
     max-width: 90rem !important;
     width: 90% !important;
 }
+
+.margin-right {
+    margin-right: 5px;
+}

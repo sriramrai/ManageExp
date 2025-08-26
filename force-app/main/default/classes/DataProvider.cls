@@ -11,13 +11,14 @@ public with sharing class DataProvider {
     public static Investment__c getInvestment(String recordId) {
         return [SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, Rate__c, Bank__c, TAX_SAVER__c,
                  Maturity_Date__c, Month__c, Year__c, Day__c, Is_Closed__c
-                 FROM Investment__c WHERE Id =: recordId LIMIT 1];
+                 FROM Investment__c WHERE Id =: recordId];
     }
 
     public static List<Investment__c> getInvestments(Date startDate, Date endDate) {
-        return new List<Investment__c> ([SELECT Id, Start_Date__c, Amount__c, Bank__c 
+        return new List<Investment__c> ([SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, Rate__c, Bank__c, TAX_SAVER__c,
+                                            Maturity_Date__c, Month__c, Year__c, Day__c, Is_Closed__c
                                             FROM Investment__c
-                                            WHERE Start_Date__c >=: startDate AND Start_Date__c <=: endDate AND Re_invested_Count__c = 0
+                                            WHERE (Start_Date__c >=: startDate AND Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)
                                             ORDER BY Start_Date__c DESC
                                         ]);
     }
@@ -253,5 +254,15 @@ public with sharing class DataProvider {
             }
             return String.valueOf(startYr) + ' - ' + String.valueOf(endYr);
         }
+    }
+
+    public static List<Investment_Line_Items__c> getAllLines(Date startDate, Date endDate) {
+        return [
+                    SELECT Id, Investment__r.Account_Number__c, Investment__r.Bank__c, Investment__r.Id, Type__c, Amount__c,Tenure_Day__c, 
+                        Tenure_Mnt__c, Tenure_Yr__c,Rate__c, Principle__c, Investment_Date__c, Maturity_Date__c, IS_TDS__c, TDS_Deducted__c, Comment__c, Incurred_Interest__c 
+                    FROM Investment_Line_Items__c 
+                    WHERE ((Investment_Date__c >=: startDate AND Investment_Date__c <=: endDate) OR 
+                            (Maturity_Date__c >=: startDate  AND Maturity_Date__c <=: endDate))
+                ];
     }
 }
