@@ -38,7 +38,7 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
             this.calculateTotals();
             log('totalAccumulated*** : '+this.totalAccumulated);
             log('totalPaid*** : '+this.totalPaid);
-            log('totalTds*** : '+this.totalTds);
+            log('totalTds**** : '+this.totalTds);
 
         }else if(error) {
             console.log('Error occured.....'+JSON.stringify(error));
