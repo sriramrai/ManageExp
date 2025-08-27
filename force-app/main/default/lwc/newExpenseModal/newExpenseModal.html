@@ -8,7 +8,7 @@
                 <lightning-input-field field-name="Expense__c" value={modalData}></lightning-input-field>
                 </div>
               <div class="slds-col slds-size_1-of-2">
-                <lightning-input-field field-name="Date__c"></lightning-input-field>
+                <lightning-input-field field-name="Date__c" value={selectedDate}></lightning-input-field>
               </div>
             </div>
             
@@ -27,7 +27,7 @@
               </div>
               <template if:true={creditSection}>
                 <div class="slds-col slds-size_1-of-2">
-                  <lightning-input-field field-name="Payment_Due_Date__c"></lightning-input-field>
+                  <lightning-input-field field-name="EMI_Term__c" value={emiTerms}></lightning-input-field>
                 </div>
               </template>
             </div>

@@ -258,14 +258,79 @@ public with sharing class ExpenseController {
         return 'success';
     } 
 
-    @AuraEnabled(cacheable=true)
-    public static List<Expense_Line_Item__c> getCCStatements(Integer month, Integer year, String bank) {
-        Integer dueDay = bank == 'ICICI CC' ? 10 : 7; 
-        Date dueDate = Date.newInstance(year, month, dueDay);
-        System.debug('dueDate.... : '+dueDate);
-        return new List<Expense_Line_Item__c>([
-            SELECT Id, Amount__c, Details__c, Date__c, Payment_Due_Date__c FROM Expense_Line_Item__c 
-            WHERE Source__c = :bank AND Payment_Due_Date__c = :dueDate
-        ]);
+
+    @AuraEnabled
+    public static void updateCCStatements(String recordId, String paymentDate) {
+        System.debug('recordId***** : '+recordId);
+        System.debug('paymentDate**** : '+paymentDate);
+        try {
+            Date paymentD = Date.parse(paymentDate);
+            Payment__c pay = new Payment__c(Id = recordId);
+            pay.Payment_Date__c = paymentD;
+            update pay;
+
+            pay = [SELECT Id, Amount__c, Description__c FROM Payment__c WHERE Id = :recordId LIMIT 1];
+            Expense__c exp = [SELECT Id FROM Expense__c WHERE Start_Date__c <= :paymentD AND End_Date__c >= :paymentD LIMIT 1];
+
+            Expense_Line_Item__c expenseLineItem = new Expense_Line_Item__c();
+            expenseLineItem.Date__c = paymentD;
+            expenseLineItem.Amount__c = pay.Amount__c;
+            expenseLineItem.Debited_By__c = 'Other';
+            expenseLineItem.Source__c = 'Gpay';
+            expenseLineItem.Details__c = 'Payment Of - '+pay.Description__c;
+            expenseLineItem.Expense__c = exp.Id;
+            insert expenseLineItem;
+        }catch(Exception exp) {
+            throw new AuraHandledException('Save Failed** : '+exp.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static Map<String, List<CCWrapper>> getCCStatements(Integer month, Integer year) {
+        Date sDate = Date.newInstance(year, month, 01);
+        Integer noOfDays = Date.daysInMonth(year, month);
+        Date eDate = Date.newInstance(year, month, noOfDays);
+        List<Payment__c> paymentList = DataProvider.getPayments(sDate, eDate);
+        Map<String, List<CCWrapper>> wrapperMap = new Map<String, List<CCWrapper>>();
+
+        for(Payment__c payment : paymentList) {
+            Date purchasedDate = payment.Purchased_Date__c;
+            String mapKey = payment.Source__c;
+            if(purchasedDate < sDate) {
+                //This needs to be collected as due this month
+                mapKey += '-DUETM';
+            }else {
+                mapKey += '-DUENM';
+            }
+            Boolean isSettled = payment.Payment_Date__c == null ? false : true;
+            CCWrapper cw = new CCWrapper(payment.Id, payment.Source__c, purchasedDate, payment.Due_Date__c, payment.Amount__c, payment.Description__c, isSettled);
+            if(wrapperMap.containsKey(mapKey)) {
+                wrapperMap.get(mapKey).add(cw);
+            }else {
+                wrapperMap.put(mapKey, new List<CCWrapper>{ cw });
+            }
+        }
+
+        return wrapperMap;
+    }
+
+    public class CCWrapper {
+        @AuraEnabled public String bank {get; set;}
+        @AuraEnabled public String purchasedDate {get; set;}
+        @AuraEnabled public String dueDate {get; set;}
+        @AuraEnabled public String details {get; set;}
+        @AuraEnabled public Decimal amount {get; set;}
+        @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public Boolean isSettled {get; set;}
+
+        public CCWrapper(Id recordId, String bank, Date purchasedDate, Date dueDate, Decimal amount, String details, Boolean isSettled) {
+            this.recordId = recordId;
+            this.bank = bank;
+            this.purchasedDate = DateTime.newInstance(purchasedDate.year(), purchasedDate.month(), purchasedDate.day()).format('dd, MMM');
+            this.dueDate = DateTime.newInstance(dueDate.year(), dueDate.month(), dueDate.day()).format('dd, MMM');
+            this.amount = amount.setScale(2);
+            this.details = details;
+            this.isSettled = isSettled;
+        }
     }
 }

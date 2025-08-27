@@ -6,9 +6,12 @@
 	</types>
 	<types>
 		<members>Earning__c.Telephone_Allowance__c</members>
+		<members>Expense_Line_Item__c.EMI_Term__c</members>
 		<members>Investment_Line_Items__c.Buy_Sell__c</members>
 		<members>Investment_Line_Items__c.Exchange__c</members>
 		<members>Investment_Line_Items__c.Per_Share_Price__c</members>
+		<members>Payment__c.Description__c</members>
+		<members>Payment__c.Purchased_Date__c</members>
 		<members>Salary_Structure__c.Telephone_Allowance__c</members>
 		<name>CustomField</name>
 	</types>
@@ -39,5 +42,5 @@
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
-	<version>63.0</version>
+	<version>64.0</version>
 </Package>
