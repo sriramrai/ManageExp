@@ -1,0 +1,38 @@
+<template>
+    <div class="slds-p-horizontal_small">
+        <lightning-layout horizontal-align="center">
+            <lightning-layout-item padding="around-small" size="6">
+                <lightning-combobox
+                        name="fiscalyear"
+                        label="Fiscal Year"
+                        value={fyValue}
+                        placeholder="Select Fiscal Year"
+                        options={options}
+                        onchange={handleChange}
+                        variant = "label-hidden"
+                        required
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="3" class="bold-text">Account Number</lightning-layout-item>
+            <lightning-layout-item size="3" class="bold-text">Paid Interest</lightning-layout-item>
+            <lightning-layout-item size="3" class="bold-text">Accumulated Interest</lightning-layout-item>
+            <lightning-layout-item size="3" class="bold-text">TDS Deducted</lightning-layout-item>
+        </lightning-layout>
+        <template for:each={interestList} for:item="intr">
+            <lightning-layout key={intr.accountNumber} style="border: 2px solid; margin-bottom: 5px;">
+                <lightning-layout-item size="3">{intr.accountNumber}</lightning-layout-item>
+                <lightning-layout-item size="3">{intr.interestPaid}</lightning-layout-item>
+                <lightning-layout-item size="3">{intr.accumulatedInteres}</lightning-layout-item>
+                <lightning-layout-item size="3">{intr.tds}</lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout style="border: 2px solid; margin-bottom: 5px;">
+            <lightning-layout-item size="3"><strong>Total</strong></lightning-layout-item>
+            <lightning-layout-item size="3">{totalPaid}</lightning-layout-item>
+            <lightning-layout-item size="3">{totalAccumulated}</lightning-layout-item>
+            <lightning-layout-item size="3">{totalTds}</lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

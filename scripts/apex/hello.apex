@@ -16,3 +16,5 @@ System.debug('Data*** : '+JSON.serialize(DataProvider.getAllFutureInvestments())
 
 System.debug('Data*** : '+Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId());
 
+ExpenseManagerUtil.getInterestWrapper('fy');
+
