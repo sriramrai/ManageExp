@@ -139,6 +139,20 @@ public with sharing class DataProvider {
         return expenses;
     }
 
+    public static List<Payment__c> getPayments(Date sDate, Date eDate) {
+        Date lastMonthSDate = sDate.addMonths(-1);
+        Date nextMonthEDate = eDate.addMonths(1);
+        return new List<Payment__c>(
+            [
+                SELECT Id, Due_Date__c, Purchased_Date__c, Amount__c, Description__c, Payment_Date__c, Source__c
+                FROM Payment__c
+                WHERE (Purchased_Date__c >= :lastMonthSDate AND Purchased_Date__c <= :eDate AND Due_Date__c >= :sDate AND Due_Date__c <= :eDate) OR
+                (Purchased_Date__c >= :sdate AND Purchased_Date__c <= :eDate AND Due_Date__c <= :nextMonthEDate) OR
+                (Due_Date__c >= :sDate AND Due_Date__c <= :eDate)
+            ]
+        );
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<StockWrapper> getAllStocks() {
         Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
