@@ -93,6 +93,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Expense_Line_Item__c.EMI_Term__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Expense_Line_Item__c.Payment_Due_Date__c</field>
         <readable>true</readable>
     </fieldPermissions>
