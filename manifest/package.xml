@@ -6,6 +6,7 @@
 	</types>
 	<types>
 		<members>Earning__c.Telephone_Allowance__c</members>
+<<<<<<< HEAD
 		<members>Investment_Line_Items__c.Buy_Sell__c</members>
 		<members>Investment_Line_Items__c.Exchange__c</members>
 		<members>Investment_Line_Items__c.Per_Share_Price__c</members>
@@ -15,6 +16,10 @@
 	<types>
 		<members>Expense_Management</members>
 		<name>FlexiPage</name>
+=======
+		<members>Salary_Structure__c.Telephone_Allowance__c</members>
+		<name>CustomField</name>
+>>>>>>> b122ce0 (Test Pipeline)
 	</types>
 	<types>
 		<members>Fiscal_Year</members>
