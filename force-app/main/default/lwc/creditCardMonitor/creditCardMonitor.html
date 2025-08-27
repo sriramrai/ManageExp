@@ -90,6 +90,10 @@
                     <lightning-layout-item size="3" padding="around-small">
                         <span>{record.details}</span>
                     </lightning-layout-item>
+                    <lightning-layout-item size="1" padding="around-small">
+                        <span if:false={record.isSettled}><a href="javascript:void(0)" onclick={settleHander} data-id={record.recordId}>Settle</a></span>
+                        <span if:true={record.isSettled}><a href="javascript:void(0)" style="pointer-events: none;">Paid</a></span>
+                    </lightning-layout-item>
                 </lightning-layout>
             </template>
         </div>
