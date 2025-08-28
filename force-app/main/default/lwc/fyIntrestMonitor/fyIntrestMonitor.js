@@ -1,6 +1,8 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, api, track } from 'lwc';
 import getFYIntrest from '@salesforce/apex/InvestmentController.getFYIntrest';
 import { NavigationMixin } from 'lightning/navigation';
+import interestWrapper from '@salesforce/apex/ExpenseManagerUtil.getInterestWrapper';
+import {log, logError, toString, isValid} from 'c/utilityClass';
 
 export default class FyIntrestMonitor extends NavigationMixin(LightningElement) {
     fyvalue;
@@ -8,6 +10,105 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
     totalIntr = 0;
     totalTds = 0;
     errorMessage;
+    investmentMap = {};
+    selectedBank = 'SBI';
+    totalAccumulated = 0;
+    totalPaid = 0;
+    totalTds = 0;
+    @track wrapperData = [];
+    isShowModal = false;
+    @track recordList = [];
+    rowOffset = 0;
+    recordList1 = [];
+
+    columns = [
+        {label: 'Account Number', fieldName: 'accountNumber'},
+        {label: 'Bank Name', fieldName: 'bankName'},
+        {label: 'Acc. Interest', fieldName: 'accumulatedInteres'},
+        {label: 'Paid Interest', fieldName: 'interestPaid'},
+        {label: 'TDS', fieldName: 'tds'},
+    ];
+
+    @wire (interestWrapper, {'fy' : 'test'})
+    interestWrapperList({data, error}) {
+        if(data) {
+            this.investmentMap = data;
+            console.log('data**** : '+JSON.stringify(this.investmentMap));
+            this.initialize();
+            this.calculateTotals();
+            log('totalAccumulated*** : '+this.totalAccumulated);
+            log('totalPaid*** : '+this.totalPaid);
+            log('totalTds**** : '+this.totalTds);
+
+        }else if(error) {
+            console.log('Error occured.....'+JSON.stringify(error));
+        }
+    }
+
+    initialize() {
+        let myMap = {};
+        for(const key in this.investmentMap) {
+            console.log('key**** : '+key);
+            let allLines = this.investmentMap[key];
+            let totalAI = 0;
+            let totalPI = 0;
+            let totalTDS = 0;
+            for(let item of allLines) {
+                if(item.accumulatedInteres != null) {
+                    totalAI += item.accumulatedInteres;
+                }
+                if(item.interestPaid != null) {
+                    totalPI += item.interestPaid
+                }
+                if(item.tds != null) {
+                    totalTDS += item.tds;
+                }
+            }
+            let ivtObj = {};
+            if(myMap.hasOwnProperty(key)) {
+                ivtObj = myMap[key];
+            }
+            ivtObj.bank = key;
+            ivtObj.interest = totalAI+totalPI;
+            ivtObj.interest = ivtObj.interest.toFixed(2);
+            ivtObj.isShow = true;
+            myMap[key] = ivtObj;
+            this.wrapperData.push(myMap[key]);
+        }
+        log('myMap**** : '+JSON.stringify(this.wrapperData));
+    }
+    
+    @api 
+    get allInvestments() {
+        if(!isValid(this.investmentMap)) {
+            return null;
+        }else {
+            log('inside getter of Investments***** : '+this.investmentMap[this.selectedBank]);
+            return this.investmentMap[this.selectedBank];
+        }
+    }
+
+    calculateTotals() {
+        this.interestList = this.allInvestments;
+        this.totalAccumulated = 0;
+        this.totalPaid = 0;
+        this.totalTds = 0;
+        this.interestList.forEach(item => {
+            if(item.accumulatedInteres != null) {
+                this.totalAccumulated += item.accumulatedInteres;
+            }
+            if(item.interestPaid != null) {
+                this.totalPaid += item.interestPaid;
+            }
+            if(item.tds != null) {
+                this.totalTds += item.tds;
+            }
+        })
+
+        this.totalAccumulated = this.totalAccumulated > 0 ? this.totalAccumulated.toFixed(2) : 0;
+        this.totalPaid = this.totalPaid > 0 ? this.totalPaid.toFixed(2) : 0;
+        this.totalTds = this.totalTds > 0 ? this.totalTds.toFixed(2) : 0;
+    }
 
     get fyOptions() {
         return [
@@ -15,7 +116,11 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
             { label: 'FY 22-23', value:'2022-2023'},
             { label: 'FY 23-24', value:'2023-2024'},
             { label: 'FY 24-25', value:'2024-2025'},
-            { label: 'FY 25-26', value:'2025-2026'}
+            { label: 'FY 25-26', value:'2025-2026'},
+            { label: 'FY 26-27', value:'2026-2027'},
+            { label: 'FY 27-28', value:'2027-2028'},
+            { label: 'FY 28-29', value:'2028-2029'},
+            { label: 'FY 29-30', value:'2029-2030'},
         ]
     }
 
@@ -82,18 +187,40 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
             }
         });
     }
-    /* showMore(event) {
-        console.log('anchor tab clicked...');
+    showMore(event) {
+        this.selectedBank = event.currentTarget.dataset.id;
+        log('selected Bank**** : '+this.selectedBank);
         this.isShowModal = true;
-        this.selectedBank = 'AXIS';
+        this.recordList = [];
+        //let selectedBank = 'SBI';
+        //for(const key in this.investmentMap) {
+        let allLines = this.investmentMap[this.selectedBank];
+        for(let item of allLines) {
+            this.recordList.push(item);
+        }
+            //this.recordList = allLines.slice();
+
+       // }
+        //this.recordList = Object.entries(this.investmentMap["SBI"])
+        /* this.recordList1 = [
+            {'accountNumber': '123', 'bankName': 'abc', 'accumulatedInteres': '1234', 'interestPaid': '234', 'tds' : '123'}
+        ]; */
+        log('recordList*** : '+JSON.stringify(this.recordList));
+
+        /* this.selectedBank = 'AXIS';
         console.log('Show more clicked...');
         let selectedIndex = event.target.getAttribute("data-id");
         let selectedValue = this.intrestList[selectedIndex];
         this.selectedObj = {
             'fy' : this.fyvalue,
             'bank' : selectedValue.bank
-        };
-    } */
+        }; */
+        this.calculateTotals();
+    }
+
+    hideModalBox(event) {
+        this.isShowModal = false;
+    }
 
     handleValueChange(event) {
         this.totalIntr = event.detail.fyintr;

@@ -122,5 +122,74 @@ public with sharing class ExpenseManagerUtil {
             throw new AuraHandledException(exp.getMessage());
         }
     }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(String fy) {
+        Date startDate = Date.newInstance(2024, 04, 01);
+        Date endDate = Date.newInstance(2025, 03, 31);
+        System.debug('start Date*** : '+startDate);
+        System.debug('End Date**** : '+endDate);
+        List<Investment_Line_Items__c> lines = DataProvider.getAllLines(startDate, endDate);
+        System.debug('lines*** : '+JSON.serialize(lines));
+        List<Investment__c> allInvestments = DataProvider.getInvestments(startDate, endDate);
+        
+        Map<String, List<Investment_Line_Items__c>> investmentLinesByBank = new Map<String, List<Investment_Line_Items__c>>();
+        Map<String, List<Investment__c>> investmentByBank = new Map<String, List<Investment__c>>();
+        for(Investment_Line_Items__c ivtLine : lines) {
+            String key = ivtLine.Investment__r.Bank__c;
+            if(investmentLinesByBank.containsKey(key)) {
+                investmentLinesByBank.get(key).add(ivtLine);
+            }else {
+                investmentLinesByBank.put(key, new List<Investment_Line_Items__c>{ivtLine});
+            }
+        }
+        for(Investment__c ivt : allInvestments) {
+            if(investmentByBank.containsKey(ivt.Bank__c)) {
+                investmentByBank.get(ivt.Bank__c).add(ivt);
+            }else {
+                investmentByBank.put(ivt.Bank__c, new List<Investment__c>{ivt});
+            }
+        }
+        System.debug('investmentLinesByBank***** : '+JSON.serialize(investmentLinesByBank));
+        System.debug('investmentByBank*** : '+JSON.serialize(investmentByBank));
+        Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> wrapperMap = new Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>>();
+        for(String bank : investmentByBank.keySet()) {
+            List<Investment_Line_Items__c> lineItems = investmentLinesByBank.get(bank);
+            List<Investment__c> investments = investmentByBank.get(bank);
+            List<ExpenseManagerUtilHelper.InterestWrapper> wrapperList = new List<ExpenseManagerUtilHelper.InterestWrapper>();
+            wrapperList = ExpenseManagerUtilHelper.processInvestmentLines(investments, lineItems, startDate, endDate, bank);
+            System.debug('bank**** : '+bank);
+            System.debug('WrapperList '+JSON.serialize(wrapperList));
+            wrapperMap.put(bank, wrapperList);
+        }
+        
+        return wrapperMap;
+    }
+
+    public class InterestWrapper {
+        @AuraEnabled public String accountNumber {get; set;}
+        @AuraEnabled public String bankName {get; set;}
+        @AuraEnabled public Decimal accumulatedInteres {get; set;}
+        @AuraEnabled public Decimal interestPaid {get; set;}
+        @AuraEnabled public Decimal tds {get; set;}
+        
+        public InterestWrapper(InterestWrapper iwrapper, Decimal accumulatedInteres) {
+            iwrapper.accumulatedInteres = accumulatedInteres;
+        }
+
+        public InterestWrapper(String accountNumber, String bankName, Decimal interestPaid, Decimal tds) {
+            this.accountNumber = accountNumber;
+            this.bankName = bankName;
+            this.interestPaid = interestPaid;
+            this.tds = tds != null ? tds : 0;
+        }
+
+        public InterestWrapper(String accountNumber, String bankName, Decimal accumulatedInteres) {
+            this.accountNumber = accountNumber;
+            this.bankName = bankName;
+            this.accumulatedInteres = accumulatedInteres;
+        }
+    }
 }
-//test
+
+}

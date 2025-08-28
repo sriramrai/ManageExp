@@ -1,43 +1,101 @@
 <template>
     <lightning-card>
-        <b>Total22312 : {total}</b>
         <div class="slds-align_absolute-center">
-            <lightning-layout style="width: 100%;">
+            <lightning-layout horizontal-align="center" style="width: 100%;">
                 <lightning-layout-item style="padding: 5px; padding-right: 15px;" size="3">
                     <lightning-combobox
                         name="month"
                         label="Month"
                         value={selectedMonth}
-                        options={months}>
-                    </lightning-combobox>
-                </lightning-layout-item>
-                <lightning-layout-item style="padding: 5px; padding-right: 15px;" size="4">
-                    <lightning-combobox
-                        name="Year"
-                        label="Year"
-                        value={selectedYear}
-                        options={years}>
+                        options={months}
+                        variant="label-hidden"
+                        onchange={optionChangeHandler}>
                     </lightning-combobox>
                 </lightning-layout-item>
                 <lightning-layout-item style="padding: 5px; padding-right: 15px;" size="3">
                     <lightning-combobox
-                        name="Bank"
-                        label="Bank"
-                        value={selectedBank}
-                        options={banks}>
+                        name="Year"
+                        label="Year"
+                        value={selectedYear}
+                        options={years}
+                        variant="label-hidden"
+                        onchange={optionChangeHandler}>
                     </lightning-combobox>
                 </lightning-layout-item>
-                <lightning-layout-item style="padding-top: 28px;" size="2">
-                    <lightning-button brand="submit" label="Go"></lightning-button>
+                <lightning-layout-item style="padding-top: 5px;" size="2">
+                    <lightning-button brand="submit" onclick={fetchData} label="Go"></lightning-button>
                 </lightning-layout-item>
             </lightning-layout>
         </div>
-        <div style="height: 300px;">
-            <lightning-datatable
-                key-field="Id"
-                data={data}
-                columns={columns}>
-        </lightning-datatable>
+        <lightning-layout>
+            <lightning-layout-item size="2" padding="around-small">
+                <b>CC Card</b>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" padding="around-small">
+                <b>Amount</b>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" padding="around-small">
+                <b>Purchased</b>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" padding="around-small">
+                <b>Due Date</b>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" padding="around-small">
+                <b>Details</b>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div style="height: 300px;overflow:scroll;">
+            <template for:each={currentMonthDue} for:item="record">
+                <lightning-layout key={record.recordId}>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.bank}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.amount}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.purchasedDate}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.dueDate}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small">
+                        <span>{record.details}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="1" padding="around-small">
+                        <span if:false={record.isSettled}><a href="javascript:void(0)" onclick={settleHander} data-id={record.recordId}>Settle</a></span>
+                        <span if:true={record.isSettled}><a href="javascript:void(0)" style="pointer-events: none;">Paid</a></span>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout horizontal-align="center">
+                <lightning-layout-item size="12" padding="around-small">
+                    <span style="font-weight: bold;">Upcoming Due Payments</span>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template for:each={nextMonthDue} for:item="record">
+                <lightning-layout key={record.recordId}>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.bank}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.amount}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.purchasedDate}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <span>{record.dueDate}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small">
+                        <span>{record.details}</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="1" padding="around-small">
+                        <span if:false={record.isSettled}><a href="javascript:void(0)" onclick={settleHander} data-id={record.recordId}>Settle</a></span>
+                        <span if:true={record.isSettled}><a href="javascript:void(0)" style="pointer-events: none;">Paid</a></span>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
         </div>
         
     </lightning-card>
