@@ -21,7 +21,6 @@ public with sharing class ExpenseManagerUtil {
         );
         
         if(!salary.isEmpty()) {
-           // salary[0].Credit_Date__c = Date.today();
             return salary[0];
         }
         
