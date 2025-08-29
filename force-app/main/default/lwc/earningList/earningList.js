@@ -21,11 +21,9 @@ export default class EarningList extends LightningElement {
                         obj['recordURL'] = '/'+item.Id;
                     }
                     obj[key] = item[key];
-                    this.earningList.push(obj);
                 }
-            })
-            //this.earningList = earningObj.data;
-            log('Earning fetched successfully.... : '+toString(earningObj.data));
+                this.earningList.push(obj);
+            });
         }else if(earningObj.error) {
             logError('Error while fetching earning... : '+toString(earningObj.error));
         }
