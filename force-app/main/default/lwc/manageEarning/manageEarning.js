@@ -1,31 +1,18 @@
-import { LightningElement, wire, track } from 'lwc';
+import { api, wire, track } from 'lwc';
+import LightningModal from 'lightning/modal';
 import getSalaryStructure from '@salesforce/apex/ExpenseManagerUtil.getSalaryStructure';
 import getEarning from '@salesforce/apex/ExpenseManagerUtil.getEarning';
-import { refreshApex } from "@salesforce/apex";
 import { log, logError, getFYForExpManager, 
             getMonthOptionForExpManager, getSalaryAmountFields} from 'c/utilityClass';
-import { CurrentPageReference } from 'lightning/navigation';
 
-export default class ManageEarning extends LightningElement {
+export default class ManageEarning extends LightningModal {
     fyValue = '2025-2026';
+    disableSave = false;
     selectedMonth = '04';
     @track data = {};
     salaryStructure;
     earning;
-    disableForm=false;
-    displayNewLink = false;
-    createNewClicked = false;
-    showCreateSection = false;
     @track diffData = {};
-
-    @wire(CurrentPageReference)
-    getPageReference(pageRef) {
-        if (pageRef) {
-            // Extracting URL parameters
-            this.urlParams = pageRef.state;
-            log('urlparmas*** : '+JSON.stringify(this.urlParams));
-        }
-    }
 
     @wire (getSalaryStructure, {'fy' : '$fyValue'})
     fetchSalaryStructure({ data, error }) {
@@ -57,23 +44,8 @@ export default class ManageEarning extends LightningElement {
         }
     }
 
-    connectedCallback() {
-        log('inside connected callback123....');
-        logError('inside connected callback....');
-    }
-
     initData() {
-        this.displayNewLink = true;
-        this.showCreateSection = false;
         this.data = this.salaryStructure;
-        this.disableForm = this.data.Id != '' ? false : true;
-        if(this.earning.data) {
-            this.data = this.earning.data;
-            this.showCreateSection = true;
-            this.displayNewLink = false;
-        }
-
-        this.constructDiffData();
     }
 
     diffValue(field, sourceValue) {
@@ -92,50 +64,22 @@ export default class ManageEarning extends LightningElement {
                 this.diffData[field] = this.diffValue(field, this.data[field]);
             }
         }
-        log('Diffdata*** : '+JSON.stringify(this.diffData));
     }
 
-    get options() {
-        return getFYForExpManager();
-    }
-
-    get monthOptions() {
-        return getMonthOptionForExpManager();
-    }
-
-    createEarning() {
-        this.displayNewLink = false;
-        this.showCreateSection = true;
-        this.disableForm = false;
+    handleSubmit(event) {
+        this.disableSave = true;
     }
 
     handleCancel(event) {
-        if(this.data.Id) {
-            this.disableForm = true;
-            this.resetFields();
-        }else {
-            this.showCreateSection = false;
-            this.displayNewLink = true;
-        }
+        this.close(false);
     }
 
-    handleSuccess() {
-        refreshApex(this.earning);
-        this.disableForm = true;
+    handleSuccess(event) {
+        this.close(true);
     }
 
     handleError(event) {
         log('Error while saving earning record... : '+event.detail.detail);
-    }
-
-    enableEdit() {
-        this.disableForm = false;
-    }
-
-    handleMonthChange(event) {
-        this.showCreateSection = false;
-        this.selectedMonth = event.target.value;
-        refreshApex(this.earning);
     }
 
     inputChangeHandler(event) {
@@ -143,17 +87,5 @@ export default class ManageEarning extends LightningElement {
         let field = event.target.fieldName;
         let changedValue = event.target.value;
         this.diffData[field] = this.diffValue(field, changedValue);
-    }
-
-    resetFields() {
-        const inputFields = this.template.querySelectorAll('lightning-input-field');
-        let amountFields = getSalaryAmountFields();
-        inputFields.forEach( field => {
-            field.reset();
-            let fieldName = field.fieldName;
-            if(amountFields.indexOf(fieldName) > -1) {
-                this.diffData[fieldName] = this.diffValue(fieldName, this.data[fieldName]);
-            }
-        });
     }
 }

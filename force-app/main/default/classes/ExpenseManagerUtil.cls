@@ -38,7 +38,7 @@ public with sharing class ExpenseManagerUtil {
                 [
                     SELECT Id, Credit_Date__c, Basic__c, Conveyance__c, Food_Allowance__c, EPF_Contribution__c, Fiscal_Year__c,
                     HRA__c, Income_Tax__c, Labor_Welfare_Fund__c, LTA__c, Medical_Allowance__c, Professional_Tax__c,
-                    Project_Allowance__c, Bonus__c, Telephone_Allowance__c
+                    Project_Allowance__c, Bonus__c, Telephone_Allowance__c, Month__c
                     FROM Earning__c
                     WHERE Credit_Date__c >= :sdt AND Credit_Date__c <= :edt
                 ]
@@ -120,6 +120,11 @@ public with sharing class ExpenseManagerUtil {
         }catch(Exception exp) {
             throw new AuraHandledException(exp.getMessage());
         }
+    }
+
+    @AuraEnabled(cacheable = true)
+    public static List<Earning__c> getEarnings(String fiscalYear) {
+        return DataProvider.getEarnings(fiscalYear);
     }
 
     @AuraEnabled(cacheable=true)

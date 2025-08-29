@@ -10,3 +10,8 @@
     -webkit-text-fill-color: red;
     font-weight: bold;
 }
+
+.scrollable-div {
+  overflow:scroll; 
+  height:230px;
+}

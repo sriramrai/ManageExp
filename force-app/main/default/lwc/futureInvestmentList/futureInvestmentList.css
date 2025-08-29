@@ -36,3 +36,8 @@
   background: red;
   cursor: pointer;
 }
+
+.scrollable-div {
+  overflow:scroll; 
+  height:400px;
+}
