@@ -18,14 +18,17 @@
                     ></lightning-combobox>
                 </lightning-layout-item>
             </lightning-layout>
-            <div style="overflow: scroll; height: 120px;">
+            <div style="overflow: scroll; height: 120px; padding-left: 10px;">
             <template for:each={earningList} for:item="earning">
                 <lightning-layout key={earning.Id}>
-                    <lightning-layout-item padding="around-small" size="5">
-                        {earning.Month__c}
+                    <lightning-layout-item padding="around-small" size="3">
+                        <a href={earning.recordURL} target="_blank" onclick={navigateToPage}>{earning.Month__c}</a>
                     </lightning-layout-item>
-                    <lightning-layout-item padding="around-small" size="5">
+                    <lightning-layout-item padding="around-small" size="4">
                         {earning.Credit_Date__c}
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="4">
+                        {earning.Net_Deduction__c}
                     </lightning-layout-item>
                 </lightning-layout>
             </template>

@@ -132,7 +132,7 @@ public with sharing class DataProvider {
 
     public static List<Earning__c> getEarnings(String fiscalYear) {
         return [
-            SELECT Id, Fiscal_Year__c, Month__c, Credit_Date__c 
+            SELECT Id, Fiscal_Year__c, Month__c, Credit_Date__c, Net_In_Hand__c, Net_Deduction__c 
             FROM Earning__c 
             WHERE Fiscal_Year__c = :fiscalYear
             ORDER BY Credit_Date__c DESC
