@@ -29,6 +29,12 @@
                 <identifier>c_creditCardMonitor</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>manageInvestment</componentName>
+                <identifier>c_manageInvestment</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>region2</name>
         <type>Region</type>
     </flexiPageRegions>
@@ -43,6 +49,18 @@
             <componentInstance>
                 <componentName>expenseMain</componentName>
                 <identifier>c_expenseMain</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>declarationComp</componentName>
+                <identifier>c_declarationComp</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>earningList</componentName>
+                <identifier>c_earningList</identifier>
             </componentInstance>
         </itemInstances>
         <name>region3</name>
