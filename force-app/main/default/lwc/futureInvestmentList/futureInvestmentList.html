@@ -13,7 +13,7 @@
                             </lightning-badge>
                         </lightning-layout-item>
                     </lightning-layout>
-                    
+        
                     <lightning-layout multiple-rows="true">
                         <lightning-layout-item size="6" class="text-align-left">
                             <span><strong>Start Date</strong></span>
@@ -64,7 +64,7 @@
                 </lightning-layout>
             </div>
             
-            <div style="overflow:scroll; height:230px;">
+            <div class="scrollable-div">
             <template for:each={dataObj.lines} for:item="item">
                 <div style="margin-left: 16px;" key={item.recordId} class="custom-li-box">
                     <lightning-layout >

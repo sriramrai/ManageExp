@@ -1,46 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>ExpenseManagerUtil</members>
-		<name>ApexClass</name>
-	</types>
-	<types>
-		<members>Earning__c.Telephone_Allowance__c</members>
-		<members>Expense_Line_Item__c.EMI_Term__c</members>
-		<members>Investment_Line_Items__c.Buy_Sell__c</members>
-		<members>Investment_Line_Items__c.Exchange__c</members>
-		<members>Investment_Line_Items__c.Per_Share_Price__c</members>
-		<members>Payment__c.Description__c</members>
-		<members>Payment__c.Purchased_Date__c</members>
-		<members>Salary_Structure__c.Telephone_Allowance__c</members>
-		<name>CustomField</name>
-	</types>
-	<types>
-		<members>Expense_Management</members>
+		<members>Investment_Dashboard</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>
-		<members>Fiscal_Year</members>
-		<name>GlobalValueSet</name>
-	</types>
-	<types>
-		<members>Earning__c-Earning Layout</members>
-		<members>Income__c-Income Layout</members>
-		<members>Salary_Structure__c-Salary Structur Layout</members>
-		<name>Layout</name>
-	</types>
-	<types>
+		<members>investmentList</members>
 		<members>declarationComp</members>
-		<members>manageEarning</members>
+		<members>futureInvestmentList</members>
 		<name>LightningComponentBundle</name>
 	</types>
 	<types>
-		<members>ExpenseManager</members>
-		<name>PermissionSet</name>
-	</types>
-	<types>
-		<members>*</members>
-		<name>StaticResource</name>
+		<members>Earning__c.Month__c</members>
+		<name>CustomField</name>
 	</types>
 	<version>64.0</version>
 </Package>

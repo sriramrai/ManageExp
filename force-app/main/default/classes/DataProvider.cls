@@ -130,6 +130,15 @@ public with sharing class DataProvider {
         return expenses;
     }
 
+    public static List<Earning__c> getEarnings(String fiscalYear) {
+        return [
+            SELECT Id, Fiscal_Year__c, Month__c, Credit_Date__c 
+            FROM Earning__c 
+            WHERE Fiscal_Year__c = :fiscalYear
+            ORDER BY Credit_Date__c DESC
+        ];
+    }
+
     public static List<Expense__c> getExpenseByName(String name) {
         List<Expense__c> expenses = new List<Expense__c>([
             SELECT Id, Name, Start_Date__c, End_Date__c, Other__c, Shivam__c, Sriram__c, Total_Expense__c

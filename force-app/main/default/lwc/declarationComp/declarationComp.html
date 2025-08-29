@@ -1,6 +1,6 @@
 <template>
     <!-- <c-navigation-header landing-page="Declaration"></c-navigation-header> -->
-    <lightning-card title="">
+    <lightning-card title="Declaration">
         
         <lightning-button label={actionLabel} slot="actions" onclick={declareIncome}></lightning-button>
         <div class="slds-p-horizontal_small">
@@ -18,6 +18,7 @@
                     ></lightning-combobox>
                 </lightning-layout-item>
             </lightning-layout>
+            <div class="scrollable-div">
             <template if:true={enableCreate}>
                 <lightning-record-edit-form  object-api-name="Income__c" record-id={recordId} onsuccess={saveSucceeded}>
                     <template for:each={fieldList} for:item="currentItem">
@@ -60,7 +61,7 @@
                     </lightning-layout-item>
                 </lightning-layout>
             </template>
-
+            </div>
         </div>
     </lightning-card>
 </template>
