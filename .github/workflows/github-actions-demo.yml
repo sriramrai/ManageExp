@@ -36,7 +36,7 @@ jobs:
           echo "Base Branch: ${{ github.base_ref }}"
       - name: Install the SFDX delta
         run: |
-          sfdx plugins:install sfdx-git-delta
+          sf plugins install sfdx-git-delta
       # Install the SFDX CLI using npm command
       - name: Install the SFDX CLI
         run: |
