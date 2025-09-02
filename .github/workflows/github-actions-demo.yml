@@ -30,6 +30,13 @@ jobs:
       - name: Install NPM
         run: |
           npm install --legacy-peer-deps
+      - name: Get Source Branch name
+        run: |
+          echo "Source Branch: ${{ github.head_ref }}"
+          echo "Base Branch: ${{ github.base_ref }}"
+      - name: Install the SFDX delta
+        run: |
+          sfdx plugins:install sfdx-git-delta
       # Install the SFDX CLI using npm command
       - name: Install the SFDX CLI
         run: |
