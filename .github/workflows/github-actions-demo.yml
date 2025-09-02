@@ -43,6 +43,7 @@ jobs:
       - name: Install the SFDX delta
         run: |
           sf plugins install sfdx-git-delta
+          echo "y"
           sfdx sgd:source:delta --to ${{ github.base_ref }} --from ${{ github.head_ref }} --output-dir data 
       - name: Decrypt the server.key.enc file & store inside assets folder
         run: |
