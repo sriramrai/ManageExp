@@ -18,7 +18,7 @@ public with sharing class DataProvider {
         return new List<Investment__c> ([SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, Rate__c, Bank__c, TAX_SAVER__c,
                                             Maturity_Date__c, Month__c, Year__c, Day__c, Is_Closed__c
                                             FROM Investment__c
-                                            WHERE (Start_Date__c >=: startDate AND Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)
+                                            WHERE ((Start_Date__c >=: startDate AND Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)) AND RecordType.Name != 'Stock'
                                             ORDER BY Start_Date__c DESC
                                         ]);
     }
