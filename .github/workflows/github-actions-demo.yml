@@ -42,7 +42,7 @@ jobs:
           sfdx force --help
       - name: Install the SFDX delta
         run: |
-          y | sf plugins install sfdx-git-delta
+          yes | sf plugins install sfdx-git-delta
           sfdx sgd:source:delta --to ${{ github.base_ref }} --from ${{ github.head_ref }} --output-dir data 
       - name: Decrypt the server.key.enc file & store inside assets folder
         run: |
