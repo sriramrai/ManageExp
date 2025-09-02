@@ -1,3 +1,7 @@
+/** 
+ * Purpose: This Data Provider class is responsible to provide the data to all required places
+ * Modified On : 03 Sept, to test the CI CD
+*/
 public with sharing class DataProvider {
     public static Boolean isTestMode() {
         Testing_Switch__c ts = Testing_Switch__c.getInstance();
