@@ -1,4 +1,4 @@
-import { LightningElement, api, wire } from 'lwc';
+import { LightningElement, api, wire, track } from 'lwc';
 import getCCStatements from '@salesforce/apex/ExpenseController.getCCStatements';
 import {log, logError, isValid, toString} from 'c/utilityClass';
 import updatePayment from '@salesforce/apex/ExpenseController.updateCCStatements'
@@ -9,6 +9,10 @@ export default class CreditCardMonitor extends LightningElement {
     data = [];
     selectedMonth;
     selectedYear;
+    currentMonthDue = [];
+    nextMonthDue = [];
+    @track currentMonthTotal = {};
+    @track nextMonthTotal = {};
     columns = [
         {label: 'Amount', fieldName: 'Amount__c'},
         {label: 'Details', fieldName: 'Details__c'},
@@ -24,7 +28,6 @@ export default class CreditCardMonitor extends LightningElement {
     }
 
     async fetchData(event) {
-        log('inside fetchData method');
         try {
             this.recordMap = await getCCStatements({month: this.selectedMonth, year : this.selectedYear});
             log('Data retrieved successful....'+toString(this.recordMap));
@@ -33,8 +36,7 @@ export default class CreditCardMonitor extends LightningElement {
             logError('Error Occured imp...'+toString(error));
         }
     }
-    currentMonthDue = [];
-    nextMonthDue = [];
+    
     initData() {
         this.currentMonthDue = [];
         this.nextMonthDue = [];
@@ -48,8 +50,8 @@ export default class CreditCardMonitor extends LightningElement {
                 }
             }
         }
-        log('Current Month Due*** : '+toString(this.currentMonthDue));
-        log('Next Month Due*** : '+toString(this.nextMonthDue));
+        this.currentMonthTotal = this.calculateTotal(this.currentMonthDue);
+        this.nextMonthTotal = this.calculateTotal(this.nextMonthDue);
     }
 
     get months() {
@@ -109,5 +111,28 @@ export default class CreditCardMonitor extends LightningElement {
                 logError('Data Update Failed..... : '+toString(error));
             })
         }
+    }
+    
+    calculateTotal(records) {
+        let result = {
+            'ICICI' : 0,
+            'AXIS' : 0,
+            'Total' : 0
+        };
+        records.forEach(item => {
+            let amount = parseInt(item.amount);
+            if(item.bank == 'Axis CC') {
+                result['AXIS'] += amount;
+            }else {
+                result['ICICI'] += amount;
+            }
+            result['Total'] += amount;
+        });
+        return result;
+    }
+
+    get displayUpcomingRow() {
+        let renderText = this.nextMonthDue.length > 0 ? true : false;
+        return renderText;
     }
 }
