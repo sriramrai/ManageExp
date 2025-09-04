@@ -18,3 +18,13 @@ System.debug('Data*** : '+Schema.SobjectType.Investment__c.getRecordTypeInfosByN
 
 ExpenseManagerUtil.getInterestWrapper('fy');
 
+System.debug('test*** '+ JSON.serialize(ExpenseController.getCCStatements(9, 2025)));
+
+Integer year = 2025;
+Integer month = 9;
+Date sDate = Date.newInstance(year, month, 01);
+Date sDate = Date.newInstance(year, month, 01); //01/09/2025 lastMonthSDate = 01/08/2025
+Integer noOfDays = Date.daysInMonth(year, month);
+Date eDate = Date.newInstance(year, month, noOfDays); //30/09/2025 nextMonthEDate = 31/10/2025
+System.debug('List*** : '+JSON.serialize(DataProvider.getPayments(sDate, eDate)));
+

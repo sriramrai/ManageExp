@@ -27,9 +27,9 @@
                 </lightning-layout-item>
             </lightning-layout>
         </div>
-        
+
         <div class="table-container">
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_striped slds-max-medium-table_stacked-horizontal">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_striped">
                 <thead>
                     <tr>
                         <th>CC Card</th>
@@ -43,7 +43,7 @@
                 <tbody>
                     <template for:each={currentMonthDue} for:item="record">
                         <tr key={record.Id}>
-                            <td>{record.bank}</td>
+                            <td><a href={record.hrefURL} target="_blank">{record.bank}</a></td>
                             <td>{record.amount}</td>
                             <td>{record.purchasedDate}</td>
                             <td>{record.dueDate}</td>
@@ -62,7 +62,7 @@
                     <template for:each={nextMonthDue} for:item="record">
                         
                         <tr key={record.Id}>
-                            <td>{record.bank}</td>
+                            <td><a href={record.hrefURL} target="_blank">{record.bank}</a></td>
                             <td>{record.amount}</td>
                             <td>{record.purchasedDate}</td>
                             <td>{record.dueDate}</td>
@@ -126,6 +126,25 @@
                         <td class="total-value">
                             <lightning-formatted-number 
                                 value={nextMonthTotal.Total}
+                                format-style="currency"
+                                currency-code="INR"
+                                maximum-fraction-digits="0"
+                            ></lightning-formatted-number>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Total Due:</td>
+                        <td class="total-value">
+                            <lightning-formatted-number 
+                                value={currentMonthTotal.TotalDue}
+                                format-style="currency"
+                                currency-code="INR"
+                                maximum-fraction-digits="0"
+                            ></lightning-formatted-number>
+                        </td>
+                        <td class="total-value">
+                            <lightning-formatted-number 
+                                value={nextMonthTotal.TotalDue}
                                 format-style="currency"
                                 currency-code="INR"
                                 maximum-fraction-digits="0"

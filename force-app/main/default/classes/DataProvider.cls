@@ -158,11 +158,9 @@ public with sharing class DataProvider {
         Date nextMonthEDate = eDate.addMonths(1);
         return new List<Payment__c>(
             [
-                SELECT Id, Due_Date__c, Purchased_Date__c, Amount__c, Description__c, Payment_Date__c, Source__c
+                SELECT Id, Due_Date__c, Purchased_Date__c, Amount__c, Description__c, Payment_Date__c, Source__c, Settled__c
                 FROM Payment__c
-                WHERE (Purchased_Date__c >= :lastMonthSDate AND Purchased_Date__c <= :eDate AND Due_Date__c >= :sDate AND Due_Date__c <= :eDate) OR
-                (Purchased_Date__c >= :sdate AND Purchased_Date__c <= :eDate AND Due_Date__c <= :nextMonthEDate) OR
-                (Due_Date__c >= :sDate AND Due_Date__c <= :eDate)
+                WHERE (Due_Date__c >= :sDate AND Due_Date__c <= :nextMonthEDate) OR (Due_Date__c <= :eDate AND Settled__c = FALSE)
             ]
         );
     }

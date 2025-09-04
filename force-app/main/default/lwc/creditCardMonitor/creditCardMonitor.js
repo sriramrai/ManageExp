@@ -13,12 +13,6 @@ export default class CreditCardMonitor extends LightningElement {
     nextMonthDue = [];
     @track currentMonthTotal = {};
     @track nextMonthTotal = {};
-    columns = [
-        {label: 'Amount', fieldName: 'Amount__c'},
-        {label: 'Details', fieldName: 'Details__c'},
-        {label: 'Date', fieldName: 'Date__c'},
-        {label: 'Due Date', fieldName: 'Payment_Due_Date__c'}
-    ];
 
     connectedCallback() {
         let today = new Date();
@@ -43,6 +37,7 @@ export default class CreditCardMonitor extends LightningElement {
         for(const key in this.recordMap) {
             let bankName = key.split(' ')[0];
             for(let obj of this.recordMap[key]) {
+                obj['hrefURL'] = '/'+obj['recordId'];
                 if(key.includes('DUETM')) {
                     this.currentMonthDue.push(obj);
                 }else {
@@ -100,7 +95,9 @@ export default class CreditCardMonitor extends LightningElement {
     }
 
     settleHander(event) {
-        let paymentDate = prompt('Enter the payment Date in (dd/mm/yyyy)');
+        const today = new Date(); // Or your specific Date object
+        const formattedDate = today.toLocaleDateString('en-GB');
+        let paymentDate = prompt('Enter the payment Date in (dd/mm/yyyy)', formattedDate);
         let recordId = event.currentTarget.dataset.id;
         if(isValid(paymentDate)) {
             updatePayment({recordId: recordId, paymentDate : paymentDate})
@@ -117,7 +114,8 @@ export default class CreditCardMonitor extends LightningElement {
         let result = {
             'ICICI' : 0,
             'AXIS' : 0,
-            'Total' : 0
+            'Total' : 0,
+            'TotalDue': 0
         };
         records.forEach(item => {
             let amount = parseInt(item.amount);
@@ -127,6 +125,9 @@ export default class CreditCardMonitor extends LightningElement {
                 result['ICICI'] += amount;
             }
             result['Total'] += amount;
+            if(!item.isSettled) {
+                result['TotalDue'] += amount;
+            }
         });
         return result;
     }

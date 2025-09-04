@@ -44,7 +44,7 @@ public with sharing class ExpenseLineItemTriggerHandler {
         insert payments;
     }
 
-    private void deletePayments(Set<Id> lineItemIds) {
+    private void deletePayments(List<Id> lineItemIds) {
         delete [SELECT Id FROM Payment__c WHERE Expense_Line_Item__c IN :lineItemIds];
     }
 
@@ -59,16 +59,19 @@ public with sharing class ExpenseLineItemTriggerHandler {
     }
 
     public void handleAfterUpdate(List<Expense_Line_Item__c> newExpenses, Map<Id, Expense_Line_Item__c> oldMap) {
-        Map<Id, Expense_Line_Item__c> updatedLineItemMap = new Map<Id, Expense_Line_Item__c>();
-        for(Expense_Line_Item__c lineItem : newExpenses) {
-            Expense_Line_Item__c oldExpense = oldMap.get(lineItem.Id);
-            if(lineItem.Amount__c != oldExpense.Amount__c || 
-                lineItem.Source__c != oldExpense.Source__c) {
-                updatedLineItemMap.put(lineItem.Id, lineItem);
+        List<Expense_Line_Item__c> creditExpenses = new List<Expense_Line_Item__c>();
+        List<Id> paymentsToBeDeleted = new List<Id>();
+        for(Expense_Line_Item__c newExp : newExpenses) {
+            Expense_Line_Item__c oldRecord = oldMap.get(newExp.Id);
+            if(oldRecord.Source__c != newExp.Source__c || oldRecord.EMI_Term__c != newExp.EMI_Term__c) {
+                paymentsToBeDeleted.add(newExp.Id);
+                if(newExp.Source__c.equalsIgnoreCase('AXIS CC') || newExp.Source__c.equalsIgnoreCase('ICICI CC')) {
+                    creditExpenses.add(newExp);
+                }
             }
         }
-
-        deletePayments(updatedLineItemMap.keySet());
+        deletePayments(paymentsToBeDeleted);
+        createPayments(creditExpenses);
     }
 
 }
