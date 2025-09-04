@@ -274,7 +274,7 @@ public with sharing class ExpenseController {
 
             Expense_Line_Item__c expenseLineItem = new Expense_Line_Item__c();
             expenseLineItem.Date__c = paymentD;
-            expenseLineItem.Amount__c = pay.Amount__c;
+            expenseLineItem.Amount__c = 0;
             expenseLineItem.Debited_By__c = 'Other';
             expenseLineItem.Source__c = 'Gpay';
             expenseLineItem.Details__c = 'Payment Of - '+pay.Description__c;
@@ -295,8 +295,9 @@ public with sharing class ExpenseController {
 
         for(Payment__c payment : paymentList) {
             Date purchasedDate = payment.Purchased_Date__c;
+            Date dueDate = payment.Due_Date__c;
             String mapKey = payment.Source__c;
-            if(purchasedDate < sDate) {
+            if((dueDate >= sDate && dueDate <= eDate) || (dueDate <= eDate && !payment.Settled__c)) {
                 //This needs to be collected as due this month
                 mapKey += '-DUETM';
             }else {
@@ -310,7 +311,6 @@ public with sharing class ExpenseController {
                 wrapperMap.put(mapKey, new List<CCWrapper>{ cw });
             }
         }
-
         return wrapperMap;
     }
 

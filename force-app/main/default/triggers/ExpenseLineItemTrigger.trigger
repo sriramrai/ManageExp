@@ -5,7 +5,7 @@ trigger ExpenseLineItemTrigger on Expense_Line_Item__c (after insert, after upda
             ehandler.handleAfterInsert(trigger.new);
         }
         if(trigger.isUpdate) {
-            //ehandler.handleAfterUpdate(trigger.new, trigger.oldMap);
+            ehandler.handleAfterUpdate(trigger.new, trigger.oldMap);
         }
     }
 }
