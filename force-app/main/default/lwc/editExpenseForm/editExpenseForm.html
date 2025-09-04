@@ -8,8 +8,10 @@
             <lightning-input-field field-name="Date__c"></lightning-input-field>
             <lightning-input-field field-name="Amount__c"></lightning-input-field>
             <lightning-input-field field-name="Debited_By__c"></lightning-input-field>
-            <lightning-input-field field-name="Source__c"></lightning-input-field>
-            <lightning-input-field field-name="EMI_Term__c"></lightning-input-field>
+            <lightning-input-field field-name="Source__c" onchange={sourceChangeHandler}></lightning-input-field>
+            <template if:true={displayEmi}>
+                <lightning-input-field field-name="EMI_Term__c"></lightning-input-field>
+            </template>
             <lightning-input-field field-name="Details__c"></lightning-input-field>
             <lightning-button type="submit" variant="brand" name="update" label="Update" class="slds-align_absolute-center"></lightning-button>
         </lightning-record-edit-form>
