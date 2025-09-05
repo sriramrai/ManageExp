@@ -267,6 +267,7 @@ public with sharing class ExpenseController {
             Date paymentD = Date.parse(paymentDate);
             Payment__c pay = new Payment__c(Id = recordId);
             pay.Payment_Date__c = paymentD;
+            pay.Settled__c = true;
             update pay;
 
             pay = [SELECT Id, Amount__c, Description__c FROM Payment__c WHERE Id = :recordId LIMIT 1];
