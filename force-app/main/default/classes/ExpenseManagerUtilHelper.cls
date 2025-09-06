@@ -30,13 +30,13 @@ public with sharing class ExpenseManagerUtilHelper {
             accumulatedInt = daysDiff1 * perDayInt;
         }else if(ivt.Start_Date__c < fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(fyStart);
-            accumulatedInt = daysDiff1 * perDayInt *(-1);
+            accumulatedInt = daysDiff1 * perDayInt;
         }else if(ivt.Start_Date__c > fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(ivt.Start_Date__c);
-            accumulatedInt = daysDiff1 * perDayInt *(-1);
+            accumulatedInt = daysDiff1 * perDayInt;
         }
 
-        return accumulatedInt.setScale(2);
+        return Math.abs(accumulatedInt.setScale(2));
     }
 
     public static List<InterestWrapper> processInvestmentLines(List<Investment__c> allInvestments, List<Investment_Line_Items__c> lines, Date startDate, Date endDate, String bankName) {
