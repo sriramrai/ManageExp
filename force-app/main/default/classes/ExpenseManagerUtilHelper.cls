@@ -30,10 +30,10 @@ public with sharing class ExpenseManagerUtilHelper {
             accumulatedInt = daysDiff1 * perDayInt;
         }else if(ivt.Start_Date__c < fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(fyStart);
-            accumulatedInt = daysDiff1 * perDayInt *(-1);
+            accumulatedInt = daysDiff1 * perDayInt;
         }else if(ivt.Start_Date__c > fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(ivt.Start_Date__c);
-            accumulatedInt = daysDiff1 * perDayInt *(-1);
+            accumulatedInt = daysDiff1 * perDayInt;
         }
 
         return accumulatedInt.setScale(2);
@@ -43,8 +43,9 @@ public with sharing class ExpenseManagerUtilHelper {
         Map<String, Decimal> alreadyPaidIntByAcct = new Map<String, Decimal>();
         Map<String, Decimal> tdsByAccountNumber = new Map<String, Decimal>();
         Map<String, Decimal> accumulatedInterest = new Map<String, Decimal>();
-
+        System.debug('Lines*** : '+lines);
         for(Investment_Line_Items__c line : lines) {
+            System.debug('line.Id**** : '+line.Id);
             String accountNumber = line.Investment__r.Account_Number__c;
             Decimal interest = ExpenseManagerUtilHelper.calculateInterest(line, startDate, endDate);
             if(alreadyPaidIntByAcct.containsKey(accountNumber)) {

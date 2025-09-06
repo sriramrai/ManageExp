@@ -29,7 +29,7 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
         {label: 'TDS', fieldName: 'tds'},
     ];
 
-    @wire (interestWrapper, {'fy' : 'test'})
+    @wire (interestWrapper, {'fy' : '$fyvalue'})
     interestWrapperList({data, error}) {
         if(data) {
             this.investmentMap = data;
@@ -47,6 +47,7 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
 
     initialize() {
         let myMap = {};
+        this.wrapperData = [];
         for(const key in this.investmentMap) {
             console.log('key**** : '+key);
             let allLines = this.investmentMap[key];

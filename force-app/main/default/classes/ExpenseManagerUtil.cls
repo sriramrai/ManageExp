@@ -129,8 +129,9 @@ public with sharing class ExpenseManagerUtil {
 
     @AuraEnabled(cacheable=true)
     public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(String fy) {
-        Date startDate = Date.newInstance(2024, 04, 01);
-        Date endDate = Date.newInstance(2025, 03, 31);
+        List<String> fiscalYears = fy.split('-');
+        Date startDate = Date.newInstance(Integer.valueOf(fiscalYears[0]), 04, 01);
+        Date endDate = Date.newInstance(Integer.valueOf(fiscalYears[1]), 03, 31);
         System.debug('start Date*** : '+startDate);
         System.debug('End Date**** : '+endDate);
         List<Investment_Line_Items__c> lines = DataProvider.getAllLines(startDate, endDate);
@@ -158,8 +159,8 @@ public with sharing class ExpenseManagerUtil {
         System.debug('investmentByBank*** : '+JSON.serialize(investmentByBank));
         Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> wrapperMap = new Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>>();
         for(String bank : investmentByBank.keySet()) {
-            List<Investment_Line_Items__c> lineItems = investmentLinesByBank.get(bank);
-            List<Investment__c> investments = investmentByBank.get(bank);
+            List<Investment_Line_Items__c> lineItems = new List<Investment_Line_Items__c>(investmentLinesByBank.get(bank));
+            List<Investment__c> investments = new List<Investment__c>(investmentByBank.get(bank));
             List<ExpenseManagerUtilHelper.InterestWrapper> wrapperList = new List<ExpenseManagerUtilHelper.InterestWrapper>();
             wrapperList = ExpenseManagerUtilHelper.processInvestmentLines(investments, lineItems, startDate, endDate, bank);
             System.debug('bank**** : '+bank);
