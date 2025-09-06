@@ -30,10 +30,10 @@ public with sharing class ExpenseManagerUtilHelper {
             accumulatedInt = daysDiff1 * perDayInt;
         }else if(ivt.Start_Date__c < fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(fyStart);
-            accumulatedInt = daysDiff1 * perDayInt;
+            accumulatedInt = daysDiff1 * perDayInt *(-1);
         }else if(ivt.Start_Date__c > fyStart && ivt.Maturity_Date__c >= fyEnd) {
             Integer daysDiff1 = fyEnd.daysBetween(ivt.Start_Date__c);
-            accumulatedInt = daysDiff1 * perDayInt;
+            accumulatedInt = daysDiff1 * perDayInt *(-1);
         }
 
         return accumulatedInt.setScale(2);
