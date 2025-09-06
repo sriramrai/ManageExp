@@ -23,7 +23,10 @@ public with sharing class DataProvider {
         return new List<Investment__c> ([SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, Rate__c, Bank__c, TAX_SAVER__c,
                                             Maturity_Date__c, Month__c, Year__c, Day__c, Is_Closed__c
                                             FROM Investment__c
-                                            WHERE ((Start_Date__c >=: startDate AND Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)) AND RecordType.Name != 'Stock'
+                                            WHERE ((Start_Date__c >=: startDate AND 
+                                            Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)) AND 
+                                            RecordType.Name != 'Stock' AND
+                                            Bank__c NOT IN ('PPF', 'NPS', 'SC')
                                             ORDER BY Start_Date__c DESC
                                         ]);
     }
@@ -288,7 +291,8 @@ public with sharing class DataProvider {
                         Tenure_Mnt__c, Tenure_Yr__c,Rate__c, Principle__c, Investment_Date__c, Maturity_Date__c, IS_TDS__c, TDS_Deducted__c, Comment__c, Incurred_Interest__c 
                     FROM Investment_Line_Items__c 
                     WHERE ((Investment_Date__c >=: startDate AND Investment_Date__c <=: endDate) OR 
-                            (Maturity_Date__c >=: startDate  AND Maturity_Date__c <=: endDate))
+                            (Maturity_Date__c >=: startDate  AND Maturity_Date__c <=: endDate)) AND
+                            Bank__c NOT IN ('PPF', 'NPS', 'SC')
                 ];
     }
 }
