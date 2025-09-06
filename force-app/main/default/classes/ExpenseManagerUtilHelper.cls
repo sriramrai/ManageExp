@@ -36,15 +36,16 @@ public with sharing class ExpenseManagerUtilHelper {
             accumulatedInt = daysDiff1 * perDayInt;
         }
 
-        return Math.abs(accumulatedInt.setScale(2));
+        return accumulatedInt.setScale(2);
     }
 
     public static List<InterestWrapper> processInvestmentLines(List<Investment__c> allInvestments, List<Investment_Line_Items__c> lines, Date startDate, Date endDate, String bankName) {
         Map<String, Decimal> alreadyPaidIntByAcct = new Map<String, Decimal>();
         Map<String, Decimal> tdsByAccountNumber = new Map<String, Decimal>();
         Map<String, Decimal> accumulatedInterest = new Map<String, Decimal>();
-
+        System.debug('Lines*** : '+lines);
         for(Investment_Line_Items__c line : lines) {
+            System.debug('line.Id**** : '+line.Id);
             String accountNumber = line.Investment__r.Account_Number__c;
             Decimal interest = ExpenseManagerUtilHelper.calculateInterest(line, startDate, endDate);
             if(alreadyPaidIntByAcct.containsKey(accountNumber)) {
