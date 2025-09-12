@@ -19,6 +19,10 @@ const logError = (message) => {
 
 const getFYForExpManager = () => {
     return [
+        { value: '2021-2022', label: 'FY 21-22' },
+        { value: '2022-2023', label: 'FY 22-23' },
+        { value: '2023-2024', label: 'FY 23-24' },
+        { value: '2024-2025', label: 'FY 24-25' },
         { value: '2025-2026', label: 'FY 25-26' },
         { value: '2026-2027', label: 'FY 26-27' },
         { value: '2027-2028', label: 'FY 27-28' },

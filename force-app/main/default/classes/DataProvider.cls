@@ -23,8 +23,7 @@ public with sharing class DataProvider {
         return new List<Investment__c> ([SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, Rate__c, Bank__c, TAX_SAVER__c,
                                             Maturity_Date__c, Month__c, Year__c, Day__c, Is_Closed__c
                                             FROM Investment__c
-                                            WHERE ((Start_Date__c >=: startDate AND 
-                                            Start_Date__c <=: endDate) OR (Maturity_Date__c > :startDate)) AND 
+                                            WHERE (Start_Date__c <= :endDate AND Maturity_Date__c >= :startDate) AND 
                                             RecordType.Name != 'Stock' AND
                                             Bank__c NOT IN ('PPF', 'NPS', 'SC')
                                             ORDER BY Start_Date__c DESC
@@ -294,5 +293,16 @@ public with sharing class DataProvider {
                             (Maturity_Date__c >=: startDate  AND Maturity_Date__c <=: endDate)) AND
                             Bank__c NOT IN ('PPF', 'NPS', 'SC')
                 ];
+    }
+
+    public static List<Treasure__c> getAllTresures(Date startDate, Date endDate) {
+        String queryStr = 'SELECT Id, Tresuree__c, Date__c, Amount__c, Details__c ';
+        queryStr += 'FROM Treasure__c ';
+        if(startDate != null && endDate != null) {
+            queryStr += 'WHERE Date__c >= :startDate AND Date__c <= :endDate ';
+        }
+        queryStr += 'ORDER BY Tresuree__c, Date__c DESC';
+
+        return (List<Treasure__c>) Database.query(queryStr);
     }
 }

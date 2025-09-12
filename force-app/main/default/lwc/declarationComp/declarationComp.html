@@ -4,7 +4,7 @@
         
         <lightning-button label={actionLabel} slot="actions" onclick={declareIncome}></lightning-button>
         <div class="slds-p-horizontal_small">
-            <lightning-layout horizontal-align="center">
+            <!-- <lightning-layout horizontal-align="center">
                 <lightning-layout-item padding="around-small" size="6">
                     <lightning-combobox
                             name="fiscalyear"
@@ -17,7 +17,7 @@
                             required
                     ></lightning-combobox>
                 </lightning-layout-item>
-            </lightning-layout>
+            </lightning-layout> -->
             <div class="scrollable-div">
             <template if:true={enableCreate}>
                 <lightning-record-edit-form  object-api-name="Income__c" record-id={recordId} onsuccess={saveSucceeded}>

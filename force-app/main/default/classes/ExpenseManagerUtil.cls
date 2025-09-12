@@ -128,11 +128,23 @@ public with sharing class ExpenseManagerUtil {
         return DataProvider.getEarnings(fiscalYear);
     }
 
-    @AuraEnabled(cacheable=true)
-    public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(String fy) {
+    private static List<Date> constructFyDate(String fy) {
+        List<Date> fyDates = new List<Date>();
         List<String> fiscalYears = fy.split('-');
         Date startDate = Date.newInstance(Integer.valueOf(fiscalYears[0]), 04, 01);
         Date endDate = Date.newInstance(Integer.valueOf(fiscalYears[1]), 03, 31);
+        fyDates.add(startDate);
+        fyDates.add(endDate);
+        return fyDates;
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(String fy) {
+        fy = '2024-2025';
+        List<Date> fyDates = constructFyDate(fy);
+        List<String> fiscalYears = fy.split('-');
+        Date startDate = fyDates[0];
+        Date endDate = fyDates[1];
         System.debug('start Date*** : '+startDate);
         System.debug('End Date**** : '+endDate);
         List<Investment_Line_Items__c> lines = DataProvider.getAllLines(startDate, endDate);
@@ -163,6 +175,8 @@ public with sharing class ExpenseManagerUtil {
             List<Investment_Line_Items__c> lineItems = new List<Investment_Line_Items__c>(investmentLinesByBank.get(bank));
             List<Investment__c> investments = new List<Investment__c>(investmentByBank.get(bank));
             List<ExpenseManagerUtilHelper.InterestWrapper> wrapperList = new List<ExpenseManagerUtilHelper.InterestWrapper>();
+            System.debug('investments*** : '+investments.size());
+            System.debug('lineItems*** : '+lineItems.size());
             wrapperList = ExpenseManagerUtilHelper.processInvestmentLines(investments, lineItems, startDate, endDate, bank);
             System.debug('bank**** : '+bank);
             System.debug('WrapperList '+JSON.serialize(wrapperList));
@@ -195,5 +209,18 @@ public with sharing class ExpenseManagerUtil {
             this.bankName = bankName;
             this.accumulatedInteres = accumulatedInteres;
         }
+    }
+
+    @AuraEnabled(cacheable = true)
+    public static List<Treasure__c> getTreasures(String fy) {
+        Date startDate;
+        Date endDate;
+        if(String.isNotBlank(fy)) {
+            List<Date> fiscalYears = constructFyDate(fy);
+            startDate = fiscalYears[0];
+            endDate = fiscalYears[1];
+        }
+
+        return DataProvider.getAllTresures(startDate, endDate);
     }
 }

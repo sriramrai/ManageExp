@@ -1,0 +1,17 @@
+<template>
+    <lightning-card>
+        <div style="margin-left: 30%">
+            <lightning-combobox
+                name="progress"
+                label="Select FY"
+                value={fyvalue}
+                placeholder="Select Progress"
+                options={fyOptions}
+                onchange={handleChange}
+                variant="label-hidden"
+                required
+                style="width: 500px;"
+            ></lightning-combobox>
+        </div>
+    </lightning-card>
+</template>

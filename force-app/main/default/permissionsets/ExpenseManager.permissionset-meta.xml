@@ -381,6 +381,21 @@
         <field>Salary_Structure__c.Telephone_Allowance__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Treasure__c.Amount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Treasure__c.Details__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Treasure__c.Tresuree__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <hasActivationRequired>false</hasActivationRequired>
     <label>ExpenseManager</label>
     <objectPermissions>
@@ -455,6 +470,15 @@
         <object>Salary_Structure__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Treasure__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
     <recordTypeVisibilities>
         <recordType>Investment__c.Investment</recordType>
         <visible>true</visible>
@@ -493,6 +517,10 @@
     </tabSettings>
     <tabSettings>
         <tab>Salary_Structure__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Treasure__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
 </PermissionSet>

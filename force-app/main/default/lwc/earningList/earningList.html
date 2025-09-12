@@ -4,7 +4,7 @@
         <lightning-button label="New" slot="actions" onclick={createNew}></lightning-button>
 
         <div class="">
-            <lightning-layout horizontal-align="center">
+            <!-- <lightning-layout horizontal-align="center">
                 <lightning-layout-item padding="" size="6">
                     <lightning-combobox
                             name="fiscalyear"
@@ -17,7 +17,7 @@
                             required
                     ></lightning-combobox>
                 </lightning-layout-item>
-            </lightning-layout>
+            </lightning-layout> -->
             <div style="overflow: scroll; height: 120px; padding-left: 10px;">
             <template for:each={earningList} for:item="earning">
                 <lightning-layout key={earning.Id}>

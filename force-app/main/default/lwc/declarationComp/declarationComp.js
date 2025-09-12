@@ -2,10 +2,16 @@ import { LightningElement, wire, track } from 'lwc';
 import getFiscalYear from '@salesforce/apex/ExpenseManagerUtil.getIncome';
 import { refreshApex } from "@salesforce/apex";
 import getFDIncomes from '@salesforce/apex/InvestmentController.getFYIntrest';
-import { log, logError, getFYForExpManager, getMonthOptionForExpManager } from 'c/utilityClass';
+import { log, logError, getFYForExpManager, getMonthOptionForExpManager, toString } from 'c/utilityClass';
 import HideLightningHeader from '@salesforce/resourceUrl/NoHeader';
 import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
-
+import {
+    subscribe,
+    unsubscribe,
+    APPLICATION_SCOPE,
+    MessageContext,
+} from 'lightning/messageService';
+import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class DeclarationComp extends LightningElement {
   fyValue = '2025-2026';
@@ -16,6 +22,8 @@ export default class DeclarationComp extends LightningElement {
   @track fieldList = this.buildFields();
   enableCreate = false;
   incomeFromIntrest = 0;
+  @wire(MessageContext)
+    messageContext;
 
   get totalIncome() {
     return this.incomeFromIntrest+this.data['Salary__c']+this.data['Other__c'];
@@ -53,8 +61,33 @@ export default class DeclarationComp extends LightningElement {
   get options() {
     return getFYForExpManager();
   }
+  
+  subscription = null;
+  subscribeToMessageChannel() {
+        if (!this.subscription) {
+            this.subscription = subscribe(
+                this.messageContext,
+                recordSelected,
+                (message) => this.handleMessage(message)
+            );
+        }
+    }
+
+    unsubscribeToMessageChannel() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeToMessageChannel();
+    }
+
+    handleMessage(message) {
+        this.fyValue = message.recordId;
+    }
 
   connectedCallback() {
+    this.subscribeToMessageChannel();
     loadStyle(this, HideLightningHeader)
   }
 

@@ -1,0 +1,48 @@
+<template>
+    <template if:true={recordList}>
+        <c-render-table tabledata={recordList} columns={column}></c-render-table>
+        <lightning-layout>
+        <lightning-layout-item size="3">
+            <span style="margin-left: 10px;"><b>Dad</b></span>
+            <lightning-formatted-number 
+                style="margin-left: 10px;" 
+                format-style = "currency" 
+                currency-code	= "INR" 
+                value={totalObj.Dad}
+                maximum-fraction-digits	= "0">
+            </lightning-formatted-number>
+        </lightning-layout-item>
+        <lightning-layout-item size="3">
+            <span><b>Mom</b></span>
+            <lightning-formatted-number 
+                style="margin-left: 10px;" 
+                format-style = "currency" 
+                currency-code	= "INR" 
+                value={totalObj.Mom}
+                maximum-fraction-digits	= "0">
+            </lightning-formatted-number>
+        </lightning-layout-item>
+        <lightning-layout-item size="3">
+            <span><b>Spouse</b></span>
+            <lightning-formatted-number  
+                style="margin-left: 10px;" 
+                format-style = "currency" 
+                currency-code	= "INR" 
+                value={totalObj.Spouse}
+                maximum-fraction-digits	= "0">
+            </lightning-formatted-number>
+        </lightning-layout-item>
+        <lightning-layout-item size="3">
+            <span><b>Total</b></span>
+           <lightning-formatted-number 
+                style="margin-left: 10px;" 
+                format-style = "currency" 
+                currency-code	= "INR" 
+                value={totalObj.Total}
+                maximum-fraction-digits	= "0">
+            </lightning-formatted-number>
+            <lightning-button variant="base" label="Yearly" onclick={alignByYear}></lightning-button>
+        </lightning-layout-item>
+    </lightning-layout>
+    </template>
+</template>

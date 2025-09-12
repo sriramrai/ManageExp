@@ -3,8 +3,16 @@ import getFYIntrest from '@salesforce/apex/InvestmentController.getFYIntrest';
 import { NavigationMixin } from 'lightning/navigation';
 import interestWrapper from '@salesforce/apex/ExpenseManagerUtil.getInterestWrapper';
 import {log, logError, toString, isValid} from 'c/utilityClass';
+import {
+    subscribe,
+    unsubscribe,
+    APPLICATION_SCOPE,
+    MessageContext,
+} from 'lightning/messageService';
+import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class FyIntrestMonitor extends NavigationMixin(LightningElement) {
+    subscription = null;
     fyvalue;
     intrestList = [];
     totalIntr = 0;
@@ -29,6 +37,9 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
         {label: 'TDS', fieldName: 'tds'},
     ];
 
+    @wire(MessageContext)
+    messageContext;
+
     @wire (interestWrapper, {'fy' : '$fyvalue'})
     interestWrapperList({data, error}) {
         if(data) {
@@ -43,6 +54,30 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
         }else if(error) {
             console.log('Error occured.....'+JSON.stringify(error));
         }
+    }
+
+    subscribeToMessageChannel() {
+        if (!this.subscription) {
+            this.subscription = subscribe(
+                this.messageContext,
+                recordSelected,
+                (message) => this.handleMessage(message),
+                { scope: APPLICATION_SCOPE }
+            );
+        }
+    }
+
+    unsubscribeToMessageChannel() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeToMessageChannel();
+    }
+
+    handleMessage(message) {
+        this.fyvalue = message.recordId;
     }
 
     initialize() {
@@ -147,6 +182,7 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
     }
 
     connectedCallback() {
+        this.subscribeToMessageChannel();
         this.initializeData();
     }
 
