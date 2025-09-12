@@ -5,12 +5,13 @@ public with sharing class ExpenseManagerUtilHelper {
 
     public static Decimal calculateInterest(Investment_Line_Items__c lineItem, Date startDate, Date endDate) {
         Decimal interest = 0;
+        Decimal tdsDeducted = lineItem.TDS_Deducted__c != null ? lineItem.TDS_Deducted__c : 0;
         if(lineItem.Investment_Date__c >= startDate) {
-            interest = lineItem.Incurred_Interest__c+lineItem.TDS_Deducted__c;
+            interest = lineItem.Incurred_Interest__c+tdsDeducted;
         }else {
             Integer daysBetween = lineItem.Investment_Date__c.daysBetween(startDate);
             Integer totalTermDays = lineItem.Investment_Date__c.daysBetween(lineItem.Maturity_Date__c);
-            Decimal totalInterest = lineItem.Incurred_Interest__c != null ? (lineItem.Incurred_Interest__c + lineItem.TDS_Deducted__c) : lineItem.Amount__c - lineItem.Principle__c;
+            Decimal totalInterest = lineItem.Incurred_Interest__c != null ? (lineItem.Incurred_Interest__c + tdsDeducted) : lineItem.Amount__c - lineItem.Principle__c;
             Decimal perDayInterest = totalInterest / totalTermDays;
             Integer applicableDays = startDate.daysBetween(lineItem.Maturity_Date__c);
             interest = applicableDays * perDayInterest;
@@ -47,7 +48,7 @@ public with sharing class ExpenseManagerUtilHelper {
         for(Investment_Line_Items__c line : lines) {
             System.debug('line.Id**** : '+line.Id);
             String accountNumber = line.Investment__r.Account_Number__c;
-            Decimal interest = ExpenseManagerUtilHelper.calculateInterest(line, startDate, endDate);
+            Decimal interest = calculateInterest(line, startDate, endDate);
             if(alreadyPaidIntByAcct.containsKey(accountNumber)) {
                 interest += alreadyPaidIntByAcct.get(accountNumber);
             }
@@ -60,7 +61,7 @@ public with sharing class ExpenseManagerUtilHelper {
 
         for(Investment__c ivt : allInvestments) {
             String accountNumber = ivt.Account_Number__c;
-            Decimal interest = ExpenseManagerUtilHelper.calculateAccumlatedInterest(ivt, startDate, endDate);
+            Decimal interest = calculateAccumlatedInterest(ivt, startDate, endDate);
             accumulatedInterest.put(accountNumber, interest);
         }
         System.debug('accumulatedInterest***** : '+JSON.serialize(accumulatedInterest));

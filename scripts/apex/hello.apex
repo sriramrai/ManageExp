@@ -20,11 +20,38 @@ ExpenseManagerUtil.getInterestWrapper('fy');
 
 System.debug('test*** '+ JSON.serialize(ExpenseController.getCCStatements(9, 2025)));
 
-Integer year = 2025;
-Integer month = 9;
-Date sDate = Date.newInstance(year, month, 01);
-Date sDate = Date.newInstance(year, month, 01); //01/09/2025 lastMonthSDate = 01/08/2025
-Integer noOfDays = Date.daysInMonth(year, month);
-Date eDate = Date.newInstance(year, month, noOfDays); //30/09/2025 nextMonthEDate = 31/10/2025
-System.debug('List*** : '+JSON.serialize(DataProvider.getPayments(sDate, eDate)));
+Date sdate = Date.newInstance(2023, 04, 01);
+Date edate = Date.newInstance(2024, 06, 01);
+Integer daysBetween = edate.daysBetween(sdate);
+Decimal intr = 7366;
+Decimal perDay = intr / daysBetween;
+Integer appDay = edate.daysBetween(Date.newInstance(2024, 04, 01));
+Decimal intr1 = appDay*perDay;
+//System.debug('Interest : '+intr1);
+
+sdate = Date.newInstance(2024, 06, 01);
+edate = Date.newInstance(2025, 08, 02);
+daysBetween = Math.abs(edate.daysBetween(sdate));
+intr = 7927;
+perDay = intr / daysBetween;
+appDay = Math.abs(sDate.daysBetween(Date.newInstance(2025, 03, 31)));
+System.debug('2nd*** : '+appDay);
+System.debug('2nd**Pd : '+perDay);
+Decimal intr2 = appDay*perDay;
+System.debug('Interest2 : '+intr2);
+Decimal res = intr1+intr2;
+System.debug('Total paided*** : '+res);
+
+
+Date sdate = Date.newInstance(2025, 08, 02);
+Date edate = Date.newInstance(2026, 10, 03);
+Date fEnd = Date.newInstance(2025, 03, 02);
+Integer daysBetween = edate.daysBetween(sdate);
+Decimal intr = 123965-115293;
+Decimal perDay = intr / daysBetween;
+Integer appDay = edate.daysBetween(Date.newInstance(2024, 04, 01));
+Decimal intr1 = appDay*perDay;
+System.debug('Interest : '+intr1);
+
+
 

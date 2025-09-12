@@ -3,6 +3,13 @@ import {log, logError, toString, getFYForExpManager} from 'c/utilityClass';
 import getEarnings from '@salesforce/apex/ExpenseManagerUtil.getEarnings';
 import manageEarningModal from 'c/manageEarning';
 import { refreshApex } from "@salesforce/apex";
+import {
+    subscribe,
+    unsubscribe,
+    APPLICATION_SCOPE,
+    MessageContext,
+} from 'lightning/messageService';
+import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class EarningList extends LightningElement {
     fyValue = '2025-2026';
@@ -28,11 +35,42 @@ export default class EarningList extends LightningElement {
             logError('Error while fetching earning... : '+toString(earningObj.error));
         }
     }
-
+    
     get options() {
         return getFYForExpManager();
     }
 
+    @wire(MessageContext)
+    messageContext;
+
+    subscription = null;
+    subscribeToMessageChannel() {
+        if (!this.subscription) {
+            this.subscription = subscribe(
+                this.messageContext,
+                recordSelected,
+                (message) => this.handleMessage(message)
+            );
+        }
+    }
+
+    unsubscribeToMessageChannel() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    connectedCallback() {
+        this.subscribeToMessageChannel();
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeToMessageChannel();
+    }
+
+    handleMessage(message) {
+        this.fyValue = message.recordId;
+    }
+    s
     handleChange(event) {
         this.fyValue = event.target.value;
         this.earningList = null;

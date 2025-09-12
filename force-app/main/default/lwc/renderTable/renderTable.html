@@ -1,0 +1,24 @@
+<template>
+    <template if:true={columns}>
+        <div class="table-container">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_striped">
+            <thead>
+                <tr>
+                    <template for:each={columns} for:item="column">
+                        <th key={column.colId}>{column.fieldValue}</th>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={rowData} for:item="row">
+                    <tr key={row.id}>
+                        <template for:each={row.values} for:item="cell" for:index="index">
+                            <td key={cell}>{cell}</td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    </template>
+</template>

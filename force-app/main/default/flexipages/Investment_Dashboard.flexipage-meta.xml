@@ -3,6 +3,12 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
+                <componentName>fiscalYear</componentName>
+                <identifier>c_fiscalYear</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>summrizerComponent</componentName>
                 <identifier>c_summrizerComponent</identifier>
             </componentInstance>

@@ -109,6 +109,9 @@ export default class Operatefds extends LightningElement {
     }
 
     amountChange(event) {
+        if(fdvalue == 'Closed') {
+            return;
+        }
         let closureAmt = event.target.value;
         let expectedMeturity = this.ivtRecord['Maturity_Amount__c'];
         let difference = expectedMeturity-closureAmt;

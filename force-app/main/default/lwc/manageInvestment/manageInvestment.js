@@ -65,6 +65,7 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
         });
         return arr;
     }
+    
     activeTabHandler(event) {
         let activeTab = event.target.value;
         this.activeTabName = activeTab;
