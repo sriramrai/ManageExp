@@ -7,7 +7,19 @@
                 onsearchevent={searchHandler}
                 total={total}>
             </c-expense-header-v2>
-            <lightning-tabset active-tab-value="Ragini">
+            <lightning-tabset active-tab-value="Monitor">
+                <lightning-tab label="Monitor" onactive={activeTabHandler} value="Monitor">
+                    <c-expense-analysis-chart></c-expense-analysis-chart>
+                    <!-- <template if:true={displayRagini}>
+                        <c-expense-details-v2 
+                            entity="Ragini" 
+                            fromdate={fromDate} 
+                            todate={toDate} 
+                            onupdatetotal={totalUpdateHandler}
+                            onitemselected={selectedItemHandler}>
+                        </c-expense-details-v2>
+                    </template> -->
+                </lightning-tab>
                 <lightning-tab label="Ragini" onactive={activeTabHandler} value="Ragini">
                     <template if:true={displayRagini}>
                         <c-expense-details-v2 

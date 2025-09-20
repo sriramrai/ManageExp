@@ -109,7 +109,7 @@ export default class Operatefds extends LightningElement {
     }
 
     amountChange(event) {
-        if(fdvalue == 'Closed') {
+        if(this.fdvalue == 'Closed') {
             return;
         }
         let closureAmt = event.target.value;

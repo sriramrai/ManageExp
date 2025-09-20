@@ -54,4 +54,38 @@ Decimal intr1 = appDay*perDay;
 System.debug('Interest : '+intr1);
 
 
+Date sdate = Date.newInstance(2024, 04, 01);
+Date edate = Date.newInstance(2025, 03, 31);
+ExpenseManagerUtil.getInterestWrapper('test');
+System.debug('daat*** : '+JSON.serialize(DataProvider.getAllLines(sdate, edate)));
+
+396 => 4528+509 = 5037; /day = 12.71
+
+applicable date => 127 => 1452 RS. 1615 Rs.
+
+395 => 5328+52 = 5380 /day 13.62
+
+applicable date = 237 => 3196 => 3228 Rs.
+
+
+According to SBI => 4853 and 486
+According to me => 4648
+
+
+UtilityClass.debug('Account', [SELECT id, Name From Account]);
+
+4528+509
+
+Date sdate = Date.newInstance(2025, 04, 01);
+Date edate = Date.newInstance(2026, 03, 31);
+System.debug('result*** : '+DataProvider.getExpenseByMonth(sdate, edate));
+Investment_Line_Items__c lineItem = [SELECT Id, Investment__r.Account_Number__c, Investment__r.Bank__c, Investment__r.Id, Type__c, Amount__c,Tenure_Day__c, Tenure_Mnt__c, Tenure_Yr__c,Rate__c, Principle__c, Investment_Date__c, Maturity_Date__c, IS_TDS__c, TDS_Deducted__c, Comment__c, Incurred_Interest__c FROM Investment_Line_Items__c WHERE Id = 'a04In000005fzqeIAA' LIMIT 1];
+System.debug('interest*** : '+ExpenseManagerUtilHelper.calculateInterest(lineItem, sdate, edate));
+
+2719 => Accumulated 0 Paid => 6677.33 TDS => 818.14
+2719 => Accumulated 5595 Paid => 1832 TDS => 744 (According to bank)
+
+
+7366 => 
+
 

@@ -30,7 +30,12 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
     recordList1 = [];
 
     columns = [
-        {label: 'Account Number', fieldName: 'accountNumber'},
+        {label: 'Account Number', fieldName: 'accountLink', type: 'url', 
+            typeAttributes: {
+                label: {fieldName: 'accountNumber'},
+                target: '_blank'
+            }
+        },
         {label: 'Bank Name', fieldName: 'bankName'},
         {label: 'Acc. Interest', fieldName: 'accumulatedInteres'},
         {label: 'Paid Interest', fieldName: 'interestPaid'},
@@ -44,12 +49,8 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
     interestWrapperList({data, error}) {
         if(data) {
             this.investmentMap = data;
-            console.log('data**** : '+JSON.stringify(this.investmentMap));
             this.initialize();
             this.calculateTotals();
-            log('totalAccumulated*** : '+this.totalAccumulated);
-            log('totalPaid*** : '+this.totalPaid);
-            log('totalTds**** : '+this.totalTds);
 
         }else if(error) {
             console.log('Error occured.....'+JSON.stringify(error));
@@ -229,29 +230,16 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
         log('selected Bank**** : '+this.selectedBank);
         this.isShowModal = true;
         this.recordList = [];
-        //let selectedBank = 'SBI';
-        //for(const key in this.investmentMap) {
         let allLines = this.investmentMap[this.selectedBank];
+        /* this.recordList = allLines.map( record => {
+            record,
+            accountLink: '/${record.recordId}'
+        }); */
         for(let item of allLines) {
-            this.recordList.push(item);
+            let obj = {...item};
+            obj.accountLink = `/${item.recordId}`;
+            this.recordList.push(obj);
         }
-            //this.recordList = allLines.slice();
-
-       // }
-        //this.recordList = Object.entries(this.investmentMap["SBI"])
-        /* this.recordList1 = [
-            {'accountNumber': '123', 'bankName': 'abc', 'accumulatedInteres': '1234', 'interestPaid': '234', 'tds' : '123'}
-        ]; */
-        log('recordList*** : '+JSON.stringify(this.recordList));
-
-        /* this.selectedBank = 'AXIS';
-        console.log('Show more clicked...');
-        let selectedIndex = event.target.getAttribute("data-id");
-        let selectedValue = this.intrestList[selectedIndex];
-        this.selectedObj = {
-            'fy' : this.fyvalue,
-            'bank' : selectedValue.bank
-        }; */
         this.calculateTotals();
     }
 
