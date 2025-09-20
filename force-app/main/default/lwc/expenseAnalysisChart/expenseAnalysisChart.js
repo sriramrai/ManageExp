@@ -7,6 +7,7 @@ import expenseByMonth from '@salesforce/apex/ExpenseManagerUtil.getExpenseByMont
 export default class ExpenseAnalysisChart extends LightningElement {
     chart;
     isChartJsInitialized = false;
+    isDataLoaded = false;
     data;
     chartData = [];
     chartLabel = [];
@@ -16,39 +17,53 @@ export default class ExpenseAnalysisChart extends LightningElement {
         if(data) {
             this.data = data;
             log('data fetched while accessing expense..'+toString(this.data));
-            this.initlizeData();
+            this.prepareChartData(data);
+            this.isDataLoaded = true;
+            this.tryRenderChart();
         }else if(error) {
             logError('error while fetching expense by month...');
         }
     }
 
-    initlizeData() {
-        this.chartData = Object.keys(this.data).map((key, value) => {
+    prepareChartData(data) {
+        this.chartLabel = [];
+        this.chartData = [];
+        Object.entries(data).forEach(([key, value]) => {
             this.chartLabel.push(key);
-            return this.data[key];
+            this.chartData.push(value);
         });
-        this.initializeChart();
+    }
+
+    tryRenderChart() {
+        if (this.isChartJsLoaded && this.isDataLoaded) {
+            this.renderChart();
+        }
     }
 
     renderedCallback() {
         if (this.isChartJsInitialized) {
             return;
         }
-        this.isChartJsInitialized = true;
 
         Promise.all([
             loadScript(this, chartJs)
         ])
         .then(() => {
-            this.initializeChart();
+            this.isChartJsLoaded = true;
+            this.tryRenderChart();
+
         })
         .catch(error => {
             console.error('Error loading Chart.js:', error);
         });
     }
 
-    initializeChart() {
-        const ctx = this.template.querySelector('canvas.chart').getContext('2d');
+    renderChart() {
+        const canvas = this.template.querySelector('canvas.chart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
         if (this.chart) {
             this.chart.destroy(); // Destroy existing chart if re-rendering
         }
@@ -62,19 +77,19 @@ export default class ExpenseAnalysisChart extends LightningElement {
                     data: this.chartData,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                        /* 'rgba(255, 206, 86, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
                         'rgba(75, 192, 192, 0.2)',
                         'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)' */
+                        'rgba(255, 159, 64, 0.2)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
-                        /* 'rgba(255, 206, 86, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)' */
+                        'rgba(255, 159, 64, 1)'
                     ],
                     borderWidth: 1
                 }]
