@@ -25,7 +25,8 @@ public with sharing class DataProvider {
                                             FROM Investment__c
                                             WHERE (Start_Date__c <= :endDate AND Maturity_Date__c >= :startDate) AND 
                                             RecordType.Name != 'Stock' AND
-                                            Bank__c NOT IN ('PPF', 'NPS', 'SC')
+                                            Bank__c NOT IN ('PPF', 'NPS', 'SC') AND
+                                            is_Test__c = false
                                             ORDER BY Start_Date__c DESC
                                         ]);
     }
@@ -291,6 +292,7 @@ public with sharing class DataProvider {
                     FROM Investment_Line_Items__c 
                     WHERE ((Investment_Date__c >=: startDate AND Investment_Date__c <=: endDate) OR 
                             (Maturity_Date__c >=: startDate  AND Maturity_Date__c <=: endDate)) AND
+                            /* Investment__r.Id = 'a05In000000zYyDIAU' AND */
                             Bank__c NOT IN ('PPF', 'NPS', 'SC')
                 ];
     }
@@ -304,5 +306,21 @@ public with sharing class DataProvider {
         queryStr += 'ORDER BY Tresuree__c, Date__c DESC';
 
         return (List<Treasure__c>) Database.query(queryStr);
+    }
+
+    public static Map<String, Decimal> getExpenseByMonth(Date sDate, Date endDate) {
+        Map<String, Decimal> dataMap = new Map<String, Decimal>();
+        for(Expense_Line_Item__c exp : [SELECT Id, Amount__c, Expense__r.Name 
+                                        FROM Expense_Line_Item__c 
+                                        WHERE Expense__r.Start_Date__c >= :sDate AND Expense__r.End_Date__c <= :endDate
+                                        ORDER BY Expense__r.Start_Date__c DESC]) {
+            Decimal amount = exp.Amount__c;
+            if(dataMap.containsKey(exp.Expense__r.Name)) {
+                amount += dataMap.get(exp.Expense__r.Name);
+            }
+            dataMap.put(exp.Expense__r.Name, amount);
+        }
+
+        return dataMap;
     }
 }

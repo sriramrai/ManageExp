@@ -6,14 +6,22 @@ public with sharing class ExpenseManagerUtilHelper {
     public static Decimal calculateInterest(Investment_Line_Items__c lineItem, Date startDate, Date endDate) {
         Decimal interest = 0;
         Decimal tdsDeducted = lineItem.TDS_Deducted__c != null ? lineItem.TDS_Deducted__c : 0;
-        if(lineItem.Investment_Date__c >= startDate) {
+        if(lineItem.Investment_Date__c >= startDate && lineItem.Maturity_Date__c <= endDate) {
             interest = lineItem.Incurred_Interest__c+tdsDeducted;
         }else {
-            Integer daysBetween = lineItem.Investment_Date__c.daysBetween(startDate);
             Integer totalTermDays = lineItem.Investment_Date__c.daysBetween(lineItem.Maturity_Date__c);
-            Decimal totalInterest = lineItem.Incurred_Interest__c != null ? (lineItem.Incurred_Interest__c + tdsDeducted) : lineItem.Amount__c - lineItem.Principle__c;
+            Decimal totalInterest =  (lineItem.Amount__c - lineItem.Principle__c) + tdsDeducted;
             Decimal perDayInterest = totalInterest / totalTermDays;
-            Integer applicableDays = startDate.daysBetween(lineItem.Maturity_Date__c);
+            Integer applicableDays;
+            if(lineItem.Investment_Date__c < startDate) {
+                applicableDays = lineItem.Maturity_Date__c <= endDate ? 
+                    startDate.daysBetween(lineItem.Maturity_Date__c) : startDate.daysBetween(endDate);
+
+            }else if(lineItem.Investment_Date__c >= startDate) {
+                applicableDays = lineItem.Maturity_Date__c <= endDate ? 
+                    lineItem.Investment_Date__c.daysBetween(lineItem.Maturity_Date__c) : lineItem.Investment_Date__c.daysBetween(endDate);
+            }
+            lineItem.Investment_Date__c.daysBetween(endDate);
             interest = applicableDays * perDayInterest;
         }
 
@@ -40,64 +48,102 @@ public with sharing class ExpenseManagerUtilHelper {
         return accumulatedInt.setScale(2);
     }
 
+    public static Map<String, List<Investment__c>> getInvestmentByBank(Date startDate, Date endDate) {
+        Map<String, List<Investment__c>> investmentByBank = new Map<String, List<Investment__c>>();
+        List<Investment__c> allInvestments = DataProvider.getInvestments(startDate, endDate);
+        for(Investment__c ivt : allInvestments) {
+            if(investmentByBank.containsKey(ivt.Bank__c)) {
+                investmentByBank.get(ivt.Bank__c).add(ivt);
+            }else {
+                investmentByBank.put(ivt.Bank__c, new List<Investment__c>{ivt});
+            }
+        }
+
+        return investmentByBank;
+    }
+
+    public static Map<String, List<Investment_Line_Items__c>> getInvestmentLinesByBank(Date startDate, Date endDate) {
+        Map<String, List<Investment_Line_Items__c>> investmentLinesByBank = new Map<String, List<Investment_Line_Items__c>>();
+        List<Investment_Line_Items__c> lines = DataProvider.getAllLines(startDate, endDate);
+        
+        for(Investment_Line_Items__c ivtLine : lines) {
+            String key = ivtLine.Investment__r.Bank__c;
+            if(investmentLinesByBank.containsKey(key)) {
+                investmentLinesByBank.get(key).add(ivtLine);
+            }else {
+                investmentLinesByBank.put(key, new List<Investment_Line_Items__c>{ivtLine});
+            }
+        }
+
+        return investmentLinesByBank;
+    } 
+
     public static List<InterestWrapper> processInvestmentLines(List<Investment__c> allInvestments, List<Investment_Line_Items__c> lines, Date startDate, Date endDate, String bankName) {
         Map<String, Decimal> alreadyPaidIntByAcct = new Map<String, Decimal>();
+        // tdsByAccountNumber having no use, as we are dynamically calculating the 10% tds based on the earned interest.
         Map<String, Decimal> tdsByAccountNumber = new Map<String, Decimal>();
         Map<String, Decimal> accumulatedInterest = new Map<String, Decimal>();
-        System.debug('Lines*** : '+lines);
+        Map<String, String> accountNumberById = new Map<String, String>();
+        Map<String, InterestWrapper> wrapperByAccountMap = new Map<String, InterestWrapper>();
+
         for(Investment_Line_Items__c line : lines) {
-            System.debug('line.Id**** : '+line.Id);
             String accountNumber = line.Investment__r.Account_Number__c;
             Decimal interest = calculateInterest(line, startDate, endDate);
             if(alreadyPaidIntByAcct.containsKey(accountNumber)) {
                 interest += alreadyPaidIntByAcct.get(accountNumber);
             }
             alreadyPaidIntByAcct.put(accountNumber, interest);
-            tdsByAccountNumber.put(accountNumber, line.TDS_Deducted__c);
+            Decimal tds = interest * 0.10;
+            if(tdsByAccountNumber.containsKey(accountNumber)) {
+                tds += tdsByAccountNumber.get(accountNumber);
+            }
+            tdsByAccountNumber.put(accountNumber, tds);
+            accountNumberById.put(accountNumber, line.Investment__r.Id);
         }
-
-        System.debug('tdsByAccountNumber***** : '+JSON.serialize(tdsByAccountNumber));
-        System.debug('alreadyPaidIntByAcct***** : '+JSON.serialize(alreadyPaidIntByAcct));
 
         for(Investment__c ivt : allInvestments) {
             String accountNumber = ivt.Account_Number__c;
             Decimal interest = calculateAccumlatedInterest(ivt, startDate, endDate);
             accumulatedInterest.put(accountNumber, interest);
+            Decimal tds = interest * 0.10;
+            if(tdsByAccountNumber.containsKey(accountNumber)) {
+                tds += tdsByAccountNumber.get(accountNumber);
+            }
+            tdsByAccountNumber.put(accountNumber, tds);
+            accountNumberById.put(accountNumber, ivt.Id);
         }
-        System.debug('accumulatedInterest***** : '+JSON.serialize(accumulatedInterest));
 
-        Map<String, InterestWrapper> wrapperByAccountMap = new Map<String, InterestWrapper>();
         for(String key : alreadyPaidIntByAcct.keySet()) {
             Decimal tds = tdsByAccountNumber.get(key);
             Decimal paidInterest = alreadyPaidIntByAcct.get(key);
-            InterestWrapper iwrapper = new InterestWrapper(key, bankName, paidInterest, tds);
+            String recordId = accountNumberById.get(key);
+            InterestWrapper iwrapper = new InterestWrapper(key, bankName, paidInterest, tds, recordId);
             wrapperByAccountMap.put(key, iwrapper);
         }
-        System.debug('wrapperByAccountMap***** : '+JSON.serialize(wrapperByAccountMap));
 
         for(String key : accumulatedInterest.keySet()) {
             InterestWrapper tempWrapper;
             Decimal accIntr = accumulatedInterest.get(key);
+            String recordId = accountNumberById.get(key);
             if(wrapperByAccountMap.containsKey(key)) {
                 tempWrapper = wrapperByAccountMap.get(key);
                 tempWrapper.accumulatedInteres = accIntr;
             }else {
-                tempWrapper = new InterestWrapper(key, bankName, accIntr);
+                Decimal tds = tdsByAccountNumber.get(key);
+                tempWrapper = new InterestWrapper(key, bankName, accIntr, recordId, tds);
             }
             wrapperByAccountMap.put(key, tempWrapper);
         }
 
+        for(String key : wrapperByAccountMap.keySet()) {
+            InterestWrapper iwr = wrapperByAccountMap.get(key);
+            iwr.accumulatedInteres = iwr.accumulatedInteres != null ? iwr.accumulatedInteres : 0;
+            iwr.interestPaid = iwr.interestPaid != null ? iwr.interestPaid : 0;
+            Decimal totalInterest = iwr.accumulatedInteres + iwr.interestPaid;
+            Decimal totalTDS = totalInterest * 0.10;
+            iwr.tds = totalTDS;
+        }
         return wrapperByAccountMap.values();
-
-        /* Map<String, List<InterestWrapper>> wrapperMap = new Map<String, List<InterestWrapper>>();
-        for(InterestWrapper iwp : wrapperByAccountMap.values()) {
-            String key = iwp.bankName;
-            if(wrapperMap.containsKey(key)) {
-                wrapperMap.get(key).add(iwp);
-            }else {
-                wrapperMap.put(key, new List<InterestWrapper> {iwp});
-            }
-        } */
     }
 
     public class InterestWrapper {
@@ -106,22 +152,26 @@ public with sharing class ExpenseManagerUtilHelper {
         @AuraEnabled public Decimal accumulatedInteres {get; set;}
         @AuraEnabled public Decimal interestPaid {get; set;}
         @AuraEnabled public Decimal tds {get; set;}
+        @AuraEnabled public Id recordId {get; set;}
         
         public InterestWrapper(InterestWrapper iwrapper, Decimal accumulatedInteres) {
             iwrapper.accumulatedInteres = accumulatedInteres;
         }
 
-        public InterestWrapper(String accountNumber, String bankName, Decimal interestPaid, Decimal tds) {
+        public InterestWrapper(String accountNumber, String bankName, Decimal interestPaid, Decimal tds, String recordId) {
             this.accountNumber = accountNumber;
             this.bankName = bankName;
             this.interestPaid = interestPaid;
             this.tds = tds != null ? tds : 0;
+            this.recordId = recordId;
         }
 
-        public InterestWrapper(String accountNumber, String bankName, Decimal accumulatedInteres) {
+        public InterestWrapper(String accountNumber, String bankName, Decimal accumulatedInteres, String recordId, Decimal tds) {
             this.accountNumber = accountNumber;
             this.bankName = bankName;
             this.accumulatedInteres = accumulatedInteres;
+            this.recordId = recordId;
+            this.tds = tds;
         }
     }
 }

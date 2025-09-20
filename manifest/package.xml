@@ -34,5 +34,9 @@
 		<members>ExpenseManager</members>
 		<name>PermissionSet</name>
 	</types>
+	<types>
+		<members>chartjs</members>
+		<name>StaticResource</name>
+	</types>
 	<version>64.0</version>
 </Package>

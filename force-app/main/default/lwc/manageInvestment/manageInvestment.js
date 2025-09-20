@@ -94,6 +94,21 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
         return result;
     }
 
+    async logTreaseure() {
+        let contentData = {
+            'objectapiname' : 'Treasure__c',
+            'fieldList' : this.getTresureFields()
+        }
+
+        const result = await createRecordModal.open({
+            size: 'small',
+            description: 'Treasure',
+            content: contentData
+        });
+
+        return result;
+    }
+
     async logFutureInvestment() {
         const result = await createNewFutureInvestmentModal.open({
             size: 'small',
@@ -121,6 +136,9 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
             result = await this.logFutureInvestment();
         }else if(this.activeTabName == 'Stock'){
             result = await this.logStock();
+        }else if(this.activeTabName == 'Treasure') {
+            log('inside treasure....');
+            result = await this.logTreaseure();
         }
         
         if(isValidValue(result) && result.STATUS == 'CREATED') {
@@ -135,6 +153,48 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
                 investmentListLWC.newRecordCreatedHandler();
             }
         }
+    }
+
+    getTresureFields() {
+        let fieldList = [];
+        let field1 = {
+            'fieldapiname' : 'Date__c',
+            'value' : '',
+            'key': 1,
+            'disabled': false,
+            'required': true
+        };
+
+        let field2 = {
+            'fieldapiname' : 'Amount__c',
+            'value' : '',
+            'key': 1,
+            'disabled': false,
+            'required': true
+        };
+
+        let field3 = {
+            'fieldapiname' : 'Tresuree__c',
+            'value' : '',
+            'key': 1,
+            'disabled': false,
+            'required': true
+        };
+
+        let field4 = {
+            'fieldapiname' : 'Details__c',
+            'value' : '',
+            'key': 1,
+            'disabled': false,
+            'required': true
+        };
+
+        fieldList.push(field1);
+        fieldList.push(field2);
+        fieldList.push(field3);
+        fieldList.push(field4);
+
+        return fieldList;
     }
 
     getFieldList() {
