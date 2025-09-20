@@ -1,11 +1,13 @@
 import { LightningElement, wire } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
+import resizeObserverPolyfill from '@salesforce/resourceUrl/ResizeObserverPolyfill';
 import chartJs from '@salesforce/resourceUrl/chartjs';
 import { log, logError, toString, isValid } from 'c/utilityClass';
 import expenseByMonth from '@salesforce/apex/ExpenseManagerUtil.getExpenseByMonth';
 
 export default class ExpenseAnalysisChart extends LightningElement {
     chart;
+    isPolyfillLoaded = false;
     isChartJsInitialized = false;
     isDataLoaded = false;
     data;
@@ -41,15 +43,17 @@ export default class ExpenseAnalysisChart extends LightningElement {
     }
 
     renderedCallback() {
-        if (this.isChartJsInitialized) {
+        if (this.isChartJsInitialized && this.isPolyfillLoaded) {
             return;
         }
 
         Promise.all([
+            loadScript(this, resizeObserverPolyfill),
             loadScript(this, chartJs)
         ])
         .then(() => {
             this.isChartJsLoaded = true;
+            this.isPolyfillLoaded = true;
             this.tryRenderChart();
 
         })
