@@ -58,6 +58,16 @@ public with sharing class DataProvider {
         return (List<Investment__c>) Database.query(query);
     }
 
+    public static List<Investment_Line_Items__c> getAllPPFNPSContributions(Date sDate, Date eDate) {
+        return new List<Investment_Line_Items__c> ([
+            SELECT Id, Amount__c, Investment__r.Bank__c
+            FROM Investment_Line_Items__c
+            WHERE Date__c >= :sDate AND 
+            Date__c <= :eDate AND 
+            Investment__r.Account_Number__c IN ('1893PPF0000000138', '110168495351')
+        ]);
+    }
+
     public static List<Investment__c> getAllInvestments(String bankname) {
         String query = 'SELECT Id, Name, Account_Number__c, Maturity_Amount__c, Start_Date__c, Amount__c, ';
         query += ' Rate__c, Bank__c, TAX_SAVER__c, Maturity_Date__c, Month__c, Year__c, Day__c, Re_invested_Count__c ';
@@ -127,6 +137,16 @@ public with sharing class DataProvider {
         ]);
 
         return lineItems;
+    }
+
+    public static List<Expense__c> getAllExpense(Date sDate, Date eDate) {
+        List<Expense__c> expenses = new List<Expense__c>([
+            SELECT Id, Name, Start_Date__c, End_Date__c, Other__c, Shivam__c, Sriram__c, Total_Expense__c
+            FROM Expense__c
+            WHERE Start_Date__c >= :sDate AND End_Date__c <= :eDate
+        ]);
+
+        return expenses;
     }
 
     public static List<Expense__c> getAllExpense() {
@@ -298,7 +318,7 @@ public with sharing class DataProvider {
     }
 
     public static List<Treasure__c> getAllTresures(Date startDate, Date endDate) {
-        String queryStr = 'SELECT Id, Tresuree__c, Date__c, Amount__c, Details__c ';
+        String queryStr = 'SELECT Id, Tresuree__c, Date__c, Amount__c, Details__c, FD_Breakage__c ';
         queryStr += 'FROM Treasure__c ';
         if(startDate != null && endDate != null) {
             queryStr += 'WHERE Date__c >= :startDate AND Date__c <= :endDate ';

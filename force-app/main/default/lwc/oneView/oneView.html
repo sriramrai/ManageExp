@@ -1,0 +1,73 @@
+<template>
+    <lightning-card>
+        <div style="margin: 5px;">
+            <div style="border-style: double;border-width: 2px; border-color: black; padding: 10px;">
+                <lightning-layout multiple-rows="false" >
+                    <lightning-layout-item size="6">
+                        <strong>Earning</strong>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6">
+                        <strong>
+                            <lightning-formatted-number value={totalEarning} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                        </strong>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <template for:each={earningList} for:item="earn">
+                    <lightning-layout multiple-rows="false" key={earn.type}>
+                        <lightning-layout-item size="6">
+                            {earn.type}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-formatted-number value={earn.amount} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+            
+            <div style="border-style: double;border-width: 2px; border-color: black; padding: 10px;">
+                <lightning-layout multiple-rows="false">
+                    <lightning-layout-item size="6">
+                        <strong>Investment</strong>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6">
+                        <strong>
+                            <lightning-formatted-number value={totalInvestment} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                        </strong>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <template for:each={investmentList} for:item="earn">
+                    <lightning-layout multiple-rows="false" key={earn.type}>
+                        <lightning-layout-item size="6">
+                            {earn.type}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="6">
+                            <lightning-formatted-number value={earn.amount} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </div>
+            
+            <lightning-layout multiple-rows="false" style="border-style: double;border-width: 2px; border-color: black; padding: 10px;">
+                <lightning-layout-item size="6">
+                   <strong>Expense</strong>
+                </lightning-layout-item>
+                <lightning-layout-item size="6">
+                    <strong>
+                        <lightning-formatted-number value={totalExpense} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                    </strong>
+                </lightning-layout-item>
+            </lightning-layout>
+
+            <lightning-layout multiple-rows="false" style="border-style: double;border-width: 2px; border-color: black; padding: 10px;">
+                <lightning-layout-item size="6">
+                   <strong>Difference</strong>
+                </lightning-layout-item>
+                <lightning-layout-item size="6">
+                    <strong>
+                        <lightning-formatted-number value={totalDifference} format-style="currency" currency-code="INR" maximum-fraction-digits="0"></lightning-formatted-number>
+                    </strong>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>
