@@ -393,6 +393,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Treasure__c.FD_Breakage__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Treasure__c.Tresuree__c</field>
         <readable>true</readable>
     </fieldPermissions>

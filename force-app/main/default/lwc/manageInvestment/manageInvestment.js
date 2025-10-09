@@ -189,10 +189,19 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
             'required': true
         };
 
+        let field5 = {
+            'fieldapiname' : 'FD_Breakage__c',
+            'value': false,
+            'key': 1,
+            'disabled': false,
+            'required': false
+        };
+
         fieldList.push(field1);
         fieldList.push(field2);
         fieldList.push(field3);
         fieldList.push(field4);
+        fieldList.push(field5);
 
         return fieldList;
     }

@@ -24,6 +24,11 @@
                 <default>false</default>
                 <label>Spouse</label>
             </value>
+            <value>
+                <fullName>Gold</fullName>
+                <default>false</default>
+                <label>Gold</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>
