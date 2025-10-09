@@ -69,6 +69,12 @@
                 <identifier>c_earningList</identifier>
             </componentInstance>
         </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>oneView</componentName>
+                <identifier>c_oneView</identifier>
+            </componentInstance>
+        </itemInstances>
         <name>region3</name>
         <type>Region</type>
     </flexiPageRegions>
