@@ -184,4 +184,13 @@ public with sharing class ExpenseManagerUtil {
         Date endDate = fyDates[1];
         return DataProvider.getExpenseByMonth(startDate, endDate);
     }
+
+    @AuraEnabled(cacheable = true)
+    public static Map<String, List<ExpenseManagerUtilHelper.OneViewWrapper>> getOneViewWrapper(String fiscalYear) {
+        fiscalYear = '2025-2026';
+        List<Date> fyDates = constructFyDate(fiscalYear);
+        Date startDate = fyDates[0];
+        Date endDate = fyDates[1];
+        return ExpenseManagerUtilHelper.getOneViewMap(startDate, endDate, fiscalYear);
+    }
 }

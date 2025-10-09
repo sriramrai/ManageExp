@@ -174,4 +174,64 @@ public with sharing class ExpenseManagerUtilHelper {
             this.tds = tds;
         }
     }
+
+    public static Map<String, List<OneViewWrapper>> getOneViewMap(Date sDate, Date eDate, String fiscalYear) {
+        Map<String, List<OneViewWrapper>> resultMap = new Map<String, List<OneViewWrapper>>();
+        List<Earning__c> earnings = DataProvider.getEarnings(fiscalYear);
+        Integer numbersOfSalary = 0;
+        Decimal totalSalary = 0;
+        for(Earning__c earning : earnings) {
+            numbersOfSalary++;
+            totalSalary += earning.Net_In_Hand__c;
+        }
+        OneViewWrapper salary = new OneViewWrapper('Salary', totalSalary);
+        resultMap.put('Earning', new List<OneViewWrapper> { salary }); //Earning From Salary
+        OneViewWrapper pluxee = new OneViewWrapper('Food Card', numbersOfSalary*2000);
+        resultMap.get('Earning').add(pluxee);
+
+        Decimal totalExpenses = 0;
+        for(Expense__c exp : DataProvider.getAllExpense(sDate, eDate)) {
+            totalExpenses += exp.Total_Expense__c;
+        }
+        OneViewWrapper expense = new OneViewWrapper('Expense', totalExpenses);
+        resultMap.put('Expense', new List<OneViewWrapper> { expense }); //Total Expenses
+
+        Decimal totalTreasures = 0;
+        List<Treasure__c> treasures = DataProvider.getAllTresures(sDate, eDate);
+        for(Treasure__c treasure : treasures) {
+            if(!treasure.FD_Breakage__c) {
+                totalTreasures += treasure.Amount__c;
+            }
+        }
+        OneViewWrapper treasure = new OneViewWrapper('Tresure', totalTreasures);
+        resultMap.put('Investment', new List<OneViewWrapper> { treasure }); //Investment Via Treasure
+
+        Decimal totalPPF = 0;
+        Decimal totalNPS = 0;
+        List<Investment_Line_Items__c> ppfNps = DataProvider.getAllPPFNPSContributions(sDate, eDate);
+        for(Investment_Line_Items__c line : ppfNps) {
+            if(line.Investment__r.Bank__c == 'PPF') {
+                totalPPF += line.Amount__c;
+            }else {
+                totalNPS += line.Amount__c;
+            }
+        }
+        OneViewWrapper ppf = new OneViewWrapper('PPF', totalPPF);
+        OneViewWrapper nps = new OneViewWrapper('NPS', totalNPS);
+        resultMap.get('Investment').add(ppf);
+        resultMap.get('Investment').add(nps);
+        return resultMap;
+    }
+
+    public class OneViewWrapper {
+        @AuraEnabled
+        public String type;
+        @AuraEnabled
+        public Decimal amount;
+        
+        public OneViewWrapper(String type, Decimal amount) {
+            this.type = type;
+            this.amount = amount;
+        }
+    }
 }
