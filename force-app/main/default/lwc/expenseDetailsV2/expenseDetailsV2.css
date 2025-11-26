@@ -3,3 +3,18 @@
     /* text-overflow: ellipsis; */
     overflow: scroll;
 }
+.accordion-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.category {
+    font-weight: 600;
+}
+
+.amount {
+    font-weight: 600;
+    color: #0070d2; /* Salesforce blue, optional */
+}

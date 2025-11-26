@@ -5,8 +5,10 @@ import deleteELI from '@salesforce/apex/ExpenseController.deleteELI';
 import LightningConfirm from "lightning/confirm";
 import ltngMoreActionModal from 'c/expenseMoreActionModal';
 import ltngEditRecord from 'c/editExpenseForm';
+import {log, logError, toString} from 'c/utilityClass';
 
 export default class ExpenseDetailsV2 extends LightningElement {
+    @track dataMap = new Map();
     @api entity;
     @api fromdate;
     @api todate;
@@ -16,6 +18,8 @@ export default class ExpenseDetailsV2 extends LightningElement {
     allrecords;
     total;
     @track selectedItems = [];
+    @track groceries = [];
+    @track utilitybills = [];
     
     @wire (getExpense, {'fromDate' : '$fromdate', 'toDate' : '$todate', 'expenseBy' : '$entity'})
     expenses(result) {
@@ -35,9 +39,20 @@ export default class ExpenseDetailsV2 extends LightningElement {
         this.total = 0;
         this.allrecords.forEach(record => {
             this.total += record.Amount__c;
+            if(record.Category__c == 'Grocery') {
+                this.groceries.push(record);
+            }else if(record.Category__c == 'Utility & Bill') {
+                this.utilitybills.push(record);
+            }
+            if(this.dataMap.has(record.Category__c)) {
+                this.dataMap.get(record.Category__c).push(record);
+            }else {
+                this.dataMap.set(record.Category__c, [record]);
+            }
         });
         let customEvent = new CustomEvent("updatetotal", {detail: {total: this.total}});
         this.dispatchEvent(customEvent);
+        log('MyMap**** : '+this.dataMap);
     }
 
     @api refreshData() {
@@ -122,4 +137,26 @@ export default class ExpenseDetailsV2 extends LightningElement {
         console.log('zcontainerChoosen : '+containerChoosen);
         containerChoosen.scrollIntoView();
     }
+
+    handleSectionToggle(event) {
+        const openSections = event.detail.openSections;
+    }
+
+    @api
+    get groceryLabel() {
+        return 'Grocery--------' + this.totalSum(this.groceries);
+    }
+
+    totalSum(dataArray) {
+        let result = 0;
+        dataArray.forEach(element => {
+            result += element.Amount__c;
+        });
+        return result;
+    }
+    /* @api 
+    get groceries() {
+        let records = this.dataMap.has('Grocery') ? this.dataMap.get('Grocery') : [];
+        return records;
+    } */
 }
