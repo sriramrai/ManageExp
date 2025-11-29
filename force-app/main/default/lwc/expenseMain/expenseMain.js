@@ -34,8 +34,9 @@ export default class ExpenseMain extends LightningElement {
 
     searchHandler(event) {
         let searchText = event.detail.searchText;
+        let isAll = event.detail.alltime;
         let expenseDetails = this.getExpenseDetails();
-        expenseDetails.searchData(searchText);
+        expenseDetails.searchData(searchText, isAll);
     }
 
     notifyExpenseDetails() {
