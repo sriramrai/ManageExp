@@ -123,18 +123,6 @@ export default class ExpenseAnalysisChart extends LightningElement {
                         ],
                         borderWidth: 1
                     },
-                    {
-                        label: 'Cumulative Expense',
-                        type: 'line',
-                        data: this.chartData.reduce((acc, val, i) => {
-                            acc.push(val + (acc[i - 1] || 0));
-                            return acc;
-                        }, []),
-                        borderColor: '#ff8c00',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.3
-                    }
                 ]
             },
             options: {
