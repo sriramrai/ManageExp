@@ -29,7 +29,7 @@
             <span style="font-weight: bold;">&#8377;{total}</span>
         </lightning-layout-item>
         
-        <lightning-layout-item padding="" size="5" style="margin-top: 5px;text-align: center;">
+        <lightning-layout-item padding="" size="4" style="margin-top: 5px;text-align: center;">
             <lightning-input type="search" 
                 name="searchbox" 
                 placeholder="Enter to Search" 
@@ -37,8 +37,15 @@
                 onchange={searchHandler}>
             </lightning-input>
         </lightning-layout-item>
-
-        <lightning-layout-item padding="" size="4" style="padding-top: 5px;text-align:end;">
+        <lightning-layout-item size="2" style="padding-left: 5px; padding-top: 5px;">
+            <label class="switch">
+                <input type="checkbox" checked={isOn} onchange={handleToggle}>
+                <span class="slider">
+                    <span class="switch-text">{switchText}</span>
+                </span>
+            </label>
+        </lightning-layout-item>
+        <lightning-layout-item padding="" size="3" style="padding-top: 5px;text-align:end;">
             <lightning-button variant="brand" label="New" onclick={createRecord}></lightning-button>
         </lightning-layout-item>
     </lightning-layout>

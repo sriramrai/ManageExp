@@ -10,6 +10,7 @@ export default class ExpenseHeaderV2 extends LightningElement {
     currentExpenseId;
     @api selectedItems;
     selectedDuration = 0;
+    isEnabled = false;
     durations = [
         { label: '0', value: 0},
         { label: '1', value: 1},
@@ -57,9 +58,20 @@ export default class ExpenseHeaderV2 extends LightningElement {
 
     searchHandler(event) {
         let searchText = event.target.value;
-        let searchEvent = new CustomEvent("searchevent", {detail: {searchText: searchText}});
+        let searchEvent = new CustomEvent("searchevent", {detail: {searchText: searchText, alltime: this.isOn}});
         this.dispatchEvent(searchEvent);
     }
+
+    isOn = false;
+
+    get switchText() {
+        return this.isOn ? 'ALL' : 'ALL';
+    }
+
+    handleToggle(event) {
+        this.isOn = event.target.checked;
+    }
+
 
     refetchRecords() {
         let today = new Date(), y=today.getFullYear(), m=today.getMonth();

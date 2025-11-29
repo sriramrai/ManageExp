@@ -234,4 +234,23 @@ public with sharing class ExpenseManagerUtilHelper {
             this.amount = amount;
         }
     }
+
+    public static List<Date> getFiscalYear(Date dt) {
+        Date today = Date.today();
+        Integer year = today.year();
+        Integer month = today.month();
+        List<Date> fiscalYearDates = new List<Date>();
+        Date fyStart;
+        Date fyEnd;
+        if (month >= 4) {
+            fyStart = Date.newInstance(year, 4, 1);
+            fyEnd   = Date.newInstance(year + 1, 3, 31);
+        } else {
+            fyStart = Date.newInstance(year - 1, 4, 1);
+            fyEnd   = Date.newInstance(year, 3, 31);
+        }
+        fiscalYearDates.add(fyStart);
+        fiscalYearDates.add(fyEnd);
+        return fiscalYearDates;
+    }
 }

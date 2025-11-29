@@ -46,9 +46,9 @@ export default class ExpenseDetailsV2 extends LightningElement {
         refreshApex(this.expenseResult);
     }
 
-    @api async searchData(searchText) {
+    @api async searchData(searchText, fromAll) {
         if(searchText && searchText.length > 2) {
-            this.allrecords = await serachExp({'searchtext': searchText});
+            this.allrecords = await serachExp({'searchtext': searchText, 'fromAll': fromAll});
         }else {
             this.allrecords = this.expenseResult.data;
         }
