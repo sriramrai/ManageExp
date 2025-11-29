@@ -108,89 +108,64 @@ export default class ExpenseAnalysisChart extends LightningElement {
         };
 
         this.chart = new window.Chart(ctx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
                 labels: this.chartLabel,
-                datasets: [{
-                    // 🔥 Use the CAPPED data for slice size rendering
-                    data: this.displayValues,
-                    backgroundColor: [
-                        '#ff6384', '#36a2eb', '#ffce56',
-                        '#4bc0c0', '#9966ff', '#ff9f40',
-                        '#2c3e50', '#c0392b', '#7f8c8d'
-                    ],
-                    borderColor: '#fff',
-                    borderWidth: 1
-                }]
+                datasets: [
+                    {
+                        label: 'Monthly Expense',
+                        type: 'bar',
+                        data: this.chartData, // original uncapped values
+                        backgroundColor: [
+                            '#ff6384', '#36a2eb', '#ffce56',
+                            '#4bc0c0', '#9966ff', '#ff9f40',
+                            '#2c3e50', '#c0392b', '#7f8c8d'
+                        ],
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Cumulative Expense',
+                        type: 'line',
+                        data: this.chartData.reduce((acc, val, i) => {
+                            acc.push(val + (acc[i - 1] || 0));
+                            return acc;
+                        }, []),
+                        borderColor: '#ff8c00',
+                        borderWidth: 2,
+                        fill: false,
+                        tension: 0.3
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '60%', // Increased cutout for more space
                 plugins: {
-                    tooltip: { 
-                        // Show the actual value on hover
-                        enabled: true,
+                    tooltip: {
                         callbacks: {
                             label: (context) => {
-                                const index = context.dataIndex;
-                                const label = context.label;
-                                const originalValue = this.chartData[index];
-                                return `${label}: ${this.formatExpenseValue(originalValue)}`;
+                                const original = this.chartData[context.dataIndex];
+                                const name = context.label;
+                                return `${name}: ${this.formatExpenseValue(original)}`;
                             }
                         }
                     },
-                    legend: { position: 'right' },
-                    datalabels: {
-                        color: (ctx) => {
-                            const backgroundColor = ctx.dataset.backgroundColor[ctx.dataIndex];
-                            return getContrastColor(backgroundColor);
-                        },
-                        font: { weight: 'bold', size: 13 },
-                        
-                        // Dynamic alignment to prevent label overlap
-                        align: (ctx) => {
-                            const dataset = ctx.chart.data.datasets[0].data;
-                            const total = dataset.reduce((a, b) => a + b, 0);
-                            const pct = dataset[ctx.dataIndex] / total;
-                            
-                            // Use 'outside' for visually small slices (< 5%)
-                            return pct < 0.05 ? 'outside' : 'center';
-                        },
-
-                        anchor: 'center',
-                        offset: 0,
-                        clip: false, 
-                        connector: {
-                            enabled: true,
-                            lineWeight: 1,
-                            color: '#666',
-                            length: 10
-                        },
-                        
-                        // Formatter uses the ACTUAL uncapped data
-                        formatter: (value, context) => {
-                            // Fetch the original uncapped value
-                            const originalValue = this.chartData[context.dataIndex]; 
-                            const label = context.chart.data.labels[context.dataIndex];
-                            
-                            // Format the label (MM/YY) and the expense value (K/L/Cr)
-                            const [mon, year] = label.split(" ");
-                            const monthMap = {
-                                JAN: "01", FEB: "02", MAR: "03", APR: "04",
-                                MAY: "05", JUN: "06", JUL: "07", AUG: "08",
-                                SEP: "09", OCT: "10", NOV: "11", DEC: "12"
-                            };
-                            const formattedMonth = `${monthMap[mon]}/${year.slice(-2)}`;
-                            
-                            const formattedValue = this.formatExpenseValue(originalValue);
-
-                            return `${mon}\n${formattedValue}`;
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
                         }
                     }
-                },
-                layout: {
-                    padding: 40 // Increased padding for outside labels
                 }
             }
         });
