@@ -2,6 +2,7 @@ import { LightningElement, wire } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import resizeObserverPolyfill from '@salesforce/resourceUrl/ResizeObserverPolyfill';
 import chartJs from '@salesforce/resourceUrl/chartjs';
+import chartjsDataLabels from '@salesforce/resourceUrl/chartjsDataLabels'
 import { log, logError, toString, isValid } from 'c/utilityClass';
 import expenseByMonth from '@salesforce/apex/ExpenseManagerUtil.getExpenseByMonth';
 
@@ -11,8 +12,12 @@ export default class ExpenseAnalysisChart extends LightningElement {
     isChartJsInitialized = false;
     isDataLoaded = false;
     data;
-    chartData = [];
+    chartData = [];      // Stores the ACTUAL expense values
     chartLabel = [];
+    
+    // 🔥 New properties for capping logic
+    maxPercent = 0.01;   // Max allowed visual size for any slice (30%)
+    displayValues = [];  // Stores the CAPPED values for visual rendering
 
     @wire (expenseByMonth, {'fy' : 'test'})
     expenseRecord({data, error}) {
@@ -27,13 +32,23 @@ export default class ExpenseAnalysisChart extends LightningElement {
         }
     }
 
+    /**
+     * Prepares data, calculates total, and caps display values.
+     */
     prepareChartData(data) {
         this.chartLabel = [];
         this.chartData = [];
         Object.entries(data).forEach(([key, value]) => {
             this.chartLabel.push(key);
-            this.chartData.push(value);
+            this.chartData.push(value); // Store the actual value
         });
+
+        // 🔥 Implement Capping Logic: Limit the visual size of the largest slice
+        const total = this.chartData.reduce((a, b) => a + b, 0);
+        let maxAllowed = total * this.maxPercent;
+        
+        // Ensure no value exceeds the maximum allowed visual size
+        this.displayValues = this.chartData.map(v => Math.min(v, maxAllowed));
     }
 
     tryRenderChart() {
@@ -49,11 +64,13 @@ export default class ExpenseAnalysisChart extends LightningElement {
 
         Promise.all([
             loadScript(this, resizeObserverPolyfill),
-            loadScript(this, chartJs)
+            loadScript(this, chartJs),
+            loadScript(this, chartjsDataLabels)
         ])
         .then(() => {
             this.isChartJsLoaded = true;
             this.isPolyfillLoaded = true;
+            window.Chart.register(window.ChartDataLabels);
             this.tryRenderChart();
 
         })
@@ -69,44 +86,102 @@ export default class ExpenseAnalysisChart extends LightningElement {
         const ctx = canvas.getContext('2d');
 
         if (this.chart) {
-            this.chart.destroy(); // Destroy existing chart if re-rendering
+            this.chart.destroy();
         }
+
         this.chart = new window.Chart(ctx, {
-            type: 'bar', // or 'line', 'pie', etc.
+            type: 'doughnut',
             data: {
-                //labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
                 labels: this.chartLabel,
                 datasets: [{
-                    label: '# Total Expenses',
-                    data: this.chartData,
+                    // 🔥 Use the CAPPED data for slice size rendering
+                    data: this.displayValues,
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
+                        '#ff6384', '#36a2eb', '#ffce56',
+                        '#4bc0c0', '#9966ff', '#ff9f40',
+                        '#2c3e50', '#c0392b', '#7f8c8d'
                     ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
+                    borderColor: '#fff',
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+                maintainAspectRatio: false,
+                cutout: '60%', // Increased cutout for more space
+                plugins: {
+                    tooltip: { 
+                        // Show the actual value on hover
+                        enabled: true,
+                        callbacks: {
+                            label: (context) => {
+                                const index = context.dataIndex;
+                                const label = context.label;
+                                const originalValue = this.chartData[index];
+                                return `${label}: ${this.formatExpenseValue(originalValue)}`;
+                            }
+                        }
+                    },
+                    legend: { position: 'right' },
+                    datalabels: {
+                        color: '#000',
+                        font: { weight: 'bold', size: 13 },
+                        
+                        // Dynamic alignment to prevent label overlap
+                        align: (ctx) => {
+                            const dataset = ctx.chart.data.datasets[0].data;
+                            const total = dataset.reduce((a, b) => a + b, 0);
+                            const pct = dataset[ctx.dataIndex] / total;
+                            
+                            // Use 'outside' for visually small slices (< 5%)
+                            return pct < 0.05 ? 'outside' : 'center';
+                        },
+
+                        anchor: 'center',
+                        offset: 0,
+                        clip: false, 
+                        connector: {
+                            enabled: true,
+                            lineWeight: 1,
+                            color: '#666',
+                            length: 10
+                        },
+                        
+                        // Formatter uses the ACTUAL uncapped data
+                        formatter: (value, context) => {
+                            // Fetch the original uncapped value
+                            const originalValue = this.chartData[context.dataIndex]; 
+                            const label = context.chart.data.labels[context.dataIndex];
+                            
+                            // Format the label (MM/YY) and the expense value (K/L/Cr)
+                            const [mon, year] = label.split(" ");
+                            const monthMap = {
+                                JAN: "01", FEB: "02", MAR: "03", APR: "04",
+                                MAY: "05", JUN: "06", JUL: "07", AUG: "08",
+                                SEP: "09", OCT: "10", NOV: "11", DEC: "12"
+                            };
+                            const formattedMonth = `${monthMap[mon]}/${year.slice(-2)}`;
+                            
+                            const formattedValue = this.formatExpenseValue(originalValue);
+
+                            return `${mon}\n${formattedValue}`;
+                        }
                     }
+                },
+                layout: {
+                    padding: 40 // Increased padding for outside labels
                 }
             }
         });
     }
-
+    
+    /**
+     * Helper method to format large numbers to K, L, or Cr.
+     */
+    formatExpenseValue(value) {
+        if (value >= 10000000) return (value / 10000000).toFixed(1) + ' Cr';
+        if (value >= 100000) return (value / 100000).toFixed(1) + ' L';
+        if (value >= 1000) return (value / 1000).toFixed(1) + ' K';
+        return value.toLocaleString();
+    }
 }

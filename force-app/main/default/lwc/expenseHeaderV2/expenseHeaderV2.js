@@ -76,7 +76,8 @@ export default class ExpenseHeaderV2 extends LightningElement {
     refetchRecords() {
         let today = new Date(), y=today.getFullYear(), m=today.getMonth();
         let currentMonthStartDate = new Date(y, m, 1);
-        this.startDate = currentMonthStartDate.setMonth(currentMonthStartDate.getMonth()-this.selectedDuration);
+        let duration = this.selectedfrequency == 'Months' ? this.selectedDuration : this.selectedDuration * 12;
+        this.startDate = currentMonthStartDate.setMonth(currentMonthStartDate.getMonth()-duration);
         let d = new Date(this.startDate);
         this.startDate = 
             d.getFullYear() + "-" +
@@ -114,7 +115,8 @@ export default class ExpenseHeaderV2 extends LightningElement {
 
     changedFrequency(event) {
         let val = event.target.value;
+        debugger;
         this.selectedfrequency = val;
-        this.selectedDuration = this.selectedfrequency == 'Months' ? this.selectedDuration : this.selectedDuration*12;
+        //this.selectedDuration = this.selectedfrequency == 'Months' ? this.selectedDuration : this.selectedDuration*12;
     }
 }
