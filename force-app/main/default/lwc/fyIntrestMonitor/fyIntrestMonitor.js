@@ -127,6 +127,9 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
 
     calculateTotals() {
         this.interestList = this.allInvestments;
+        if(!isValid(this.interestList)) {
+            return;
+        }
         this.totalAccumulated = 0;
         this.totalPaid = 0;
         this.totalTds = 0;

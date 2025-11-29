@@ -138,11 +138,19 @@ public with sharing class ExpenseController {
         return (List<Expense_Line_Item__c>)(Database.query(query));
     }
 
+    @AuraEnabled 
+    public static List<Expense_Line_Item__c> searchExpense(String searchtext) {
+        String serachTerm = '%'+searchtext+'%';
+        List<Expense_Line_Item__c> expenses = new List<Expense_Line_Item__c>([
+            SELECT Id, Date__c, Amount__c, Details__c, Debited_By__c
+            FROM Expense_Line_Item__c 
+            WHERE Details__c LIKE :serachTerm
+        ]);
+        return expenses;
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<ExpenseWrapper> getExpenses(Date startDate, Date endDate, String expenseBy) {
-        System.debug('StartDate**** : '+startDate);
-        System.debug('EndDate**** : '+endDate);
-        System.debug('ExpenseBy**** : '+expenseBy);
         List<String> expenseByList = new List<String>();
         if(expenseBy.equals('pastExpenses')) {
             System.debug('pastExpenses(6)** : '+JSON.serialize(pastExpenses(6)));
