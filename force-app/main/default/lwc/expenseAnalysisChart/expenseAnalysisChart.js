@@ -129,6 +129,12 @@ export default class ExpenseAnalysisChart extends LightningElement {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: 'bold', size: 12 },
+                        formatter: (value) => this.formatExpenseValue(value)
+                    },
                     tooltip: {
                         callbacks: {
                             label: (context) => {
@@ -143,6 +149,7 @@ export default class ExpenseAnalysisChart extends LightningElement {
                 scales: {
                     y: {
                         beginAtZero: true,
+                        suggestedMax: Math.max(...this.chartData) * 1.15, // 15% extra space
                         title: {
                             display: true,
                             text: 'Amount'
@@ -150,7 +157,7 @@ export default class ExpenseAnalysisChart extends LightningElement {
                     },
                     x: {
                         title: {
-                            display: true,
+                            display: false,
                             text: 'Month'
                         }
                     }
