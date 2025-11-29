@@ -32,9 +32,8 @@
 		<name>LightningComponentBundle</name>
 	</types>
 	<types>
-		<members>ResizeObserverPolyfill</members>
-		<members>chartjs</members>
+		<members>*</members>
 		<name>StaticResource</name>
 	</types>
-	<version>64.0</version>
+	<version>65.0</version>
 </Package>
