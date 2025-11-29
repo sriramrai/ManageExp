@@ -89,6 +89,24 @@ export default class ExpenseAnalysisChart extends LightningElement {
             this.chart.destroy();
         }
 
+        // Helper function to determine text color based on background color
+        // This function calculates luminosity and is placed inside renderChart for simplicity.
+        const getContrastColor = (backgroundColor) => {
+            // Remove transparency (alpha channel) if present
+            const hex = backgroundColor.replace('#', '').substring(0, 6);
+            
+            // Convert to RGB
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            
+            // Calculate relative luminosity (standard formula)
+            const luminosity = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+            
+            // Use black for light colors (luminosity > 0.5), white for dark colors
+            return luminosity > 0.5 ? '#000000' : '#FFFFFF';
+        };
+
         this.chart = new window.Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -124,7 +142,10 @@ export default class ExpenseAnalysisChart extends LightningElement {
                     },
                     legend: { position: 'right' },
                     datalabels: {
-                        color: '#000',
+                        color: (ctx) => {
+                            const backgroundColor = ctx.dataset.backgroundColor[ctx.dataIndex];
+                            return getContrastColor(backgroundColor);
+                        },
                         font: { weight: 'bold', size: 13 },
                         
                         // Dynamic alignment to prevent label overlap
