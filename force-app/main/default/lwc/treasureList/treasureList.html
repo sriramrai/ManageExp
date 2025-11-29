@@ -1,48 +1,35 @@
 <template>
-    <template if:true={recordList}>
+    <template if:true={hasRecords}>
         <c-render-table tabledata={recordList} columns={column}></c-render-table>
-        <lightning-layout>
-        <lightning-layout-item size="3">
-            <span style="margin-left: 10px;"><b>Dad</b></span>
-            <lightning-formatted-number 
-                style="margin-left: 10px;" 
-                format-style = "currency" 
-                currency-code	= "INR" 
-                value={totalObj.Dad}
-                maximum-fraction-digits	= "0">
-            </lightning-formatted-number>
-        </lightning-layout-item>
-        <lightning-layout-item size="3">
-            <span><b>Mom</b></span>
-            <lightning-formatted-number 
-                style="margin-left: 10px;" 
-                format-style = "currency" 
-                currency-code	= "INR" 
-                value={totalObj.Mom}
-                maximum-fraction-digits	= "0">
-            </lightning-formatted-number>
-        </lightning-layout-item>
-        <lightning-layout-item size="3">
-            <span><b>Spouse</b></span>
-            <lightning-formatted-number  
-                style="margin-left: 10px;" 
-                format-style = "currency" 
-                currency-code	= "INR" 
-                value={totalObj.Spouse}
-                maximum-fraction-digits	= "0">
-            </lightning-formatted-number>
-        </lightning-layout-item>
-        <lightning-layout-item size="3">
-            <span><b>Total</b></span>
-           <lightning-formatted-number 
-                style="margin-left: 10px;" 
-                format-style = "currency" 
-                currency-code	= "INR" 
-                value={totalObj.Total}
-                maximum-fraction-digits	= "0">
-            </lightning-formatted-number>
-            <lightning-button variant="base" label="Yearly" onclick={alignByYear}></lightning-button>
-        </lightning-layout-item>
-    </lightning-layout>
+
+        <lightning-layout multiple-rows horizontal-align="spread">
+        
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+                <b>Dad</b>
+                <lightning-formatted-number currency-code="INR" format-style="currency"
+                    value={totalObj.Dad} maximum-fraction-digits="0"></lightning-formatted-number>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+                <b>Mom</b>
+                <lightning-formatted-number currency-code="INR" format-style="currency"
+                    value={totalObj.Mom} maximum-fraction-digits="0"></lightning-formatted-number>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+                <b>Spouse</b>
+                <lightning-formatted-number currency-code="INR" format-style="currency"
+                    value={totalObj.Spouse} maximum-fraction-digits="0"></lightning-formatted-number>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+                <b>Total</b>
+                <lightning-formatted-number currency-code="INR" format-style="currency"
+                    value={totalObj.Total} maximum-fraction-digits="0"></lightning-formatted-number>
+                <br />
+                <lightning-button variant="base" label="Yearly" onclick={alignByYear}></lightning-button>
+            </lightning-layout-item>
+
+        </lightning-layout>
     </template>
 </template>
