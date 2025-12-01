@@ -1,22 +1,14 @@
 <template>
-    
+
     <lightning-layout>
         <lightning-layout-item padding="" style="padding-top: 5px; padding-right: 15px;" size="5">
-            <lightning-combobox
-                name="duration"
-                value={selectedDuration}
-                options={durations}
-                onchange={changedDuration}
+            <lightning-combobox name="duration" value={selectedDuration} options={durations} onchange={changedDuration}
                 variant="label-hidden">
             </lightning-combobox>
         </lightning-layout-item>
         <lightning-layout-item padding="" style="padding-top: 5px; padding-right: 15px;" size="5">
-            <lightning-combobox
-                name="frequency"
-                value={selectedfrequency}
-                options={frequencies}
-                onchange={changedFrequency}
-                variant="label-hidden">
+            <lightning-combobox name="frequency" value={selectedfrequency} options={frequencies}
+                onchange={changedFrequency} variant="label-hidden">
             </lightning-combobox>
         </lightning-layout-item>
         <lightning-layout-item size="2" style="text-align: right; margin-top: 4px;">
@@ -26,14 +18,15 @@
 
     <lightning-layout>
         <lightning-layout-item padding="around-small" size="3">
-            <span style="font-weight: bold;">&#8377;{total}</span>
+            <strong>
+                <lightning-formatted-number format-style="currency" currency-code="INR" value={total}
+                    maximum-fraction-digits=0>
+                </lightning-formatted-number>
+            </strong>
         </lightning-layout-item>
-        
+
         <lightning-layout-item padding="" size="4" style="margin-top: 5px;text-align: center;">
-            <lightning-input type="search" 
-                name="searchbox" 
-                placeholder="Enter to Search" 
-                variant="label-hidden"
+            <lightning-input type="search" name="searchbox" placeholder="Enter to Search" variant="label-hidden"
                 onchange={searchHandler}>
             </lightning-input>
         </lightning-layout-item>
