@@ -3,29 +3,33 @@
         <c-render-table tabledata={recordList} columns={column}></c-render-table>
 
         <lightning-layout multiple-rows horizontal-align="spread">
-        
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3"
+                class="box">
                 <b>Dad</b>
-                <lightning-formatted-number currency-code="INR" format-style="currency"
-                    value={totalObj.Dad} maximum-fraction-digits="0"></lightning-formatted-number>
+                <lightning-formatted-number currency-code="INR" format-style="currency" value={totalObj.Dad}
+                    maximum-fraction-digits="0"></lightning-formatted-number>
             </lightning-layout-item>
 
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3"
+                class="box">
                 <b>Mom</b>
-                <lightning-formatted-number currency-code="INR" format-style="currency"
-                    value={totalObj.Mom} maximum-fraction-digits="0"></lightning-formatted-number>
+                <lightning-formatted-number currency-code="INR" format-style="currency" value={totalObj.Mom}
+                    maximum-fraction-digits="0"></lightning-formatted-number>
             </lightning-layout-item>
 
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3"
+                class="box">
                 <b>Spouse</b>
-                <lightning-formatted-number currency-code="INR" format-style="currency"
-                    value={totalObj.Spouse} maximum-fraction-digits="0"></lightning-formatted-number>
+                <lightning-formatted-number currency-code="INR" format-style="currency" value={totalObj.Spouse}
+                    maximum-fraction-digits="0"></lightning-formatted-number>
             </lightning-layout-item>
 
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" class="box">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3"
+                class="box">
                 <b>Total</b>
-                <lightning-formatted-number currency-code="INR" format-style="currency"
-                    value={totalObj.Total} maximum-fraction-digits="0"></lightning-formatted-number>
+                <lightning-formatted-number currency-code="INR" format-style="currency" value={totalObj.Total}
+                    maximum-fraction-digits="0"></lightning-formatted-number>
                 <br />
                 <lightning-button variant="base" label="Yearly" onclick={alignByYear}></lightning-button>
             </lightning-layout-item>

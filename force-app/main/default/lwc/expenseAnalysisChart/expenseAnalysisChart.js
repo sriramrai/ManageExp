@@ -38,17 +38,24 @@ export default class ExpenseAnalysisChart extends LightningElement {
     prepareChartData(data) {
         this.chartLabel = [];
         this.chartData = [];
+        let totalAmount = 0;
         Object.entries(data).forEach(([key, value]) => {
             this.chartLabel.push(key);
             this.chartData.push(value); // Store the actual value
+            totalAmount += value;
         });
-
+        this.notifyTotal(totalAmount);
         // 🔥 Implement Capping Logic: Limit the visual size of the largest slice
         const total = this.chartData.reduce((a, b) => a + b, 0);
         let maxAllowed = total * this.maxPercent;
         
         // Ensure no value exceeds the maximum allowed visual size
         this.displayValues = this.chartData.map(v => Math.min(v, maxAllowed));
+    }
+
+    notifyTotal(value) {
+        let customEvent = new CustomEvent("updatetotal", {detail: {total: value}});
+        this.dispatchEvent(customEvent);
     }
 
     tryRenderChart() {

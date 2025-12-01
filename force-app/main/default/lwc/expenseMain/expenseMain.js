@@ -60,8 +60,10 @@ export default class ExpenseMain extends LightningElement {
 
     newrecordHandler(event) {
         let expenseDetails = this.getExpenseDetails();
-        expenseDetails.refreshRecord = event.detail.newrecord;
-        expenseDetails.refreshData();
+        if(expenseDetails != null) {
+            expenseDetails.refreshRecord = event.detail.newrecord;
+            expenseDetails.refreshData();
+        }
     }
 
     selectedItemHandler(event) {
