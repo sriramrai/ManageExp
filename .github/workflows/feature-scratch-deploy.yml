@@ -1,6 +1,9 @@
 name: Deploy Feature Branch to Scratch Org
 
 on:
+  push:
+    branches:
+      - "feature/*"
   create:
     branches:
       - "feature/*"
@@ -74,7 +77,6 @@ jobs:
               --duration-days 30 \
               --target-dev-hub DevHub \
               --set-default \
-              --noprompt \
               --json > create.json || {
                 echo "❌ Scratch org creation failed. Dumping create.json (if any):"
                 cat create.json || true
