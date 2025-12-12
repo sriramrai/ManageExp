@@ -33,7 +33,6 @@ jobs:
         shell: bash
         run: |
           echo "${{ secrets.SFDX_AUTH_URL }}" > /tmp/auth.txt
-          # Login using sfdx-url file. alias DevHub will be created on runner.
           sf org login sfdx-url --sfdx-url-file /tmp/auth.txt --alias DevHub
 
       - name: Verify Auth
@@ -44,9 +43,7 @@ jobs:
       - name: Compute branch & alias
         id: vars
         run: |
-          # Get branch name (works for push/create)
           BRANCH="${GITHUB_REF##*/}"
-          # create a safe alias (replace slashes with underscores)
           ORG_ALIAS="scratch_${BRANCH//\//_}"
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "org_alias=$ORG_ALIAS" >> $GITHUB_OUTPUT
@@ -60,19 +57,18 @@ jobs:
           echo "Branch: $BRANCH"
           echo "Org alias to use: $ORG_ALIAS"
 
-          # Try to find an existing active scratch org with this alias (CI runner may not have local auth)
           ORG_USERNAME=$(sf org list --all --json | jq -r --arg A "$ORG_ALIAS" '.result.scratchOrgs[]? | select(.alias==$A and .isActive==true) | .username' || true)
 
           if [ -n "$ORG_USERNAME" ] && [ "$ORG_USERNAME" != "null" ]; then
             echo "Found active scratch org for alias $ORG_ALIAS -> $ORG_USERNAME"
+            echo "new_org=false" >> $GITHUB_OUTPUT
           else
-            echo "No active scratch org found for alias $ORG_ALIAS. Creating one..."
+            echo "No active scratch org found. Creating one..."
 
-            # create scratch org (ensure definition-file path is correct in your repo)
             sf org create scratch \
               --definition-file config/project-scratch-def.json \
               --alias "$ORG_ALIAS" \
-              --duration-days 7 \
+              --duration-days 30 \   # <-- extended to 30 days
               --target-dev-hub DevHub \
               --set-default \
               --json > create.json || {
@@ -83,17 +79,17 @@ jobs:
 
             ORG_USERNAME=$(jq -r '.result.username' create.json)
             echo "Created scratch org: $ORG_USERNAME (alias: $ORG_ALIAS)"
+            echo "new_org=true" >> $GITHUB_OUTPUT
+
+            # Save auth URL for local use
+            AUTH=$(jq -r '.result.sfdxAuthUrl' create.json)
+            echo "$AUTH" > scratch-auth-url.txt
           fi
 
-          # Ensure the org is authorized locally in this runner (so sf commands can target it)
-          # When create happened above, sf already set local auth. If we found an org by alias, we still need to auth the alias locally:
+          # Ensure the org is authorized locally in this runner
           if ! sf org display --target-org "$ORG_ALIAS" --json > /dev/null 2>&1; then
-            # Try to authorize by alias from Dev Hub info (this will work if scratch org was created by CI previously)
-            echo "Authorizing scratch org (alias $ORG_ALIAS) locally..."
-            # fetch the username from the DevHub list again if needed
             FOUND_USERNAME=$(sf org list --all --json | jq -r --arg A "$ORG_ALIAS" '.result.scratchOrgs[]? | select(.alias==$A) | .username' || true)
             if [ -n "$FOUND_USERNAME" ] && [ "$FOUND_USERNAME" != "null" ]; then
-              # set the found username as alias locally (this command is idempotent for CI)
               sf org display --target-org "$FOUND_USERNAME" --json > /dev/null 2>&1 || true
             fi
           fi
@@ -101,12 +97,19 @@ jobs:
           echo "org_username=$ORG_USERNAME" >> $GITHUB_OUTPUT
           echo "org_alias=$ORG_ALIAS" >> $GITHUB_OUTPUT
 
+      - name: Upload Auth File (for local VS Code)
+        if: steps.determine.outputs.new_org == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-${{ steps.vars.outputs.branch }}
+          path: scratch-auth-url.txt
+          retention-days: 30   # <-- artifact retention matches org duration
+
       - name: Deploy source to scratch org
         shell: bash
         run: |
           ORG_USERNAME=${{ steps.determine.outputs.org_username }}
           echo "Deploying to org: $ORG_USERNAME"
-          # start a source deploy (non-blocking). Use --json to capture details into deploy.json
           sf project deploy start --target-org "$ORG_USERNAME" --json > deploy.json || {
             echo "❌ sf project deploy start returned non-zero. Dumping deploy.json (if any):"
             cat deploy.json || true
@@ -116,27 +119,22 @@ jobs:
           DEPLOY_ID=$(jq -r '.result.id' deploy.json)
           echo "Deploy started with id: $DEPLOY_ID"
 
-          # Wait for deploy to finish; if CLI supports wait, you can call project deploy status; fallback to polling:
-          # Use sf project deploy status --wait if available; otherwise poll.
-          # Try using status command:
           if sf project deploy status --wait 600 --target-org "$ORG_USERNAME" --json > status.json 2>/dev/null; then
             echo "Deployment status:"
             jq -r '.result.status' status.json || true
             cat status.json
           else
-            # fallback: try a few checks
             echo "Could not run sf project deploy status --wait - checking deploy status once"
             sf project deploy status --target-org "$ORG_USERNAME" --json > status.json || true
             cat status.json || true
           fi
 
       - name: (Optional) Run Apex Tests
-        if: false  # set to `true` if you want CI to run tests after deploy
+        if: false
         shell: bash
         run: |
           ORG_USERNAME=${{ steps.determine.outputs.org_username }}
           echo "Running Apex tests in $ORG_USERNAME"
-          # Example: run all tests (be careful — may be slow). Adjust to run specific tests or test suites.
           sf apex test run --target-org "$ORG_USERNAME" --resultformat human --wait 10
 
       - name: Report completion
