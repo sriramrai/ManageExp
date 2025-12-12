@@ -36,7 +36,7 @@ jobs:
           # Login to Dev Hub
           sf org login sfdx-url --sfdx-url-file /tmp/auth.txt --alias DevHub
           # Set as default dev hub
-          sf config set default-dev-hub=DevHub
+          sf config set default-dev-hub=DevHub --nopropmt
           # Verify
           sf org display --target-org DevHub
 
@@ -73,7 +73,7 @@ jobs:
             sf org create scratch \
               --definition-file config/project-scratch-def.json \
               --alias "$ORG_ALIAS" \
-              --duration-days 30 \   # <-- extended to 30 days
+              --duration-days 30 \
               --target-dev-hub DevHub \
               --set-default \
               --noprompt \
