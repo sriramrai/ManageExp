@@ -1,0 +1,46 @@
+name: Deploy Feature Branch to Scratch Org
+on:
+  create:
+    branches:
+      - "feature/*"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Salesforce CLI
+        uses: sfdx-actions/setup-sfdx@v1
+
+      - name: Authenticate DevHub
+        uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.SFDX_AUTH_URL }}
+
+      - name: List active scratch orgs
+        id: listscratch
+        run: |
+          sf org list --json > orglist.json
+          echo "orgs=$(cat orglist.json)" >> $GITHUB_OUTPUT
+
+      - name: Determine scratch org
+        id: determine
+        run: |
+          ACTIVE=$(jq -r '.result.scratchOrgs[]? | select(.isActive==true) | .username' orglist.json)
+
+          if [ -z "$ACTIVE" ]; then
+            echo "No active scratch org found. Creating one..."
+            sf org create scratch --definition-file config/project-scratch-def.json --alias ci_scratch --duration-days 7 --set-default --json > create.json
+            ORG_USERNAME=$(jq -r '.result.username' create.json)
+          else
+            echo "Active scratch org found: $ACTIVE"
+            ORG_USERNAME=$ACTIVE
+          fi
+
+          echo "org_username=$ORG_USERNAME" >> $GITHUB_OUTPUT
+
+      - name: Deploy to scratch org
+        run: |
+          sf project deploy start --target-org ${{ steps.determine.outputs.org_username }
