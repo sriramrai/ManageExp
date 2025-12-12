@@ -34,6 +34,8 @@ jobs:
         run: |
           echo "${{ secrets.SFDX_AUTH_URL }}" > /tmp/auth.txt
           sf org login sfdx-url --sfdx-url-file /tmp/auth.txt --alias DevHub
+          sf config set default-dev-hub=DevHub
+          sf org display --target-org DevHub
 
       - name: Verify Auth
         run: |
