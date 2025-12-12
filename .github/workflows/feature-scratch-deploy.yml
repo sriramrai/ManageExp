@@ -36,7 +36,7 @@ jobs:
           # Login to Dev Hub
           sf org login sfdx-url --sfdx-url-file /tmp/auth.txt --alias DevHub
           # Set as default dev hub
-          sf config set default-dev-hub=DevHub --nopropmt
+          sf config set default-dev-hub=DevHub --noprompt
           # Verify
           sf org display --target-org DevHub
 
