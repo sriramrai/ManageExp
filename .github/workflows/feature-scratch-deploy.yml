@@ -63,8 +63,12 @@ jobs:
           echo "Org alias to use: $ORG_ALIAS"
 
           # Try to find an existing active scratch org with this alias (CI runner may not have local auth) 
-           ORG_USERNAME=$(sf org list --all --json | jq -r --arg A "$ORG_ALIAS" '.result.scratchOrgs[]? | select(.alias==$A and .isActive==true) | .username' || true) if [ -n "$ORG_USERNAME" ] && [ "$ORG_USERNAME" != "null" ]; then echo "Found active scratch org for alias $ORG_ALIAS -> $ORG_USERNAME" else echo "No active scratch org found for alias $ORG_ALIAS. Creating one..."
-           sf org create scratch \
+           ORG_USERNAME=$(sf org list --all --json | jq -r --arg A "$ORG_ALIAS" '.result.scratchOrgs[]? | select(.alias==$A and .isActive==true) | .username' || true) 
+           if [ -n "$ORG_USERNAME" ] && [ "$ORG_USERNAME" != "null" ]; then 
+             echo "Found active scratch org for alias $ORG_ALIAS -> $ORG_USERNAME" 
+           else 
+              echo "No active scratch org found for alias $ORG_ALIAS. Creating one..."
+            sf org create scratch \
               --definition-file config/project-scratch-def.json \
               --alias "$ORG_ALIAS" \
               --duration-days 30 \
