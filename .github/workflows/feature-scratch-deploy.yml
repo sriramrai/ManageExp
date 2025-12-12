@@ -76,6 +76,7 @@ jobs:
               --duration-days 30 \   # <-- extended to 30 days
               --target-dev-hub DevHub \
               --set-default \
+              --noprompt \
               --json > create.json || {
                 echo "❌ Scratch org creation failed. Dumping create.json (if any):"
                 cat create.json || true
