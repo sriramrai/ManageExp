@@ -29,12 +29,15 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Authenticate DevHub (from SFDX_AUTH_URL secret)
+      - name: Authenticate DevHub
         shell: bash
         run: |
           echo "${{ secrets.SFDX_AUTH_URL }}" > /tmp/auth.txt
+          # Login to Dev Hub
           sf org login sfdx-url --sfdx-url-file /tmp/auth.txt --alias DevHub
+          # Set as default dev hub
           sf config set default-dev-hub=DevHub
+          # Verify
           sf org display --target-org DevHub
 
       - name: Verify Auth
