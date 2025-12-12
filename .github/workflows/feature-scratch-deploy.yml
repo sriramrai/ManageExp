@@ -1,3 +1,10 @@
+name: Deploy Feature Branch to Scratch Org
+
+on:
+  create:
+    branches:
+      - "feature/*"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -9,6 +16,9 @@ jobs:
       - name: Install Salesforce CLI
         uses: sfdx-actions/setup-sfdx@v1
 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
       - name: Authenticate DevHub
         uses: sfdx-actions/setup-sfdx@v1
         with:
@@ -18,7 +28,6 @@ jobs:
         id: listscratch
         run: |
           sf org list --json > orglist.json
-          echo "orgs=$(cat orglist.json)" >> $GITHUB_OUTPUT
 
       - name: Determine scratch org
         id: determine
@@ -38,4 +47,4 @@ jobs:
 
       - name: Deploy to scratch org
         run: |
-          sf project deploy start --target-org ${{ steps.determine.outputs.org_username }
+          sf project deploy start --target-org ${{ steps.determine.outputs.org_username }}
