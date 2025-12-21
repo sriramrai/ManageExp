@@ -24,6 +24,17 @@ tfoot td {
   text-align: right; /* Aligns the total value to the right */
 }
 
+/* .box {
+    padding: 8px;
+} */
+
+.box b {
+    display: block;
+    margin-bottom: 4px;
+}
+
+
+
 /* th, td {
   padding: 8px;
   border: 1px solid #ddd;

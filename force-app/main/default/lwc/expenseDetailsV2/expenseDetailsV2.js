@@ -5,7 +5,8 @@ import deleteELI from '@salesforce/apex/ExpenseController.deleteELI';
 import LightningConfirm from "lightning/confirm";
 import ltngMoreActionModal from 'c/expenseMoreActionModal';
 import ltngEditRecord from 'c/editExpenseForm';
-import {log, logError, toString} from 'c/utilityClass';
+import serachExp from '@salesforce/apex/ExpenseController.searchExpense';
+import { log, logError, toString } from 'c/utilityClass';
 
 export default class ExpenseDetailsV2 extends LightningElement {
     @track dataMap = new Map();
@@ -59,16 +60,9 @@ export default class ExpenseDetailsV2 extends LightningElement {
         refreshApex(this.expenseResult);
     }
 
-    @api searchData(searchText) {
-        if(searchText) {
-            this.allrecords = this.expenseResult.data.filter(
-                function(item) {
-                    if(item.Details__c.toLowerCase().includes(searchText.toLowerCase())) {
-                        return true;
-                    }
-                    return false;
-                }
-            );
+    @api async searchData(searchText, fromAll) {
+        if(searchText && searchText.length > 2) {
+            this.allrecords = await serachExp({'searchtext': searchText, 'fromAll': fromAll});
         }else {
             this.allrecords = this.expenseResult.data;
         }

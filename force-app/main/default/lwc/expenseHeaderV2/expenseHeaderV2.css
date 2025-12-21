@@ -2,3 +2,64 @@
 {
     display: inline-block !important;
 }
+
+/* entire switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+/* hide the checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+    transition: .4s;
+}
+
+/* circle knob */
+.slider:before {
+    content: "";
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+/* move knob when enabled */
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* background when enabled */
+input:checked + .slider {
+    background-color: #28a745;
+}
+
+/* ON / OFF text */
+.switch-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 6px;
+    left: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    pointer-events: none;
+}
+

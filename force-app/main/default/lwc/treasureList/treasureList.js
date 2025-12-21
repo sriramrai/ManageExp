@@ -16,6 +16,11 @@ export default class TreasureList extends LightningElement {
     ];
     initialCols;
 
+    get hasRecords() {
+        return this.recordList && this.recordList.length > 0;
+    }
+
+
     @wire(getTreasures, {'fy': '$fyValue'})
     getTresurees({error, data}) {
         if(data) {

@@ -138,11 +138,25 @@ public with sharing class ExpenseController {
         return (List<Expense_Line_Item__c>)(Database.query(query));
     }
 
+    @AuraEnabled 
+    public static List<Expense_Line_Item__c> searchExpense(String searchtext, Boolean fromAll) {
+        List<Date> fyDates = ExpenseManagerUtilHelper.getFiscalYear(Date.today());
+        Date startDate = fyDates[0];
+        Date endDate = fyDates[1];
+        String serachTerm = '%'+searchtext+'%';
+        String query = 'SELECT Id, Date__c, Amount__c, Details__c, Debited_By__c ';
+        query += 'FROM Expense_Line_Item__c ';
+        query += 'WHERE Details__c LIKE :serachTerm ';
+        if(!fromAll){
+            query += ' AND Date__c >= :startDate AND Date__c <= :endDate';
+        }
+        query += ' ORDER BY Date__c DESC';
+        List<Expense_Line_Item__c> expenses = (List<Expense_Line_Item__c>) Database.query(query);
+        return expenses;
+    }
+
     @AuraEnabled(cacheable=true)
     public static List<ExpenseWrapper> getExpenses(Date startDate, Date endDate, String expenseBy) {
-        System.debug('StartDate**** : '+startDate);
-        System.debug('EndDate**** : '+endDate);
-        System.debug('ExpenseBy**** : '+expenseBy);
         List<String> expenseByList = new List<String>();
         if(expenseBy.equals('pastExpenses')) {
             System.debug('pastExpenses(6)** : '+JSON.serialize(pastExpenses(6)));

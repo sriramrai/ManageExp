@@ -34,8 +34,9 @@ export default class ExpenseMain extends LightningElement {
 
     searchHandler(event) {
         let searchText = event.detail.searchText;
+        let isAll = event.detail.alltime;
         let expenseDetails = this.getExpenseDetails();
-        expenseDetails.searchData(searchText);
+        expenseDetails.searchData(searchText, isAll);
     }
 
     notifyExpenseDetails() {
@@ -59,8 +60,10 @@ export default class ExpenseMain extends LightningElement {
 
     newrecordHandler(event) {
         let expenseDetails = this.getExpenseDetails();
-        expenseDetails.refreshRecord = event.detail.newrecord;
-        expenseDetails.refreshData();
+        if(expenseDetails != null) {
+            expenseDetails.refreshRecord = event.detail.newrecord;
+            expenseDetails.refreshData();
+        }
     }
 
     selectedItemHandler(event) {
