@@ -10,14 +10,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Entertainment</fullName>
-                <default>false</default>
-                <label>Entertainment</label>
-            </value>
-            <value>
                 <fullName>Grocery</fullName>
                 <default>false</default>
                 <label>Grocery</label>
+            </value>
+            <value>
+                <fullName>Milk</fullName>
+                <default>false</default>
+                <label>Milk</label>
             </value>
             <value>
                 <fullName>Utility &amp; Bill</fullName>
@@ -33,6 +33,11 @@
                 <fullName>Travel</fullName>
                 <default>false</default>
                 <label>Travel</label>
+            </value>
+            <value>
+                <fullName>Entertainment</fullName>
+                <default>false</default>
+                <label>Entertainment</label>
             </value>
             <value>
                 <fullName>Other</fullName>
