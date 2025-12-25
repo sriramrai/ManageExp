@@ -35,9 +35,9 @@
                 <label>Travel</label>
             </value>
             <value>
-                <fullName>Entertainment</fullName>
+                <fullName>Medical</fullName>
                 <default>false</default>
-                <label>Entertainment</label>
+                <label>Medical</label>
             </value>
             <value>
                 <fullName>Other</fullName>
