@@ -1,10 +1,6 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getExpense from '@salesforce/apex/ExpenseController.getExpensesV2'
 import { refreshApex } from "@salesforce/apex";
-import deleteELI from '@salesforce/apex/ExpenseController.deleteELI';
-import LightningConfirm from "lightning/confirm";
-import ltngMoreActionModal from 'c/expenseMoreActionModal';
-import ltngEditRecord from 'c/editExpenseForm';
 import serachExp from '@salesforce/apex/ExpenseController.searchExpense';
 import { log, logError, toString } from 'c/utilityClass';
 
@@ -17,8 +13,11 @@ export default class ExpenseDetailsV2 extends LightningElement {
     expenseResult;
     allrecords;
     total;
-    @track selectedItems = [];
-    
+    @track accordionData = [];
+    @api
+    get getLabel() {
+        return 'Grocery 1000';
+    }
     @wire (getExpense, {'fromDate' : '$fromdate', 'toDate' : '$todate', 'expenseBy' : '$entity'})
     expenses(result) {
         this.expenseResult = result;
@@ -33,13 +32,25 @@ export default class ExpenseDetailsV2 extends LightningElement {
         }
     }
 
-    calculateTotal() {
+    calculateTotal(operation) {
         this.total = 0;
+        const tempMap = {};
         this.allrecords.forEach(record => {
             this.total += record.Amount__c;
+            const category = record.Category__c;
+            if(!tempMap[category]) {
+                tempMap[category] = [];
+            }
+            tempMap[category].push(record);
         });
+        this.accordionData = Object.keys(tempMap).map(cat => ({
+            category: operation == 'Searched Result' ? operation : cat,
+            records: tempMap[cat],
+            totals: this.totalSum(tempMap[cat])
+        }));
         let customEvent = new CustomEvent("updatetotal", {detail: {total: this.total}});
         this.dispatchEvent(customEvent);
+        log('MyMap**** : '+toString(this.dataMap));
     }
 
     @api refreshData() {
@@ -52,69 +63,22 @@ export default class ExpenseDetailsV2 extends LightningElement {
         }else {
             this.allrecords = this.expenseResult.data;
         }
-        this.calculateTotal();
+        this.calculateTotal('Searched Result');
     }
 
-    updateDataTableSelection() {
-        this.selectedItems = [];
-        let selectedrows = this.template.querySelector("lightning-datatable").getSelectedRows();
-        selectedrows = [];
-        this.template.querySelector("lightning-datatable").selectedRows=[];
+    handleSectionToggle(event) {
+        const openSections = event.detail.openSections;
     }
 
-    viewRecord(recordId) {
-        console.log('inside view record...');
-        window.open('/'+recordId, "_blank");
+    dataUpdateHandler(event) {
+        this.refreshData();
     }
 
-    async editRecord(recordId) {
-        const result = await ltngEditRecord.open({
-            size: 'small',
-            description: 'Edit Expense',
-            content: recordId,
-            headerText: 'Edit Record'
+    totalSum(dataArray) {
+        let result = 0;
+        dataArray.forEach(element => {
+            result += element.Amount__c;
         });
-        if(this.result) {
-            this.refreshData();
-        }
-    }
-
-    async deleteRecord(recordId) {
-        const result = await LightningConfirm.open({
-            message: "Do you really want to delete this record.",
-            variant: "headerless",
-            label: "This is the aria-label value",
-        });
-        if(result) {
-            deleteELI({'recordIds' : JSON.stringify([recordId])})
-            .then((result) => {
-                this.refreshData();
-            })
-            .catch((error) => {
-                console.error('Error Occured while posting data...');
-            })
-        }
-    }
-
-    async moreActionHandler(event) {
-        let containerChoosen = this.template.querySelector('.expense_container');
-        let recordId = event.target.getAttribute("data-id");
-        this.result = await ltngMoreActionModal.open({
-            size: 'small',
-            description: 'Accessible description of modal\'s purpose',
-            content: recordId,
-            headerText: 'Perform More',
-            modalData : [{'no': '1', 'label': 'View'}, {'no': '2', 'label': 'Edit'}, {'no': '3', 'label': 'Delete'}],
-        });
-        if(this.result ==1 ) {
-            this.viewRecord(recordId);
-        }
-        if(this.result == 2) {
-            this.editRecord(recordId);
-        }else if(this.result == 3) {
-            this.deleteRecord(recordId);
-        }
-        console.log('zcontainerChoosen : '+containerChoosen);
-        containerChoosen.scrollIntoView();
+        return result;
     }
 }

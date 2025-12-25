@@ -21,7 +21,32 @@
               </div>
             </div>
             
-            <div class="slds-grid">
+            <template if:true={creditSection}>
+              <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                  <lightning-input-field field-name="Source__c" value={source} onchange={sourceChangeHandler}></lightning-input-field>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                  <lightning-input-field field-name="EMI_Term__c" value={emiTerms}></lightning-input-field>
+                </div>
+              </div>
+              <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                  <lightning-input-field field-name="Category__c" ></lightning-input-field>
+                </div>
+              </div>
+            </template>
+            <template if:false={creditSection}>
+              <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                  <lightning-input-field field-name="Source__c" value={source} onchange={sourceChangeHandler}></lightning-input-field>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                  <lightning-input-field field-name="Category__c" ></lightning-input-field>
+                </div>
+              </div>
+            </template>
+            <!-- <div class="slds-grid">
               <div class="slds-col slds-size_1-of-2">
                 <lightning-input-field field-name="Source__c" value={source} onchange={sourceChangeHandler}></lightning-input-field>
               </div>
@@ -30,7 +55,13 @@
                   <lightning-input-field field-name="EMI_Term__c" value={emiTerms}></lightning-input-field>
                 </div>
               </template>
-            </div>
+            </div> -->
+
+            <!-- <div class="slds-grid">
+              <div class="slds-col slds-size_1-of-2">
+                <lightning-input-field field-name="Category__c" ></lightning-input-field>
+              </div>
+            </div> -->
             
             <div class="slds-grid">
               <div class="slds-col slds-size_1-of-1">

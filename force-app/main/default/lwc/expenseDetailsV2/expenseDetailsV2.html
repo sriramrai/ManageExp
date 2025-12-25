@@ -1,24 +1,17 @@
 <template>
-    <div class="expense_container" style="height: 280px; overflow: scroll;">
-        <ul class="">
-            <template for:each={allrecords} for:item="rec">
-                <li key={rec.Id} style="padding: 10px;">
-                    <lightning-layout padding="around-small" >
-                        <lightning-layout-item size="3">
-                            <lightning-formatted-date-time value={rec.Date__c} month="short" day="2-digit"></lightning-formatted-date-time>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="3">
-                            <lightning-formatted-number format-style="currency" currency-code="INR" value={rec.Amount__c} maximum-fraction-digits=0></lightning-formatted-number>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="5" class="overflow-div">
-                            <lightning-formatted-text value={rec.Details__c}></lightning-formatted-text>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="1">
-                            <lightning-icon style="margin-left:1px;" size="x-small" icon-name="utility:more" data-id={rec.Id} onclick={moreActionHandler}></lightning-icon>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                </li>
+    <div class="expense_container" style="height: 320px; overflow: scroll;">
+        <lightning-accordion class="custom-accordion" allow-multiple-sections-open active-section-name=[]>
+            <template for:each={accordionData} for:item="section">
+                <lightning-accordion-section
+                    key={section.category}
+                    name={section.category}
+                    label={section.category}>
+                    <span slot="actions">
+                        <lightning-formatted-number format-style="currency" currency-code="INR" value={section.totals} maximum-fraction-digits=0></lightning-formatted-number>
+                    </span>
+                    <c-expense-details-list record-list={section.records} onupdatedata={dataUpdateHandler}></c-expense-details-list>
+                </lightning-accordion-section>
             </template>
-        </ul>
+        </lightning-accordion>
     </div>    
 </template>

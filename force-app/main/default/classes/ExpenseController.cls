@@ -132,7 +132,7 @@ public with sharing class ExpenseController {
     @AuraEnabled(cacheable = true)
     public static List<Expense_Line_Item__c> getExpensesV2(Date fromDate, Date toDate, String expenseBy) {
         List<String> expendBy = new List<String> {expenseBy};
-        String query = 'SELECT Id, Date__c, Amount__c, Details__c, Debited_By__c FROM Expense_Line_Item__c ';
+        String query = 'SELECT Id, Date__c, Amount__c, Details__c, Debited_By__c, Category__c FROM Expense_Line_Item__c ';
         query +=  fromDate != null ? ' WHERE Date__c >= :fromDate AND Date__c <= :toDate ' : '';
         query += ' AND Debited_By__c IN :expendBy ORDER BY Date__c DESC';
         return (List<Expense_Line_Item__c>)(Database.query(query));

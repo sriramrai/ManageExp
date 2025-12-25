@@ -3,3 +3,38 @@
     /* text-overflow: ellipsis; */
     overflow: scroll;
 }
+.accordion-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.category {
+    font-weight: 600;
+}
+.custom-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.amount {
+    margin-left: auto;
+    color: #2e844a;
+}
+
+.slds-accordion__summary-content {
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+.custom-accordion {
+    --slds-c-accordion-heading-font-weight: bold !important;
+    --slds-c-accordion-heading-font-size: 1rem !important;
+}
+/* .amount {
+    font-weight: 600;
+    color: #0070d2; 
+} */
