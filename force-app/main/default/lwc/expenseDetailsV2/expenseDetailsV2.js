@@ -48,6 +48,7 @@ export default class ExpenseDetailsV2 extends LightningElement {
             records: tempMap[cat],
             totals: this.totalSum(tempMap[cat])
         }));
+        this.accordionData.sort((a,b) => b.totals-a.totals);
         let customEvent = new CustomEvent("updatetotal", {detail: {total: this.total}});
         this.dispatchEvent(customEvent);
         log('MyMap**** : '+toString(this.dataMap));
