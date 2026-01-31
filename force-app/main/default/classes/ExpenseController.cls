@@ -284,7 +284,7 @@ public with sharing class ExpenseController {
             pay.Settled__c = true;
             update pay;
 
-            pay = [SELECT Id, Amount__c, Description__c FROM Payment__c WHERE Id = :recordId LIMIT 1];
+            /* pay = [SELECT Id, Amount__c, Description__c FROM Payment__c WHERE Id = :recordId LIMIT 1];
             Expense__c exp = [SELECT Id FROM Expense__c WHERE Start_Date__c <= :paymentD AND End_Date__c >= :paymentD LIMIT 1];
 
             Expense_Line_Item__c expenseLineItem = new Expense_Line_Item__c();
@@ -294,7 +294,7 @@ public with sharing class ExpenseController {
             expenseLineItem.Source__c = 'Gpay';
             expenseLineItem.Details__c = 'Payment Of - '+pay.Description__c;
             expenseLineItem.Expense__c = exp.Id;
-            insert expenseLineItem;
+            insert expenseLineItem; */
         }catch(Exception exp) {
             throw new AuraHandledException('Save Failed** : '+exp.getMessage());
         }

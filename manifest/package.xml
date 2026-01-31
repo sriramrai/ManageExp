@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>*</members>
+		<name>AuthProvider</name>
+	</types>
+	<types>
 		<members>Earning__c.Month__c</members>
 		<members>Treasure__c.Amount__c</members>
 		<members>Treasure__c.Date__c</members>
@@ -30,6 +34,10 @@
 		<members>futureInvestmentList</members>
 		<members>investmentList</members>
 		<name>LightningComponentBundle</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>NamedCredential</name>
 	</types>
 	<types>
 		<members>*</members>
