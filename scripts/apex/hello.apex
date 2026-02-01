@@ -4,10 +4,15 @@
 //     SFDX: Execute Anonymous Apex with Currently Selected Text
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
-delete [SELECT Id FROM Sync_Data__c];
+delete [SELECT Id FROM Sync_Data__c WHERE Name != 'SD-00060'];
 SyncDataController.syncData();
 
-String syncDataId = 'a09In000002j7GMIAY';
+List<Sync_Data_Item__c> syncDataItems = [SELECT Id, Name, Data__c, Level__c, Inserted_Records__c, Sync_Data__c FROM Sync_Data_Item__c WHERE Sync_Data__c = 'a09In000002j7GMIAY'];
+for(Sync_Data_Item__c syncDataItem : syncDataItems) {
+    syncDataItem.Inserted_Records__c = null;
+}
+update syncDataItems;
+String syncDataId = 'a09In000002j8UEIAY';
 Database.executeBatch(new SyncDataInsertClone(syncDataId));
 
 delete [select Id FROM Account where Name like 'BT%'];

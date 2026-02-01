@@ -3,16 +3,18 @@ public with sharing class SyncDataController {
     private static String syncDataRef;
     public static void syncData() {
         Sync_Data__c sdata = new Sync_Data__c();
-        sdata.Object_Name__c = 'Account';
-        sdata.L1__c = 'Account';
-        sdata.L2__c = 'Contact';
-        sdata.L2_REF__c = 'AccountId';
+        sdata.Object_Name__c = 'Expense__c';
+        sdata.L1__c = 'Expense__c';
+        sdata.L2__c = 'Expense_Line_Item__c';
+        sdata.L3__c = 'Payment__c';
+        sdata.L2_REF__c = 'Expense__c';
+        sdata.L3_REF__c = 'Expense_Line_Item__c';
         Date filteredDate = Date.newInstance(2026, 01, 18);
         sdata.Date_Filter__c = filteredDate;
         insert sdata;
         syncDataRef = sdata.Id;
         System.debug('sdata*** : '+sdata.Id);
-        String objectName = 'Account';
+        String objectName = 'Expense__c';
         Integer offset = 0;
         String step = 'l1';
         String syncDataId = sdata.Id;

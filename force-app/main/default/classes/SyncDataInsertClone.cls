@@ -1,4 +1,7 @@
 public with sharing class SyncDataInsertClone implements DataBase.Batchable <sObject> {
+    // Testing switch: org-default Hierarchy Custom Setting Testing_Switch__c.Test_Mode__c
+    // Cache within transaction to avoid repeated describe/access
+    private static Boolean TEST_MODE_CACHE;
     public Sync_Data_Item__c syncDataItem;
     private String syncDataId;
     
@@ -109,7 +112,7 @@ public with sharing class SyncDataInsertClone implements DataBase.Batchable <sOb
                         }
                         
                         if (field == 'Name') {
-                            newRecord.put('Name', 'BT' + String.valueOf(fieldValue));
+                            newRecord.put('Name', String.valueOf(fieldValue));
                         } else if(field == 'Id') {
                             recordId = (String)fieldValue;
                         } else if(String.isNotBlank(objInfo.parentReference) && field.equalsIgnoreCase(objInfo.parentReference)) {
@@ -159,8 +162,13 @@ public with sharing class SyncDataInsertClone implements DataBase.Batchable <sOb
             // Filter in Apex code since LongTextArea fields can't be filtered in SOQL
             remainingItems = filterUnprocessedItems(remainingItems);
             if (!remainingItems.isEmpty()) {
-                System.debug('Requeuing batch for remaining items. Sync_Data__c: ' + syncDataId);
-                Database.executeBatch(new SyncDataInsertClone(syncDataId), 200);
+                // Testing switch check: only enqueue next batch when Test_Mode__c is true
+                if (isTestingSwitchEnabled()) {
+                    System.debug('Requeuing batch for remaining items. Sync_Data__c: ' + syncDataId);
+                    Database.executeBatch(new SyncDataInsertClone(syncDataId), 200);
+                } else {
+                    System.debug('Testing_Switch__c.Test_Mode__c is false (org-default). Skipping next batch enqueue for Sync_Data__c: ' + syncDataId);
+                }
             } else {
                 System.debug('All Sync_Data_Item__c records processed for Sync_Data__c: ' + syncDataId);
             }
@@ -404,6 +412,24 @@ public with sharing class SyncDataInsertClone implements DataBase.Batchable <sOb
             }
         } catch (Exception e) {
             System.debug('Error in storeInsertedRecord: ' + e.getMessage());
+        }
+    }
+
+    // Reads Hierarchy Custom Setting org-default Testing_Switch__c.Test_Mode__c
+    // Returns true if enabled, false otherwise. Caches result in TEST_MODE_CACHE.
+    private static Boolean isTestingSwitchEnabled() {
+        if (TEST_MODE_CACHE != null) {
+            return TEST_MODE_CACHE;
+        }
+        try {
+            // Get org-default (no user/role override) value
+            Testing_Switch__c cs = Testing_Switch__c.getOrgDefaults();
+            TEST_MODE_CACHE = (cs != null && cs.Test_Mode__c == true);
+            return TEST_MODE_CACHE;
+        } catch (Exception e) {
+            // Fail safe: if custom setting not accessible or not defined, treat as disabled
+            TEST_MODE_CACHE = false;
+            return false;
         }
     }
 
