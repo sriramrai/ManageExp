@@ -40,6 +40,10 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
+		<members>Sync_Data__c.Analyze_Sync</members>
+		<name>QuickAction</name>
+	</types>
+	<types>
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
