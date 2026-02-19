@@ -1,0 +1,4 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
+    <aura:attribute name="recordId" type="Id" />
+    <c:syncAnalyzer recordId="{!v.recordId}" onsuccess="{!c.closeQuickAction}"></c:syncAnalyzer>
+</aura:component>

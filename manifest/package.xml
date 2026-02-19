@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
+		<members>Salesforce</members>
+		<name>AuthProvider</name>
+	</types>
+	<types>
 		<members>Earning__c.Month__c</members>
 		<members>Treasure__c.Amount__c</members>
 		<members>Treasure__c.Date__c</members>
@@ -9,12 +13,21 @@
 		<name>CustomField</name>
 	</types>
 	<types>
+		<members>*</members>
+		<name>CustomMetadata</name>
+	</types>
+	<types>
+		<members>Sync_Data_Configuration__mdt</members>
 		<members>Treasure__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
 		<members>Treasure__c</members>
 		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>DevOrg_External_Cred</members>
+		<name>ExternalCredential</name>
 	</types>
 	<types>
 		<members>Investment_Dashboard</members>
@@ -30,6 +43,14 @@
 		<members>futureInvestmentList</members>
 		<members>investmentList</members>
 		<name>LightningComponentBundle</name>
+	</types>
+	<types>
+		<members>DevOrg</members>
+		<name>NamedCredential</name>
+	</types>
+	<types>
+		<members>Sync_Data__c.Analyze_Sync</members>
+		<name>QuickAction</name>
 	</types>
 	<types>
 		<members>*</members>

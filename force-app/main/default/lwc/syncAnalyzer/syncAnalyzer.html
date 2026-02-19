@@ -1,0 +1,57 @@
+<template>
+    <section class="slds-card slds-p-around_medium">
+        <h2 class="slds-text-heading_small slds-m-bottom_small">Sync Analyzer</h2>
+        
+        <template if:true={isLoading}>
+            <div class="slds-m-vertical_medium">
+                <div class="slds-text-title slds-m-bottom_x-small">{progressMessage} {progressValue}%</div>
+                <!-- Determinate progress bar 0-100 -->
+                <lightning-progress-bar value={progressValue} size="medium"></lightning-progress-bar>
+            </div>
+        </template>
+        
+        <template if:false={isLoading}>
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>Error Details:</h2>
+                    <p>{error}</p>
+                </div>
+            </template>
+            
+            <template if:false={error}>
+                <div class="slds-box slds-theme_default">
+                    <h3 class="slds-text-heading_small slds-m-bottom_small">Analysis Results</h3>
+                    <div class="slds-grid slds-gutters">
+                        <template if:true={l1Size}>
+                            <div class="slds-col">
+                                <h4 class="slds-text-heading_small">L1 Size</h4>
+                                <p>{l1Size}</p>
+                            </div>
+                        </template>
+                        
+                        <template if:true={l2Size}>
+                            <div class="slds-col">
+                                <h4 class="slds-text-heading_small">L2 Size</h4>
+                                <p>{l2Size}</p>
+                            </div>
+                        </template>
+                        
+                        <template if:true={l3Size}>
+                            <div class="slds-col">
+                                <h4 class="slds-text-heading_small">L3 Size</h4>
+                                <p>{l3Size}</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </template>
+        
+        <!-- Buttons Section at the bottom -->
+        <div class="slds-m-top_small slds-text-align_center">
+            <lightning-button label="Retrieve" onclick={handleRetrieve} variant="brand" disabled={isLoading}></lightning-button>
+            <lightning-button label="Commit" onclick={handleCommit} variant="success" disabled={isLoading}></lightning-button>
+        </div>
+    </section>
+</template>

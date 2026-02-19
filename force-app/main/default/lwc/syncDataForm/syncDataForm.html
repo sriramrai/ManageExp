@@ -1,0 +1,112 @@
+<template>
+    <lightning-card title="Sync Data Configuration" icon-name="standard:record">
+        <div class="slds-m-around_medium">
+            <lightning-spinner if:true={isLoading} size="large"></lightning-spinner>
+            
+            <template if:false={isLoading}>
+                <!-- Simple toast banner -->
+                <template if:true={showToast}>
+                    <div class="slds-notify slds-notify_alert slds-theme_{toastVariant} slds-m-bottom_small" role="status">
+                        <span class="slds-assistive-text">{toastVariant}</span>
+                        <span class="slds-icon_container slds-icon-utility-info slds-m-right_x-small" title="info"></span>
+                        <h2>{toastMessage}</h2>
+                    </div>
+                </template>
+
+                <div class="slds-grid slds-gutters_small slds-wrap">
+                    <!-- L1 Object Selection -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-combobox
+                            label="L1 Object"
+                            value={selectedL1Object}
+                            options={objectList}
+                            onchange={handleL1Change}
+                            placeholder="Select L1 Object"
+                            required
+                            id="l1Object">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- Date Filter -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-input
+                            type="date"
+                            label="Date Filter"
+                            value={dateFilter}
+                            onchange={handleDateChange}
+                            name="dateFilter"
+                            data-id="dateFilter"
+                            id="dateFilter">
+                        </lightning-input>
+                    </div>
+
+                    <!-- L2 Object Selection -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-combobox
+                            label="L2 Object"
+                            value={selectedL2Object}
+                            options={l2ObjectList}
+                            onchange={handleL2Change}
+                            placeholder="Select L2 Object"
+                            disabled={l2Disabled}
+                            required
+                            name="l2Object"
+                            id="l2Object">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- L2 Reference Field Selection -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-combobox
+                            label="L2 Reference Field"
+                            value={selectedL2RefField}
+                            options={l2RefFields}
+                            onchange={handleL2RefFieldChange}
+                            placeholder="Select L2 Reference Field"
+                            disabled={l2RefFieldsDisabled}
+                            required
+                            id="l2RefField">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- L3 Object Selection -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-combobox
+                            label="L3 Object"
+                            value={selectedL3Object}
+                            options={l3ObjectList}
+                            onchange={handleL3Change}
+                            placeholder="Select L3 Object"
+                            disabled={l3Disabled}
+                            required
+                            id="l3Object">
+                        </lightning-combobox>
+                    </div>
+
+                    <!-- L3 Reference Field Selection -->
+                    <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
+                        <lightning-combobox
+                            label="L3 Reference Field"
+                            value={selectedL3RefField}
+                            options={l3RefFields}
+                            onchange={handleL3RefFieldChange}
+                            placeholder="Select L3 Reference Field"
+                            disabled={l3RefFieldsDisabled}
+                            required
+                            id="l3RefField">
+                        </lightning-combobox>
+                    </div>
+                </div>
+
+                <div class="slds-m-top_medium">
+                    <lightning-button
+                        label="Save Configuration"
+                        variant="brand"
+                        onclick={handleSave}
+                        disabled={isLoading}>
+                    </lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>
