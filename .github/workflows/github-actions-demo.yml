@@ -44,8 +44,9 @@ jobs:
         run:
           echo y | sf plugins:install sfdx-git-delta
       - name: Create Diff Package
-        run:
+        run: |
           sfdx sgd:source:delta --from origin/development --to HEAD --output-dir Diff --ignore-file .sgdignore
+          cat Diff/package/package.xml
       - name: Decrypt the server.key.enc file & store inside assets folder
         run: |
           openssl enc -nosalt -aes-256-cbc -d -in asset/server.key.enc -out asset/server.key -base64 -K DE3B4F6346E0CFA95CA695168A0FD8DA4D06AE808A0AFA9A4DBD2502D5DD6FE7 -iv AC767FEDCF2105140E84B62495C3F43A
