@@ -38,6 +38,10 @@
                 <behavior>Edit</behavior>
                 <field>Inserted_Records__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Record_Count__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns/>
         <style>TwoColumnsTopToBottom</style>

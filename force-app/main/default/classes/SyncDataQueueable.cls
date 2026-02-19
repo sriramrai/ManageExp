@@ -31,26 +31,49 @@ public with sharing class SyncDataQueueable implements Database.Batchable<String
         chunks.add('chunk'); // Only one chunk per execute
         return chunks;
     }
+    
+    public static Sync_Data_Configuration__mdt getSyncDataConfig(String configName) {
+        Map<String, Sync_Data_Configuration__mdt> configMap = Sync_Data_Configuration__mdt.getAll();
+        return configMap.get('Sync_Data_Config');
+    }
+
+    public static String getBaseEndpointURL() {
+        String endpointURI = '';
+        Sync_Data_Configuration__mdt config = getSyncDataConfig('Sync_Data_Config');
+        if(config != null) {
+            endpointURI = 
+                config.Test_Mode__c ? 
+                    URL.getOrgDomainUrl().toExternalForm() + '/services/apexrest/syncdata' : 
+                    config.End_Point_URL__c;
+        } 
+        return endpointURI;
+    }
+
+    //System.debug('getSyncDataConfig Sync_Data_Config***  : '+SyncDataQueueable.getSyncDataConfig('Sync_Data_Config'));
+    //System.debug('getBaseEndpointURL**** : '+SyncDataQueueable.getBaseEndpointURL());
 
     private HttpResponse sendRequest() {
         HttpRequest req = new HttpRequest();
         req.setMethod('GET');
-        //String endpointUrlBase = 'callout:DevOrg_REST/services/apexrest/syncdata';
-        String endpointUrlBase = URL.getOrgDomainUrl().toExternalForm() + '/services/apexrest/syncdata';
         String endpointUrl =
-            endpointUrlBase
+            getBaseEndpointURL()
             + '?objectName=' + objectName
             + '&offset=' + offset
             + '&syncDataId='+ syncDataId
             + '&syncDataItemId=' + syncDataItemId
             + '&step='+step;
-        if(String.isNotBlank(filter)) {
-            String encodedFilter = EncodingUtil.urlEncode(filter, 'UTF-8');
+        String encodedFilter;
+        if(step == 'l1' && String.isNotBlank(filter)) {
+            encodedFilter = filter;
+        }else if(String.isNotBlank(filter)) {
+            encodedFilter = EncodingUtil.urlEncode(filter, 'UTF-8');
+        }
+        if(String.isNotBlank(encodedFilter)) {
             endpointUrl += '&filter=' + encodedFilter;
         }
         System.debug('endpointUrl**** : '+endpointUrl);
         req.setEndpoint(endpointUrl);
-        req.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
+        //req.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
         HttpResponse response = new Http().send(req);
         System.debug('Status code: ' + response.getStatusCode());
         System.debug('Body: ' + response.getBody());
@@ -67,7 +90,7 @@ public with sharing class SyncDataQueueable implements Database.Batchable<String
         this.offset = pResult.offset;
         this.step = pResult.step;
         this.filter = pResult.filter;
-        this.syncDataId = pResult.syncDataId;
+        this.syncDataId = this.syncDataId;
         this.syncDataItemId = pResult.syncDataItemId;
         this.stop = pResult.stop;
         this.errorMessage = pResult.errorMessage;
@@ -80,10 +103,11 @@ public with sharing class SyncDataQueueable implements Database.Batchable<String
 
     private void updateSyncData() {
         System.debug('inside updateSyncData this.syncDataId*** : '+this.syncDataId);
-        Sync_Data__c syncData = new Sync_Data__c(Id = syncDataId, Status__c = 'Completed');
+        Sync_Data__c syncData = new Sync_Data__c(Id = syncDataId, Status__c = 'Completed', Fetch_Completed__c = true);
         if(String.isNotBlank(this.errorMessage)) {
             syncData.Error_Message__c = this.errorMessage;
             syncData.Status__c = 'Error';
+            syncData.Fetch_Completed__c = false;
         }
         update syncData;
     }
@@ -91,13 +115,14 @@ public with sharing class SyncDataQueueable implements Database.Batchable<String
     public void finish(Database.BatchableContext bc) {
         System.debug('Batch finished. code *** : '+this.offset);
         Testing_Switch__c cs = Testing_Switch__c.getInstance();
+        Sync_Data_Configuration__mdt synDataConfig = getSyncDataConfig('Sync_Data_Config');
         System.debug('inside finish test mode***  : '+cs.Test_Mode__c);
         System.debug('inside finish this.stop*** : '+this.stop);
         System.debug('inside finish this.syncDataId*** : '+this.syncDataId);
         System.debug('inside finish this.errormessage *** : '+this.errorMessage);
         if(this.stop) {
             updateSyncData();
-        }else if(!this.stop && cs.Test_Mode__c){
+        }else if(synDataConfig.Enabled__c){
             enqueuejob();
         }
     }

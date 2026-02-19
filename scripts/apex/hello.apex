@@ -1,9 +1,68 @@
+String data = '[{"attributes":{"type":"Expense__c","url":"/services/data/v65.0/sobjects/Expense__c/a0TGA00000k5c8o2AA"},"OwnerId":"0057F000002MzEsQAK","Id":"a0TGA00000k5c8o2AA","End_Date__c":"2025-12-31","Name":"Dec 25","Start_Date__c":"2025-12-01"}]';
+String objectName = 'Expense__c';
+Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectName);
+Map<String, Schema.SObjectField> fieldMap = targetType.getDescribe().fields.getMap();
+Set<String> creatableFields = new Set<String>();
+Map<String, String> fieldTypeMap = new Map<String, String>();
+for (Schema.SObjectField sf : fieldMap.values()) {
+    Schema.DescribeFieldResult dfr = sf.getDescribe();
+    if (dfr.isCreateable()) {
+        creatableFields.add(dfr.getName());
+        fieldTypeMap.put(dfr.getName(), String.valueOf(dfr.getSoapType()));
+    }
+}
+List<Object> rawList = (List<Object>) JSON.deserializeUntyped(data);
+for(Object obj : rawList) {
+    Map<String, Object> row = (Map<String, Object>) obj;
+    SObject newRecord = targetType.newSObject();
+    String recordId;
+    for (String field : row.keySet()) {
+        if(!fieldMap.containsKey(field)) {
+            continue;
+        }
+        if (!creatableFields.contains(field)) {
+            continue;
+        }
+        Object fieldValue = row.get(field);
+        String fieldType = fieldTypeMap.get(field);
+        System.debug('field*** : '+field);
+        System.debug('field type**** : '+fieldType);
+        if(fieldType == 'STRING' || fieldType == 'ID') {
+            newRecord.put(field, (String)fieldValue);
+        }else if(fieldType == 'BOOLEAN') {
+            newRecord.put(field, (Boolean)fieldValue);
+        }else if(fieldType == 'DATE') {
+            System.debug('fieldValue***** : '+(String)fieldValue);
+            String fieldValueStr = String.valueOf(fieldValue);
+            //String dateValue = String.valueOf(fieldValue).trim();
+            newRecord.put(field, Date.valueOf(fieldValueStr));
+        }
+    }
+    System.debug('newRecord **** : '+newRecord);
+}
+
+String str = '2025-12-31';
+Date dt = Date.valueOf(str);
+System.debug('dt** : '+dt);
+
+String syncDataId = 'a09Hy00000kkGSIIA2';
+Database.executeBatch(new SyncDataInsertClone(syncDataId), 1);
+
+
+
+SyncDataHandler.syncData();
 // Use .apex files to store anonymous Apex.
 // You can execute anonymous Apex in VS Code by selecting the
 //     apex text and running the command:
 //     SFDX: Execute Anonymous Apex with Currently Selected Text
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
+
+Sync_Data_Configuration__mdt config = Sync_Data_Configuration__mdt.getAll().get('Sync_Data_Config');
+System.debug('config*** : '+config);
+
+System.debug(SyncDataHandler.analyzeData());
+
 delete [SELECT Id FROM Sync_Data__c WHERE Name != 'SD-00060'];
 SyncDataController.syncData();
 
@@ -70,3 +129,4 @@ String serilized = JSON.serialize(records);
 List<String> recordsD = (List<String>)JSON.deserialize(serilized, List<String>.class);
 System.debug('serilized*** : '+ serilized);
 System.debug('recordsD**** : '+recordsD);
+

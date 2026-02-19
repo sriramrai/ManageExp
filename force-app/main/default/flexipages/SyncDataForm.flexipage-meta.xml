@@ -3,11 +3,11 @@
     <flexiPageRegions>
         <name>main</name>
         <type>Region</type>
-        <componentInstances>
+        <!-- <componentInstances>
             <componentInstance>
                 <componentName>c:syncDataForm</componentName>
             </componentInstance>
-        </componentInstances>
+        </componentInstances> -->
     </flexiPageRegions>
     <masterLabel>Sync Data Form</masterLabel>
     <template>

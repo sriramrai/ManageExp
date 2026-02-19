@@ -1,25 +1,171 @@
 public with sharing class SyncDataController {
     private static Integer OFFSET_SIZE = 30;
     private static String syncDataRef;
-    public static void syncData() {
-        Sync_Data__c sdata = new Sync_Data__c();
-        sdata.Object_Name__c = 'Expense__c';
-        sdata.L1__c = 'Expense__c';
-        sdata.L2__c = 'Expense_Line_Item__c';
-        sdata.L3__c = 'Payment__c';
-        sdata.L2_REF__c = 'Expense__c';
-        sdata.L3_REF__c = 'Expense_Line_Item__c';
-        Date filteredDate = Date.newInstance(2026, 01, 18);
-        sdata.Date_Filter__c = filteredDate;
-        insert sdata;
-        syncDataRef = sdata.Id;
-        System.debug('sdata*** : '+sdata.Id);
-        String objectName = 'Expense__c';
+    
+    private static Sync_Data__c getSyncData() {
+        return [
+            SELECT Id, L1__c, L2__c, L3__c, L2_REF__c, L3_REF__c, Date_Filter__c, Total_L1__c, Total_L2__c, Total_L3__c, Analyzed__c, Status__c, Fetch_Completed__c, Sync_Completed__c 
+            FROM Sync_Data__c WHERE Id =: syncDataRef
+        ];
+    }
+    
+    private static String getSyncDataQuery(Boolean isFetch) {
+        String querySelect = 'SELECT Id, Level__c, Record_Count__c, Inserted_Records__c ';
+        String queryFrom = ' FROM Sync_Data_Item__c ';
+        String queryWhere = ' WHERE Sync_Data__c = : syncDataRef ';
+        String queryOrderBy = '';
+        if(isFetch) {
+            queryOrderBy += ' ORDER BY CreatedDate DESC ';
+        }else {
+            queryWhere += ' AND Completed__c = true ';
+            queryOrderBy = ' ORDER BY LastModifiedDate DESC ';
+        }
+
+        return querySelect + queryFrom + queryWhere + queryOrderBy;
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static String checkSyncStatus(String syncDataId, Boolean isFetch) {
+        // Defensive defaults
+        String opMessage = isFetch ? 'Fetching...' : 'Saving...';
+        ProgressData pd = new ProgressData(opMessage, false, 0);
+        try {
+            // Example status computation:
+            // Progress is derived from number of Sync_Data_Item__c created vs. some target.
+            // Adjust logic to your needs.
+            Integer total = 0;
+            Integer completed = 0;
+
+            syncDataRef = syncDataId;
+            Sync_Data__c syncData = getSyncData();
+            String currentLevel;
+            String message;
+            Decimal toExpectedRecords = syncData.Total_L1__c + syncData.Total_L2__c + syncData.Total_L3__c;
+            Decimal totalFetchedRecords = 0;
+            String syncDataQuery = getSyncDataQuery(isFetch);
+            System.debug('syncDataQuery**** : '+syncDataQuery);
+            for(Sync_Data_Item__c sdItem : (List<Sync_Data_Item__c>)Database.query(syncDataQuery)) {
+                if(String.isBlank(currentLevel)) {
+                    currentLevel = sdItem.Level__c;
+                }
+                totalFetchedRecords += sdItem.Record_Count__c;
+            }
+            System.debug('inside checkSyncData isFetch*** : '+isFetch);
+            if(isFetch) {
+                if(String.isNotBlank(currentLevel)) {
+                    message = opMessage + (String)syncData.get(currentLevel+'__c');
+                }else if(
+                    syncData.Status__c != 'Fetching' &&
+                    !syncData.Fetch_Completed__c
+                ){
+                    syncData(syncDataId);
+                }
+            }else {
+                if(String.isNotBlank(currentLevel)) {
+                    message = opMessage + (String)syncData.get(currentLevel+'__c');
+                }else if(!syncData.Sync_Completed__c) {
+                    syncData.Status__c = 'Syncing';
+                    update syncData;
+                    System.debug('syncDataId**** : '+syncDataId);
+                    SyncDataInsertClone sdI = new SyncDataInsertClone(syncDataId);
+                    Database.executeBatch(sdI, 1);
+                }
+            }
+           
+            Boolean done = false;
+            Decimal completedPercentage = 
+                toExpectedRecords > 0 ? 
+                (totalFetchedRecords / toExpectedRecords) * 100 : 100;
+            if(completedPercentage >= 100) {
+                completedPercentage = 100;
+                message = opMessage + ' Completed...';
+                done = true;
+            }
+            pd = new ProgressData(message, done, completedPercentage);
+            return JSON.serialize(pd);
+        } catch (Exception e) {
+            // Surface an error payload back to LWC
+            return JSON.serialize(new ProgressData('Error checking sync status: ' + e.getMessage(), false, 0));
+        }
+    }
+
+    private static String makeCallout(Sync_Data__c syncData) {
+        HttpRequest req = new HttpRequest();
+        req.setMethod('GET');
+        String endpointUrlBase = 'callout:DevOrg/services/apexrest/syncdata';
+        String endpointUrl =
+            SyncDataQueueable.getBaseEndpointURL()
+            + '?context=' + 'analyze'
+            + '&l1=' + syncData.L1__c
+            + '&l2='+ syncData.L2__c
+            + '&l3=' + syncData.L3__c
+            + '&l2_REF='+syncData.L2_REF__c
+            + '&L3_REF='+syncData.L3_REF__c;
+        if(syncData.Date_Filter__c != null) {
+            DateTime filterDT = DateTime.newInstanceGMT(syncData.Date_Filter__c, Time.newInstance(0, 0, 0, 0));
+            String isoString = filterDT.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
+            endpointUrl += '&filter=' + isoString;
+
+        }
+        req.setEndpoint(endpointUrl);
+        HttpResponse response = new Http().send(req);
+        System.debug('Status code: ' + response.getStatusCode());
+        System.debug('Body: ' + response.getBody());
+        if (response.getStatusCode() == 200) {
+            return response.getBody();
+        }else {
+            String errorMsg = 'API Error: ' + response.getStatusCode();
+            if (response.getBody() != null) {
+                errorMsg += ' - ' + response.getBody();
+            }
+            throw new AuraHandledException(errorMsg);
+        }
+    }
+
+    @AuraEnabled(cacheable=false)
+    public static String analyzeData(Id syncDataId) {
+        syncDataRef = syncDataId;
+        Sync_Data__c syncData = getSyncData();
+        Sync_Data_Configuration__mdt config = SyncDataQueueable.getSyncDataConfig('Sync_Data_Config');
+        //config.Test_Mode__c = true;
+        if(syncData.Analyzed__c) {
+            SyncDataWrapper sdWrapper = new SyncDataWrapper();
+            sdWrapper.l1Size = syncData.Total_L1__c.toString();
+            sdWrapper.l2Size = syncData.Total_L2__c.toString();
+            sdWrapper.l3Size = syncData.Total_L3__c.toString();
+            return JSON.serialize(sdWrapper);
+        }else {
+            String responseStr = makeCallout(syncData);
+            System.debug('responseStr*** : '+responseStr);
+            SyncDataWrapper wrapper = (SyncDataWrapper)JSON.deserialize(responseStr, SyncDataWrapper.class);
+            Integer l1Size = String.isNotBlank(wrapper.l1Size) ? Integer.valueOf(wrapper.l1Size) : 0;
+            Integer l2Size = String.isNotBlank(wrapper.l2Size) ? Integer.valueOf(wrapper.l2Size) : 0;
+            Integer l3Size = String.isNotBlank(wrapper.l3Size) ? Integer.valueOf(wrapper.l3Size) : 0;
+            syncData.Total_L1__c = l1Size;
+            syncData.Total_L2__c = l2Size;
+            syncData.Total_L3__c = l3Size;
+            syncData.Analyzed__c = true;
+            update syncData;
+            return responseStr;
+        }   
+    }
+
+    public static void syncData(String syncDataId) {
+        Sync_Data__c sdata = [
+            SELECT Id, L1__c, Date_Filter__c, Status__c FROM Sync_Data__c WHERE Id =: syncDataId
+        ];
+        String objectName = sdata.L1__c;
         Integer offset = 0;
         String step = 'l1';
-        String syncDataId = sdata.Id;
         String filter = null;
+        if(sdata.Date_Filter__c != null) {
+            DateTime filterDT = DateTime.newInstanceGMT(sdata.Date_Filter__c, Time.newInstance(0, 0, 0, 0));
+            String isoString = filterDT.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\'');
+            filter = isoString;
+        }
         String syncDataItemId = null;
+        sdata.Status__c = 'Fetching';
+        update sdata;
         Database.executeBatch(new SyncDataQueueable(objectName, offset, step, filter, syncDataId, syncDataItemId), 1);
     }
 
@@ -242,7 +388,7 @@ public with sharing class SyncDataController {
     }
 
     @AuraEnabled
-    public static void syncData(String syncDataId) {
+    public static void syncData1(String syncDataId) {
         if (syncDataId == null || syncDataId == '') {
             throw new AuraHandledException('Invalid Sync Data ID provided');
         }
@@ -397,7 +543,8 @@ public with sharing class SyncDataController {
             Sync_Data__c = wrapper.syncDataId,
             Level__c = wrapper.step,
             RecordId__c = storeRecordId(data),
-            Data__c = JSON.serialize(wrapper.data)
+            Data__c = JSON.serialize(wrapper.data),
+            Record_Count__c = wrapper.data.size()
         );
         if(String.isNotBlank(wrapper.syncDataItemId) && wrapper.syncDataItemId != 'null') {
             sdItem.Child_Record__c = wrapper.syncDataItemId;
@@ -494,6 +641,9 @@ public with sharing class SyncDataController {
         public Integer offset;
         public String filter;
         public boolean stop;
+        public String l1Size;
+        public String l2Size;
+        public String l3Size;
         public SyncDataWrapper() {}
     }
 
@@ -535,6 +685,23 @@ public with sharing class SyncDataController {
             this.stop = wrapper.stop == null ? false : wrapper.stop;
             this.syncDataId = wrapper.syncDataId;
             this.syncDataItemId = wrapper.syncDataItemId;
+        }
+    }
+
+    public class ProgressData {
+        public String message;
+        public Boolean done;
+        public Decimal progress;
+        public ProgressData(String message, Boolean done, Decimal progress) {
+            this.message = message;
+            this.done = done;
+            this.progress = progress;
+        }
+    }
+    public class ProgressDataError {
+        public String error;
+        public ProgressDataError(String error) {
+            this.error = error;
         }
     }
 }
