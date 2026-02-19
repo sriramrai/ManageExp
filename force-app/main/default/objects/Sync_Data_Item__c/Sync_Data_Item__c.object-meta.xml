@@ -152,7 +152,6 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
-    <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Sync Data Item</label>
     <nameField>
         <displayFormat>SDI-{000000}</displayFormat>
@@ -161,6 +160,5 @@
     </nameField>
     <pluralLabel>Sync Data Item</pluralLabel>
     <searchLayouts></searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
