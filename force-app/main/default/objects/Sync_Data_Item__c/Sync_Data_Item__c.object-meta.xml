@@ -152,6 +152,7 @@
     <enableSearch>false</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
     <label>Sync Data Item</label>
     <nameField>
         <displayFormat>SDI-{000000}</displayFormat>
@@ -160,5 +161,6 @@
     </nameField>
     <pluralLabel>Sync Data Item</pluralLabel>
     <searchLayouts></searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>
