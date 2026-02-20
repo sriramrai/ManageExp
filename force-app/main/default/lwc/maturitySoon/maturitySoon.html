@@ -2,44 +2,34 @@
     <lightning-card>
         <h3 slot="title">
             <lightning-icon icon-name="utility:connected_apps" size="small"></lightning-icon>
-            Matured Soon
+            Matured Soon ({recent.length})
         </h3>
         <p class="slds-p-horizontal_small">
             <template if:true={recent}>
-                <table class="slds-table" style="margin: 5px;">
-                    <thead>
-                        <tr class="slds-line-height_reset">
-                            <th class="" scope="col">
-                                <div class="slds-truncate" title="A/C No.">A/C No.</div>
-                            </th>
-                            <th class="" scope="col">
-                                <div class="slds-truncate" title="Bank">Bank</div>
-                            </th>
-                            <th class="" scope="col">
-                                <div class="slds-truncate" title="Maturity Date">Maturity Date</div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div class="maturity-table-wrapper">
+                    <div class="table-header">
+                        <div class="table-row">
+                            <div class="table-cell bold">A/C No.</div>
+                            <div class="table-cell bold">Bank</div>
+                            <div class="table-cell bold">Maturity Date</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
                         <template for:each={recent} for:item="recent">
-                            <tr key={recent.Id} class={recent.class}>
-                                <td data-label="Bank" scope="row">
-                                    <div class="slds-truncate" title={recent.Account_Number__c}>
+                            <div key={recent.Id} class={recent.class}>
+                                <div class="table-row">
+                                    <div class="table-cell" title={recent.Account_Number__c}>
                                         <a href={recent.recordURL} target="_blank">
                                             {recent.Account_Number__c}
                                         </a>
                                     </div>
-                                </td>
-                                <td data-label="Bank" scope="row">
-                                    <div class="slds-truncate" title={recent.Bank__c}>{recent.Bank__c}</div>
-                                </td>
-                                <td data-label="Bank" scope="row">
-                                    <div class="slds-truncate" title={recent.Maturity_Date__c}>{recent.Maturity_Date__c}</div>
-                                </td>
-                            </tr>
+                                    <div class="table-cell" title={recent.Bank__c}>{recent.Bank__c}</div>
+                                    <div class="table-cell" title={recent.Maturity_Date__c}>{recent.Maturity_Date__c}</div>
+                                </div>
+                            </div>
                         </template>
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </template>
             <template if:true={norecord}>
                 <span style="color: red;">No record to display</span>

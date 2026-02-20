@@ -1,10 +1,12 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import resizeObserverPolyfill from '@salesforce/resourceUrl/ResizeObserverPolyfill';
 import chartJs from '@salesforce/resourceUrl/chartjs';
 import chartjsDataLabels from '@salesforce/resourceUrl/chartjsDataLabels'
 import { log, logError, toString, isValid } from 'c/utilityClass';
 import expenseByMonth from '@salesforce/apex/ExpenseManagerUtil.getExpenseByMonth';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class ExpenseAnalysisChart extends LightningElement {
     chart;
@@ -14,12 +16,57 @@ export default class ExpenseAnalysisChart extends LightningElement {
     data;
     chartData = [];      // Stores the ACTUAL expense values
     chartLabel = [];
+    selectedFiscalYear = '2025-2026'; // Default fiscal year
     
     // 🔥 New properties for capping logic
     maxPercent = 0.01;   // Max allowed visual size for any slice (30%)
     displayValues = [];  // Stores the CAPPED values for visual rendering
 
-    @wire (expenseByMonth, {'fy' : 'test'})
+    @wire(MessageContext)
+    messageContext;
+
+    connectedCallback() {
+        this.subscribeToMessageChannel();
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeToMessageChannel();
+    }
+
+    subscribeToMessageChannel() {
+        this.subscription = subscribe(
+            this.messageContext,
+            recordSelected,
+            (message) => this.handleMessage(message)
+        );
+    }
+
+    unsubscribeToMessageChannel() {
+        unsubscribe(this.subscription);
+    }
+
+    handleMessage(message) {
+        this.selectedFiscalYear = message.recordId;
+        console.log('inside handle message**** : '+ this.selectedFiscalYear);
+        // Force refresh by re-initializing the chart
+        this.refreshChart();
+    }
+
+    refreshChart() {
+        // Reset data loading state to force reload
+        this.isDataLoaded = false;
+        // Destroy existing chart if it exists
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+        // Force re-render by setting a temporary flag
+        setTimeout(() => {
+            this.isDataLoaded = true;
+        }, 10);
+    }
+
+    @wire (expenseByMonth, {'fy' : '$selectedFiscalYear'})
     expenseRecord({data, error}) {
         if(data) {
             this.data = data;

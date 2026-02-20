@@ -1,3 +1,67 @@
-.matured {
+/* Fixed height table with scrollable body */
+.maturity-table-wrapper {
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #e1dfdd;
+    border-radius: 0.25rem;
+}
+
+.table-header {
+    flex-shrink: 0;
+    background-color: white;
+    border-bottom: 1px solid #e1dfdd;
+}
+
+.table-row {
+    display: flex;
+    width: 100%;
+}
+
+.table-cell {
+    flex: 1;
+    padding: 0.75rem;
+    text-align: left;
+    border-right: 1px solid #e1dfdd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-cell:last-child {
+    border-right: none;
+}
+
+.table-cell.bold {
+    font-weight: bold;
+}
+
+.table-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.table-body .table-row {
+    display: flex;
+    width: 100%;
+}
+
+.table-body .table-cell {
+    flex: 1;
+    padding: 0.75rem;
+    text-align: left;
+    border-right: 1px solid #e1dfdd;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table-body .table-cell:last-child {
+    border-right: none;
+}
+
+/* Ensure the matured class works properly - the class assigned is 'slds-hint-parent matured' */
+.maturity-table-wrapper .slds-hint-parent.matured {
     color: red !important;
 }

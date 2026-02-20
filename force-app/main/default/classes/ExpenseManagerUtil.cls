@@ -138,7 +138,6 @@ public with sharing class ExpenseManagerUtil {
 
     @AuraEnabled(cacheable=true)
     public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(String fy) {
-        fy = '2024-2025';
         List<Date> fyDates = constructFyDate(fy);
         List<String> fiscalYears = fy.split('-');
         Date startDate = fyDates[0];
@@ -176,21 +175,39 @@ public with sharing class ExpenseManagerUtil {
     }
 
     @AuraEnabled(cacheable = true)
-    public static Map<String, Decimal> getExpenseByMonth(String fy) {
-        fy = '2025-2026';
-        List<Date> fyDates = constructFyDate(fy);
-        List<String> fiscalYears = fy.split('-');
-        Date startDate = fyDates[0];
-        Date endDate = fyDates[1];
-        return DataProvider.getExpenseByMonth(startDate, endDate);
-    }
-
-    @AuraEnabled(cacheable = true)
     public static Map<String, List<ExpenseManagerUtilHelper.OneViewWrapper>> getOneViewWrapper(String fiscalYear) {
-        fiscalYear = '2025-2026';
         List<Date> fyDates = constructFyDate(fiscalYear);
         Date startDate = fyDates[0];
         Date endDate = fyDates[1];
         return ExpenseManagerUtilHelper.getOneViewMap(startDate, endDate, fiscalYear);
+    }
+
+    @AuraEnabled(cacheable = true)
+    public static Map<String, Decimal> getExpenseByMonth(String fy) {
+        // Check if the fiscal year is the current fiscal year
+        List<Date> currentFyDates = ExpenseManagerUtilHelper.getFiscalYear(Date.today());
+        String currentFy = '';
+        
+        // Construct current fiscal year string in the same format as passed parameter
+        if(currentFyDates[0].month() >= 4) {
+            currentFy = currentFyDates[0].year() + '-' + (currentFyDates[1].year() + 1);
+        } else {
+            currentFy = (currentFyDates[0].year() - 1) + '-' + currentFyDates[1].year();
+        }
+        
+        // If the requested fiscal year is the current one, get data for last 6 months from today
+        if(fy.equals(currentFy)) {
+            Date today = Date.today();
+            Date sixMonthsAgo = today.addMonths(-6);
+            
+            // Get expense data for last 6 months from today
+            return DataProvider.getExpenseByMonth(sixMonthsAgo, today);
+        } else {
+            // For non-current fiscal years, use the existing logic
+            List<Date> fyDates = constructFyDate(fy);
+            Date startDate = fyDates[0];
+            Date endDate = fyDates[1];
+            return DataProvider.getExpenseByMonth(startDate, endDate);
+        }
     }
 }
