@@ -189,19 +189,20 @@ public with sharing class ExpenseManagerUtil {
         String currentFy = '';
         
         // Construct current fiscal year string in the same format as passed parameter
-        if(currentFyDates[0].month() >= 4) {
-            currentFy = currentFyDates[0].year() + '-' + (currentFyDates[1].year() + 1);
-        } else {
-            currentFy = (currentFyDates[0].year() - 1) + '-' + currentFyDates[1].year();
-        }
-        
+        currentFy = currentFyDates[0].year() + '-' + (currentFyDates[1].year());
         // If the requested fiscal year is the current one, get data for last 6 months from today
         if(fy.equals(currentFy)) {
             Date today = Date.today();
-            Date sixMonthsAgo = today.addMonths(-6);
-            
+            Date todayDate = Date.today();
+            Integer lastDay = Date.daysInMonth(todayDate.year(), todayDate.month());
+            // toDate current date's last day of month
+            Date toDate = Date.newInstance(todayDate.year(), todayDate.month(), lastDay);
+            // From Date 6 months ago
+            Date fromDate = toDate.addMonths(-5);
+            fromDate = Date.newInstance(fromDate.year(), fromDate.month(), 1);
+        
             // Get expense data for last 6 months from today
-            return DataProvider.getExpenseByMonth(sixMonthsAgo, today);
+            return DataProvider.getExpenseByMonth(fromDate, toDate);
         } else {
             // For non-current fiscal years, use the existing logic
             List<Date> fyDates = constructFyDate(fy);

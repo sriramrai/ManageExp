@@ -53,8 +53,18 @@ System.debug('recordType Map *** : '+SyncDataController.getRecordTypeMap('Invest
 update syncDataItem;
 System.debug('JSON.serialize(syncDataItem)*** : '+JSON.serialize(syncDataItem.Data__c));
 
-System.debug('2024-2025** : '+JSON.serialize(ExpenseManagerUtil.getExpenseByMonth('2024-2025'));
-System.debug('2025-2026** : '+JSON.serialize(ExpenseManagerUtil.getExpenseByMonth('2025-2026'));
+System.debug('2024-2025** : '+JSON.serialize(ExpenseManagerUtil.getExpenseByMonth('2024-2025')));
+System.debug('2025-2026** : '+JSON.serialize(ExpenseManagerUtil.getExpenseByMonth('2025-2026')));
+
+Date todayDate = Date.today();
+Integer lastDay = Date.daysInMonth(todayDate.year(), todayDate.month());
+Date lastDateOfMonth = Date.newInstance(todayDate.year(), todayDate.month(), lastDay);
+System.debug('lastDateOfMonth*** : '+lastDateOfMonth);
+
+Date endDate = lastDateOfMonth.addMonths(-5);
+endDate = Date.newInstance(endDate.year(), endDate.month(), 1);
+System.debug('endDate*** : '+endDate);
+
 
 delete [select id, name, Bank__c, RecordType.Name, Account_Number__c from Investment__c order by Account_Number__c desc];
 List<Sync_Data_Item__c> syncDs = [select id, name, Completed__c, Level__c,Record_Count__c, Error_Message__c,  Child_Record__c, Data__c, Inserted_Records__c from Sync_Data_Item__c where Sync_Data__c = 'a09Hy00000kkfD5IAI'];
