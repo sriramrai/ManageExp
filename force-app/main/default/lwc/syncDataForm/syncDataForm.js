@@ -30,6 +30,14 @@ export default class SyncDataForm extends NavigationMixin(LightningElement) {
     @track l2RefFieldsDisabled = true;
     @track l3RefFieldsDisabled = true;
 
+    // Computed requirements for conditional fields
+    get isL2RefRequired() {
+        return !!this.selectedL2Object;
+    }
+    get isL3RefRequired() {
+        return !!this.selectedL3Object;
+    }
+
     connectedCallback() {
         this.loadAvailableObjects();
     }
@@ -193,28 +201,22 @@ export default class SyncDataForm extends NavigationMixin(LightningElement) {
         this.dateFilter = event.target.value || null;
     }
 
+
     handleSave() {
+        // L1 Object must always be selected
         if (!this.selectedL1Object) {
             this.showToastMessage('Please select an object for L1', 'error');
             return;
         }
 
-        if (!this.selectedL2Object) {
-            this.showToastMessage('Please select an object for L2', 'error');
-            return;
-        }
-
-        if (!this.selectedL2RefField) {
+        // L2 Object is optional, but if provided then L2 Ref Field is required
+        if (this.selectedL2Object && !this.selectedL2RefField) {
             this.showToastMessage('Please select a reference field for L2', 'error');
             return;
         }
 
-        if (!this.selectedL3Object) {
-            this.showToastMessage('Please select an object for L3', 'error');
-            return;
-        }
-
-        if (!this.selectedL3RefField) {
+        // L3 Object is optional, but if provided then L3 Ref Field is required
+        if (this.selectedL3Object && !this.selectedL3RefField) {
             this.showToastMessage('Please select a reference field for L3', 'error');
             return;
         }

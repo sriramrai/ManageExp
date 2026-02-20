@@ -24,7 +24,12 @@ public with sharing class SyncDataHandler {
         DateTime filter;
         // Initialize the wrapper
         sdWrapper = new SyncDataWrapper();
-        
+        l1 = String.isNotBlank(l1) && l1 != 'null' ? l1 : null;
+        l2 = String.isNotBlank(l2) && l2 != 'null' ? l2 : null;
+        l3 = String.isNotBlank(l3) && l3 != 'null' ? l3 : null;
+        l2Ref = String.isNotBlank(l2Ref) && l2Ref != 'null' ? l2Ref : null;
+        l3Ref = String.isNotBlank(l3Ref) && l3Ref != 'null' ? l3Ref : null;
+        filterstr = String.isNotBlank(filterstr) && filterstr != 'null' ? filterstr : null;
         try {
             System.debug('filterstr**** : '+filterstr);
             // Parse the filter date properly
@@ -165,7 +170,11 @@ public with sharing class SyncDataHandler {
         Schema.SObjectType objectType = Schema.getGlobalDescribe().get(objectName);
         for(Schema.SObjectField field : objectType.getDescribe().fields.getMap().values()) {
             if(field.getDescribe().isAccessible() && field.getDescribe().isCreateable()) {
-                queryString += ', ' + field.getDescribe().getName();
+                String fieldApiName = field.getDescribe().getName();
+                fieldApiName = 
+                    fieldApiName.equalsIgnoreCase('RecordTypeId') ? 
+                    'RecordType.Developername' : fieldApiName;
+                queryString += ', ' + fieldApiName;
             }
         }
         queryString += ' FROM ' + objectName;

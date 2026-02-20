@@ -45,10 +45,25 @@ String str = '2025-12-31';
 Date dt = Date.valueOf(str);
 System.debug('dt** : '+dt);
 
-String syncDataId = 'a09Hy00000kkGSIIA2';
+
+
+Sync_Data_Item__c syncDataItem = [SELECT Id, Data__c FROM Sync_Data_Item__c WHERE ID = 'a08Hy000006C15sIAC' LIMIT 1];
+syncDataItem = SyncDataController.formatAndFillData(syncDataItem, 'Investment__c');
+System.debug('recordType Map *** : '+SyncDataController.getRecordTypeMap('Investment__c'));
+update syncDataItem;
+System.debug('JSON.serialize(syncDataItem)*** : '+JSON.serialize(syncDataItem.Data__c));
+
+delete [select id, name, Bank__c, RecordType.Name, Account_Number__c from Investment__c order by Account_Number__c desc];
+List<Sync_Data_Item__c> syncDs = [select id, name, Completed__c, Level__c,Record_Count__c, Error_Message__c,  Child_Record__c, Data__c, Inserted_Records__c from Sync_Data_Item__c where Sync_Data__c = 'a09Hy00000kkfD5IAI'];
+for(Sync_Data_Item__c sd : syncDs) {
+    sd.Completed__c = false;
+    sd.Error_Message__c = '';
+    sd.Inserted_Records__c = '';
+}
+update syncDs;
+
+String syncDataId = 'a09Hy00000kkfD5IAI';
 Database.executeBatch(new SyncDataInsertClone(syncDataId), 1);
-
-
 
 SyncDataHandler.syncData();
 // Use .apex files to store anonymous Apex.

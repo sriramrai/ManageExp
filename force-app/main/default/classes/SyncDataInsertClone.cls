@@ -183,7 +183,7 @@ public with sharing class SyncDataInsertClone implements DataBase.Batchable <sOb
                     Database.SaveResult[] sr = Database.insert(recordMapToBeInserted.values(), false);
                     Integer idx = 0;
                     List<String> successfulOldIds = new List<String>();
-                    String errorMessage = '';
+                    String errorMessage = 'Processing -- '+this.syncDataItem.Name;
                     for (String oldId : recordMapToBeInserted.keySet()) {
                         Database.SaveResult r = sr[idx++];
                         if (!r.isSuccess()) {

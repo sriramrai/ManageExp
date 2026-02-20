@@ -538,14 +538,53 @@ public with sharing class SyncDataController {
         return result;
     }
 
-    private static void createSyncDataItem(SyncDataWrapper wrapper, String data) {
+    public static Map<String, String> getRecordTypeMap(String objectName) {
+        Map<String, String> rtMap = new Map<String, String>();
+        for(RecordType rt : [SELECT Id, DeveloperName FROM RecordType WHERE sObjectType = :objectName]) {
+            rtMap.put(rt.DeveloperName, rt.Id);
+        }
+        return rtMap;
+    }
+
+    public static Sync_Data_Item__c formatAndFillData(Sync_Data_Item__c syncDataItem, SyncDataWrapper wrapper) {
+        String dataPayload = JSON.serialize(wrapper.data);
+        //String dataPayload = syncDataItem.Data__c;
+        String objectName = wrapper.objectName;
+        Map<String, String> recordTypeMap = getRecordTypeMap(objectName);
+        List<Object> records = (List<Object>) JSON.deserializeUntyped(dataPayload);
+        List<String> recordIds = new List<String>();
+        for(Object obj : records) {
+            Map<String, Object> recordMap = (Map<String, Object>) obj;
+            if(recordMap.containsKey('Id')) {
+                String recordId = (String) recordMap.get('Id');
+                recordIds.add(recordId);
+            }
+
+            if(recordMap.containsKey('RecordType') && recordMap.get('RecordType') != null) {
+                Map<String, Object> rtMap = (Map<String, Object>) recordMap.get('RecordType');
+                if(rtMap.containsKey('DeveloperName')) {
+                    String devName = (String) rtMap.get('DeveloperName');
+                    if(recordTypeMap.containsKey(devName)) {
+                        recordMap.put('RecordTypeId', recordTypeMap.get(devName));
+                    }else {
+                        recordMap.put('RecordTypeId', '');
+                    }
+                }
+                recordMap.remove('RecordType');
+            }
+        }
+        syncDataItem.Data__c = JSON.serialize(records);
+        syncDataItem.RecordId__c = JSON.serialize(recordIds);
+        return syncDataItem;
+    }
+
+    public static void createSyncDataItem(SyncDataWrapper wrapper, String data) {
         Sync_Data_Item__c sdItem = new Sync_Data_Item__c(
             Sync_Data__c = wrapper.syncDataId,
             Level__c = wrapper.step,
-            RecordId__c = storeRecordId(data),
-            Data__c = JSON.serialize(wrapper.data),
             Record_Count__c = wrapper.data.size()
         );
+        sdItem = formatAndFillData(sdItem, wrapper);
         if(String.isNotBlank(wrapper.syncDataItemId) && wrapper.syncDataItemId != 'null') {
             sdItem.Child_Record__c = wrapper.syncDataItemId;
         }
