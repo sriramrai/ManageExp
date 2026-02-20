@@ -47,20 +47,23 @@ export default class ExpenseAnalysisChart extends LightningElement {
 
     handleMessage(message) {
         this.selectedFiscalYear = message.recordId;
-        // Re-wire the data with the new fiscal year
-        this.refreshData();
+        console.log('inside handle message**** : '+ this.selectedFiscalYear);
+        // Force refresh by re-initializing the chart
+        this.refreshChart();
     }
 
-    refreshData() {
-        // Force re-wiring by setting a temporary property
+    refreshChart() {
+        // Reset data loading state to force reload
         this.isDataLoaded = false;
-        this.requestUpdate();
-    }
-
-    requestUpdate() {
-        // This will trigger the wire adapter to re-run with the new fiscal year
-        // We'll use a workaround by adding a dummy property to force refresh
-        this.isDataLoaded = true;
+        // Destroy existing chart if it exists
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+        // Force re-render by setting a temporary flag
+        setTimeout(() => {
+            this.isDataLoaded = true;
+        }, 10);
     }
 
     @wire (expenseByMonth, {'fy' : '$selectedFiscalYear'})
