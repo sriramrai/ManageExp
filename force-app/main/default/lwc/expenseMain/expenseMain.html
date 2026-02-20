@@ -6,7 +6,7 @@
             </c-expense-header-v2>
             <lightning-tabset active-tab-value="Monitor">
                 <lightning-tab label="Monitor" onactive={activeTabHandler} value="Monitor">
-                    <c-expense-analysis-chart onupdatetotal={totalUpdateHandler}>
+                    <c-expense-analysis-chart lwc:ref="tab1Comp"  onupdatetotal={totalUpdateHandler}>
                     </c-expense-analysis-chart>
                 </lightning-tab>
                 <lightning-tab label="Ragini" onactive={activeTabHandler} value="Ragini">

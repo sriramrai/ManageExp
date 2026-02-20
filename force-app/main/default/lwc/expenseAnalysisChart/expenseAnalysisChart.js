@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire, track, api } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import resizeObserverPolyfill from '@salesforce/resourceUrl/ResizeObserverPolyfill';
 import chartJs from '@salesforce/resourceUrl/chartjs';
@@ -49,7 +49,17 @@ export default class ExpenseAnalysisChart extends LightningElement {
         this.selectedFiscalYear = message.recordId;
         console.log('inside handle message**** : '+ this.selectedFiscalYear);
         // Force refresh by re-initializing the chart
-        this.refreshChart();
+        this.tryRenderChart();
+    }
+
+    @api
+    loadData() {
+        //loadData() will be called from component whern user will reselect the tab
+        let totalAmount = 0;
+        Object.entries(this.data).forEach(([key, value]) => {
+          totalAmount += value;
+        });
+        this.notifyTotal(totalAmount);
     }
 
     refreshChart() {
@@ -101,6 +111,7 @@ export default class ExpenseAnalysisChart extends LightningElement {
     }
 
     notifyTotal(value) {
+        console.log('inside notify total method*** : '+value);
         let customEvent = new CustomEvent("updatetotal", {detail: {total: value}});
         this.dispatchEvent(customEvent);
     }
@@ -112,6 +123,7 @@ export default class ExpenseAnalysisChart extends LightningElement {
     }
 
     renderedCallback() {
+        console.log('inside rendered Callback****');
         if (this.isChartJsInitialized && this.isPolyfillLoaded) {
             return;
         }
