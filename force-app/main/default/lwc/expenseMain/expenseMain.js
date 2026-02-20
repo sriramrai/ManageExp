@@ -54,6 +54,10 @@ export default class ExpenseMain extends LightningElement {
     }
 
     activeTabHandler(event) {
+        const selectedTab = event.target.value;
+        if(selectedTab == 'Monitor') {
+            this.refs.tab1Comp?.loadData();
+        }
         this.entity = event.target.label;
         this.notifyExpenseDetails();
     }
