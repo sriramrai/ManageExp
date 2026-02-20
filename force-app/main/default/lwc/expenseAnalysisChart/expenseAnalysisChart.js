@@ -1,10 +1,12 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, track } from 'lwc';
 import { loadScript } from 'lightning/platformResourceLoader';
 import resizeObserverPolyfill from '@salesforce/resourceUrl/ResizeObserverPolyfill';
 import chartJs from '@salesforce/resourceUrl/chartjs';
 import chartjsDataLabels from '@salesforce/resourceUrl/chartjsDataLabels'
 import { log, logError, toString, isValid } from 'c/utilityClass';
 import expenseByMonth from '@salesforce/apex/ExpenseManagerUtil.getExpenseByMonth';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class ExpenseAnalysisChart extends LightningElement {
     chart;
@@ -14,12 +16,54 @@ export default class ExpenseAnalysisChart extends LightningElement {
     data;
     chartData = [];      // Stores the ACTUAL expense values
     chartLabel = [];
+    selectedFiscalYear = '2025-2026'; // Default fiscal year
     
     // 🔥 New properties for capping logic
     maxPercent = 0.01;   // Max allowed visual size for any slice (30%)
     displayValues = [];  // Stores the CAPPED values for visual rendering
 
-    @wire (expenseByMonth, {'fy' : 'test'})
+    @wire(MessageContext)
+    messageContext;
+
+    connectedCallback() {
+        this.subscribeToMessageChannel();
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeToMessageChannel();
+    }
+
+    subscribeToMessageChannel() {
+        this.subscription = subscribe(
+            this.messageContext,
+            recordSelected,
+            (message) => this.handleMessage(message)
+        );
+    }
+
+    unsubscribeToMessageChannel() {
+        unsubscribe(this.subscription);
+    }
+
+    handleMessage(message) {
+        this.selectedFiscalYear = message.recordId;
+        // Re-wire the data with the new fiscal year
+        this.refreshData();
+    }
+
+    refreshData() {
+        // Force re-wiring by setting a temporary property
+        this.isDataLoaded = false;
+        this.requestUpdate();
+    }
+
+    requestUpdate() {
+        // This will trigger the wire adapter to re-run with the new fiscal year
+        // We'll use a workaround by adding a dummy property to force refresh
+        this.isDataLoaded = true;
+    }
+
+    @wire (expenseByMonth, {'fy' : '$selectedFiscalYear'})
     expenseRecord({data, error}) {
         if(data) {
             this.data = data;
