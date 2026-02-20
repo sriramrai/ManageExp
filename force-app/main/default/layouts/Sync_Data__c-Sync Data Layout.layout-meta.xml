@@ -71,6 +71,10 @@
                 <behavior>Edit</behavior>
                 <field>Sync_Completed__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Custom_Filter__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

@@ -40,6 +40,8 @@
                         </lightning-input>
                     </div>
 
+
+
                     <!-- L2 Object Selection -->
                     <div class="slds-col slds-size_12-of-12 slds-medium-size_6-of-12">
                         <lightning-combobox
@@ -49,7 +51,6 @@
                             onchange={handleL2Change}
                             placeholder="Select L2 Object"
                             disabled={l2Disabled}
-                            required
                             name="l2Object"
                             id="l2Object">
                         </lightning-combobox>
@@ -64,7 +65,7 @@
                             onchange={handleL2RefFieldChange}
                             placeholder="Select L2 Reference Field"
                             disabled={l2RefFieldsDisabled}
-                            required
+                            required={isL2RefRequired}
                             id="l2RefField">
                         </lightning-combobox>
                     </div>
@@ -78,7 +79,6 @@
                             onchange={handleL3Change}
                             placeholder="Select L3 Object"
                             disabled={l3Disabled}
-                            required
                             id="l3Object">
                         </lightning-combobox>
                     </div>
@@ -92,7 +92,7 @@
                             onchange={handleL3RefFieldChange}
                             placeholder="Select L3 Reference Field"
                             disabled={l3RefFieldsDisabled}
-                            required
+                            required={isL3RefRequired}
                             id="l3RefField">
                         </lightning-combobox>
                     </div>
