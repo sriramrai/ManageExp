@@ -29,3 +29,109 @@
     background: red;
     cursor: pointer;
   }
+
+  /* Ensure scroll container actually scrolls */
+  .slds-scrollable_y {
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+
+  /* Ensure table header stays fixed */
+  .custom-investments-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: white;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid #c9c9c9;
+  }
+  
+  /* Ensure tbody has proper scrolling behavior */
+  .slds-table_header-fixed_container .slds-scrollable_y {
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+  
+  /* Remove default table borders to prevent double borders */
+  .custom-investments-table {
+      border-collapse: collapse;
+      width: 100%;
+  }
+  
+  /* Ensure proper spacing and alignment */
+  .custom-investments-table td,
+  .custom-investments-table th {
+      padding: 0.75rem;
+      word-wrap: break-word;
+      word-break: break-word;
+  }
+  
+  /* Row separators only - no column borders */
+  .custom-investments-table tbody tr {
+      border-bottom: 1px solid #c9c9c9;
+  }
+  
+  /* Remove bottom border from last row */
+  .custom-investments-table tbody tr:last-child {
+      border-bottom: none;
+  }
+  
+  /* Ensure proper column alignment */
+  .custom-investments-table .col-name {
+      width: 50%;
+      min-width: 150px;
+  }
+  
+  .custom-investments-table .col-num {
+      width: 25%;
+      text-align: right;
+  }
+  
+  .custom-investments-table .col-actions {
+      width: 25%;
+      text-align: center;
+  }
+  
+  /* Ensure proper link styling */
+  .custom-investments-table .col-name a {
+      color: #0070d2;
+      text-decoration: none;
+      word-wrap: break-word;
+  }
+  
+  .custom-investments-table .col-name a:hover {
+      text-decoration: underline;
+  }
+  
+  /* Ensure action buttons are properly aligned */
+  .custom-investments-table .action-cell {
+      text-align: center;
+  }
+  
+  /* Mobile responsiveness - keep table structure but allow text wrapping */
+  @media (max-width: 768px) {
+      /* Reduce column widths slightly for better mobile fit */
+      .custom-investments-table .col-name {
+          width: 50%;
+      }
+      
+      .custom-investments-table .col-num {
+          width: 25%;
+      }
+      
+      .custom-investments-table .col-actions {
+          width: 25%;
+      }
+      
+      /* Ensure text wraps properly on mobile */
+      .custom-investments-table .col-name a {
+          word-break: break-word;
+          hyphens: auto;
+      }
+      
+      /* Make table cells more compact on mobile */
+      .custom-investments-table td,
+      .custom-investments-table th {
+          padding: 0.5rem;
+      }
+  }
