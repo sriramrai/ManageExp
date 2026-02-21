@@ -15,7 +15,7 @@ export default class ManageInvestment extends NavigationMixin(LightningElement) 
     ppfEntries = [];
     npsEntires = [];
     provisionedItem;
-    activeTabName = 'SBI';
+    activeTabName = 'Stock';
     fdTabs = ['AXIS', 'SBI'];
     futureInvestmentTabs = ['NPS', 'PPF'];
 
