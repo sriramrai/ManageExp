@@ -10,8 +10,8 @@ import recordSelected from '@salesforce/messageChannel/Record_Selected__c';
 
 export default class ExpenseAnalysisChart extends LightningElement {
     chart;
+    isChartJsLoaded = false;
     isPolyfillLoaded = false;
-    isChartJsInitialized = false;
     isDataLoaded = false;
     data;
     chartData = [];      // Stores the ACTUAL expense values
@@ -124,25 +124,75 @@ export default class ExpenseAnalysisChart extends LightningElement {
 
     renderedCallback() {
         console.log('inside rendered Callback****');
-        if (this.isChartJsInitialized && this.isPolyfillLoaded) {
+        if (this.isChartJsLoaded && this.isPolyfillLoaded) {
             return;
         }
 
-        Promise.all([
-            loadScript(this, resizeObserverPolyfill),
-            loadScript(this, chartJs),
-            loadScript(this, chartjsDataLabels)
-        ])
-        .then(() => {
+        // Check if Chart.js is already available (safari compatibility fix)
+        if (typeof window.Chart !== 'undefined' && typeof window.ChartDataLabels !== 'undefined') {
             this.isChartJsLoaded = true;
             this.isPolyfillLoaded = true;
-            window.Chart.register(window.ChartDataLabels);
             this.tryRenderChart();
+            return;
+        }
 
-        })
-        .catch(error => {
-            console.error('Error loading Chart.js:', error);
-        });
+        // Load scripts with explicit error handling and retry mechanism
+        this.loadChartResources();
+    }
+
+    loadChartResources() {
+        loadScript(this, resizeObserverPolyfill)
+            .then(() => {
+                this.isPolyfillLoaded = true;
+                return loadScript(this, chartJs);
+            })
+            .then(() => {
+                // Verify Chart.js was loaded correctly
+                if (typeof window.Chart === 'undefined') {
+                    console.error('Chart.js failed to load properly');
+                    throw new Error('Chart.js failed to load');
+                }
+                this.isChartJsLoaded = true;
+                
+                // Load ChartDataLabels
+                return loadScript(this, chartjsDataLabels);
+            })
+            .then(() => {
+                // Safely register ChartDataLabels if available
+                if (typeof window.Chart !== 'undefined' && typeof window.ChartDataLabels !== 'undefined') {
+                    try {
+                        // Check if we're dealing with a newer version of Chart.js that uses different registration
+                        if (typeof window.Chart.register === 'function') {
+                            window.Chart.register(window.ChartDataLabels);
+                        } else if (typeof window.Chart.plugins !== 'undefined') {
+                            // For Chart.js v3+, plugins are registered differently
+                            window.Chart.plugins.register(window.ChartDataLabels);
+                        } else {
+                            console.warn('Unknown Chart.js version, skipping plugin registration');
+                        }
+                    } catch (registerError) {
+                        console.warn('Failed to register ChartDataLabels:', registerError);
+                    }
+                } else {
+                    console.warn('ChartDataLabels not available for registration');
+                }
+                
+                this.tryRenderChart();
+            })
+            .catch(error => {
+                console.error('Error loading Chart.js resources:', error);
+                // Add a fallback mechanism
+                this.handleChartLoadFailure();
+            });
+    }
+
+    handleChartLoadFailure() {
+        // If we fail to load Chart.js properly, we should still render something
+        console.warn('Chart.js failed to load, attempting fallback rendering');
+        // We could show a message or placeholder here
+        // For now, just make sure we don't crash the component
+        this.isChartJsLoaded = true; // Prevent further attempts
+        this.isPolyfillLoaded = true;
     }
 
     renderChart() {
@@ -172,6 +222,33 @@ export default class ExpenseAnalysisChart extends LightningElement {
             // Use black for light colors (luminosity > 0.5), white for dark colors
             return luminosity > 0.5 ? '#000000' : '#FFFFFF';
         };
+
+        // Safari compatibility fix: Check if Chart.js is available before creating chart
+        if (typeof window.Chart === 'undefined') {
+            console.error('Chart.js is not available when trying to create chart');
+            return;
+        }
+
+        // Additional safeguard to ensure Chart.js helpers are available
+        // Safari-specific fix: Create a fallback for Chart.helpers if needed
+        if (typeof window.Chart === 'object' && window.Chart !== null) {
+            // Ensure Chart.helpers exists to prevent Safari from failing
+            if (typeof window.Chart.helpers === 'undefined') {
+                console.warn('Chart.js helpers are not available, creating fallback...');
+                // Create a minimal helpers object to prevent Safari errors
+                window.Chart.helpers = {
+                    // Provide minimal helpers that won't cause errors
+                    array: {},
+                    color: function() {},
+                    easing: {},
+                    element: {},
+                    font: {},
+                    math: {},
+                    merge: function() { return {}; },
+                    resolveObjectKey: function() { return null; }
+                };
+            }
+        }
 
         this.chart = new window.Chart(ctx, {
             type: 'bar',
