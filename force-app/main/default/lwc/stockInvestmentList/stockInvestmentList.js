@@ -1,23 +1,70 @@
 import { LightningElement, wire, api, track } from 'lwc';
-import {log, logError, isValidValue, toString} from 'c/utilityClass';
+import {log, logError, isValidValue, toString, formatDate} from 'c/utilityClass';
 import getAllStock from '@salesforce/apex/ExpenseManagerUtil.getAllStocks';
 import buySellStock from 'c/buySellStockModal';
 import { refreshApex } from '@salesforce/apex';
 
 export default class StockInvestmentList extends LightningElement {
-    stockData;
+    @track stockData;
     stockProvisionedData;
     expandedStockIds = new Set(); // Track which stock IDs are expanded
-    
+    @track last10Transaction = [];
+    isOpen = false;
+    totalInvested = 0;
+
+    get searchClass() {
+        return this.isOpen ? 'search-box open' : 'search-box';
+    }
+
+    toggleSearch() {
+        this.isOpen = !this.isOpen;
+    }
+
+    handleSearch(event) {
+        let searchString = event.target.value.toLowerCase();
+        const result = this.stockData.filter(item => {
+            item.stockName.toLowerCase().includes(searchString);
+        })
+        this.stockData = result;
+    }
+
     @api refreshData() {
         refreshApex(this.stockProvisionedData);
+    }
+
+    get headerNote() {
+        if(this.last10Transaction.length < 1) {
+            return '';
+        }
+        let message = '*Last share ';
+        message += '('+ this.stockData[0].stockName +') ';
+        message += this.last10Transaction[0].buySell == 'Buy' ? 'bought ' : 'sold ';
+        message += 'on ' + formatDate(new Date(this.last10Transaction[0].sdate));
+        return message;
     }
 
     @wire (getAllStock, {})
     fetchStocks(stockObjs) {
         this.stockProvisionedData = stockObjs;
         if(stockObjs.data) {
-            this.stockData = stockObjs.data;
+            let stocks = JSON.parse(JSON.stringify(stockObjs.data));
+            this.totalInvested = 0;
+            stocks.forEach(stock => {
+                this.totalInvested += Number(stock.totalInvested);
+                stock.lines.forEach(
+                    stockLine => {
+                        stockLine.styleclass = 'slds-grid slds-gutters slds-var-p-vertical_xx-small';
+                        if(stockLine.buySell == 'Sell') {
+                            stockLine.styleclass += ' sold-hilighter';
+                        }
+                        if(this.last10Transaction.length < 10) {
+                            this.last10Transaction.push(stockLine);
+                        }
+                    }
+                );
+            });
+            //this.stockData = stockObjs.data;
+            this.stockData = stocks;
             log('stock data fetched successfully.... : '+toString(this.stockData));
         }
     }

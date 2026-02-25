@@ -194,9 +194,9 @@ public with sharing class DataProvider {
         Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
         List<StockWrapper> stockList = new List<StockWrapper>();
         for(Investment__c ivt : [
-            SELECT Id, Account_Number__c, Total_buy__c, Total_Sold__c, Amount__c, 
-                (SELECT Id, Amount__c, Buy_Sell__c, Exchange__c, Quantity__c, Date__c, Per_Share_Price__c FROM Investment_Line_Items__r)
-            FROM Investment__c WHERE RecordTypeId =: stockRT
+            SELECT Id, Account_Number__c, Total_buy__c, Total_Sold__c, Amount__c, Available_Quantity__c, 
+                (SELECT Id, Amount__c, Buy_Sell__c, Exchange__c, Quantity__c, Date__c, Per_Share_Price__c FROM Investment_Line_Items__r ORDER BY LastmodifiedDate DESC)
+            FROM Investment__c WHERE RecordTypeId =: stockRT ORDER BY LastmodifiedDate DESC
         ]) {
             StockWrapper sw = new StockWrapper(ivt);
             stockList.add(sw);
@@ -210,6 +210,7 @@ public with sharing class DataProvider {
         @AuraEnabled public String stockName {get; set;}
         @AuraEnabled public Integer totalBuyed {get; set;}
         @AuraEnabled public Integer totalSold {get; set;}
+        @AuraEnabled public Integer quantity {get; set;}
         @AuraEnabled public Decimal totalInvested {get; set;}
         @AuraEnabled public List<StockLinesWrapper> lines {get; set;}
         @AuraEnabled public String recordURL {get; set;}
@@ -221,6 +222,7 @@ public with sharing class DataProvider {
             this.totalBuyed = Integer.valueOf(ivt.Total_buy__c);
             this.totalSold = Integer.valueOf(ivt.Total_Sold__c);
             this.totalInvested = ivt.Amount__c;
+            this.quantity = Integer.valueOf(ivt.Available_Quantity__c);
             this.lines = new List<StockLinesWrapper>();
             for(Investment_Line_Items__c ivtLine : ivt.Investment_Line_Items__r) {
                 StockLinesWrapper sline = new StockLinesWrapper(ivtLine);

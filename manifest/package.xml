@@ -49,6 +49,10 @@
 		<name>NamedCredential</name>
 	</types>
 	<types>
+		<members>Admin</members>
+		<name>Profile</name>
+	</types>
+	<types>
 		<members>Sync_Data__c.Analyze_Sync</members>
 		<name>QuickAction</name>
 	</types>
