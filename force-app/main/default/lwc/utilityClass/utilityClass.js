@@ -69,4 +69,13 @@ const isValidValue = (data) => {
     return false;
 }
 
-export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue};
+const formatDate = (data) => {
+    const formatter = new Intl.DateTimeFormat('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+    return data  ? formatter.format(new Date(data)) : '';
+}
+
+export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue, formatDate};

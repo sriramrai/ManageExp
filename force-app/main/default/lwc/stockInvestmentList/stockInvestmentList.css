@@ -8,6 +8,33 @@
     border: 1px solid #d8dde6;
   }
 
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.search-box .slds-input {
+    border: 1px solid #d8dde6;
+}
+
+/* Keep border on focus */
+.search-box .slds-input:focus {
+    border: 1px solid #1589ee;   /* Salesforce blue */
+    box-shadow: none;            /* Remove default glow */
+}
+/* Hidden State */
+.search-box {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Visible State */
+.search-box.open {
+    width: 200px;
+    opacity: 1;
+}
   .text-align-left {
     text-align: left;
   }
@@ -34,6 +61,11 @@
   .slds-scrollable_y {
       overflow-y: auto;
       overflow-x: hidden;
+  }
+
+  .word-break {
+    word-break: break-word;
+    white-space: normal;
   }
 
   /* Ensure table header stays fixed */
@@ -107,6 +139,15 @@
   .custom-investments-table .action-cell {
       text-align: center;
   }
+
+  .sold-hilighter {
+    color: red;
+  }
+
+  .header-note {
+    color: blue;
+    text-align: center;
+  }
   
   /* Mobile responsiveness - keep table structure but allow text wrapping */
   @media (max-width: 768px) {
@@ -135,3 +176,29 @@
           padding: 0.5rem;
       }
   }
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+}
+
+.left-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.amount {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.message {
+    font-size: 12px;
+    color: #706e6b;
+}
+
+.right-section {
+    display: flex;
+    gap: 8px;
+}

@@ -1,14 +1,13 @@
 public with sharing class InvestmentLineTriggerHandler {
     private static List<Investment_Line_Items__c> stocks;
     private static Id stockRT;
+    private static List<Investment_Line_Items__c> newList;
 
     public static void handleAfterInsert(List<Investment_Line_Items__c> ivtList) {
-        getAllStocks(ivtList);
-        processStock(stocks);
+        processStock(ivtList);
     }
 
     public static void handleAfterUpdate(List<Investment_Line_Items__c> newList, Map<Id, Investment_Line_Items__c> oldMap) {
-        getAllStocks(newList);
     }
 
     private static List<Investment_Line_Items__c> getAllStocks(List<Investment_Line_Items__c> newLines) {
@@ -28,58 +27,41 @@ public with sharing class InvestmentLineTriggerHandler {
         return stocks;
     }
 
-    private static void processStock(List<Investment_Line_Items__c> stockList) {
-        Map<Id, List<Investment_Line_Items__c>> stockByParent = new Map<Id, List<Investment_Line_Items__c>>();
-        for(Investment_Line_Items__c line : stockList) {
-            String investmentId = line.Investment__c;
-            if(stockByParent.containsKey(investmentId)) {
-                stockByParent.get(investmentId).add(line);
-            }else {
-                stockByParent.put(investmentId, new List<Investment_Line_Items__c>{line});
+    private static void updateAmountOnInvestment(List<Investment_Line_Items__c> stocks) {
+        List<Investment__c> investmentToUpdate = new List<Investment__c>();
+        Map<Id, List<Decimal>> totalBuySoldMap = new Map<Id, List<Decimal>>();
+        for(Investment_Line_Items__c stock : stocks) {
+            if(String.isBlank(stock.Investment__c)) {
+                continue;
             }
+            String ivtId = stock.Investment__c;
+            Decimal amount = stock.Amount__c;
+            String buySell = stock.Buy_Sell__c;
+            decimal buyPrice = 0;
+            decimal sellPrice = 0;
+            if(totalBuySoldMap.containsKey(ivtId)) {
+                buyPrice = totalBuySoldMap.get(ivtId)[0];
+                sellPrice = totalBuySoldMap.get(ivtId)[1];
+            }
+            buyPrice = buySell == 'Buy' ?  buyPrice + amount : buyPrice;
+            sellPrice = buySell == 'Sell' ? sellPrice + amount : sellPrice;
+            totalBuySoldMap.put(ivtId, new List<Decimal> {buyPrice, sellPrice});
         }
 
-        List<Investment__c> ivtList = new List<Investment__c>();
-        Map<Id, Investment__c> investmentMap = new Map<Id, Investment__c> ([
-            SELECT Id, Total_Buy__c, Total_Sold__c, Amount__c FROM Investment__c WHERE Id IN :stockByParent.keySet()
-        ]);
+        for(Investment__c ivt : [SELECT Id, Amount__c FROM Investment__c WHERE Id IN : totalBuySoldMap.keySet()]) {
+            List<Decimal> buySellPrices = totalBuySoldMap.get(ivt.Id);
+            ivt.Amount__c = ivt.Amount__c == null ? 0 : ivt.Amount__c;
+            Decimal totalAmount = ivt.Amount__c + (buySellPrices[0] - buySellPrices[1]);
+            ivt.Amount__c = totalAmount;
+            investmentToUpdate.add(ivt);
+        }
 
-        for(String key : stockByParent.keySet()) {
-            String ivtId = key;
-            List<Investment_Line_Items__c> lineItems = stockByParent.get(ivtId);
-            Decimal totalBuy = 0;
-            Decimal totalSold = 0;
-            Decimal buyAmount = 0;
-            Decimal soldAmount = 0;
-            for(Investment_Line_Items__c lineItem : lineItems) {
-                if(lineItem.Buy_Sell__c == 'Buy') {
-                    totalBuy += lineItem.quantity__c;
-                    buyAmount += lineItem.Amount__c;
-                }else {
-                    totalSold += lineItem.quantity__c;
-                    soldAmount += lineItem.Amount__c;
-                }
-            }
-            investmentMap.get(ivtId).Total_Buy__c += totalBuy;
-            investmentMap.get(ivtId).Total_Sold__c += totalSold;
-            //investmentMap.get(ivtId).Amount__c = (investmentMap.get(ivtId).Amount__c+buyAmount)-soldAmount;
-            //investmentMap.get(ivtId).Amount__c = 
+        if(!investmentToUpdate.isEmpty()) {
+            update investmentToUpdate;
         }
-        for(Investment__c ivt : [SELECT Id, Amount__c, 
-            (SELECT Id, Amount__c, Buy_Sell__c FROM Investment_Line_Items__r) 
-        FROM Investment__c WHERE Id IN :investmentMap.keySet()]) {
-            Decimal totalBuy = 0;
-            Decimal totalSold = 0;
-            for(Investment_Line_Items__c ivtLine : ivt.Investment_Line_Items__r) {
-                if(ivtLine.Buy_Sell__c == 'Buy') {
-                    totalBuy+= ivtLine.Amount__c;
-                }else if(ivtLine.Buy_Sell__c == 'Sell') {
-                    totalSold+= ivtLine.Amount__c;
-                }
-                
-            }
-            investmentMap.get(ivt.Id).Amount__c = totalBuy-totalSold;
-        }
-        update investmentMap.values();
+    }
+    private static void processStock(List<Investment_Line_Items__c> newList) {
+        List<Investment_Line_Items__c> stocks = getAllStocks(newList);
+        updateAmountOnInvestment(stocks);
     }
 }

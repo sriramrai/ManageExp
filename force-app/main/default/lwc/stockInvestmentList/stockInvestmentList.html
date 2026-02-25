@@ -1,4 +1,45 @@
 <template>
+    <div class="header-container">
+        <!-- LEFT SIDE -->
+        <div class="left-section">
+            <div class="amount">
+                <!-- ₹ {totalInvested} -->
+                <lightning-formatted-number 
+                    value={totalInvested}
+                    format-style="currency"
+                    currency-code="INR"    
+                    minimum-fraction-digits="0"
+                    maximum-fraction-digits="0">
+                </lightning-formatted-number>
+            </div>
+            <div class="message header-note">
+                {headerNote}
+            </div>
+        </div>
+        <!-- RIGHT SIDE -->
+        <div class="right-section">
+            <!-- Search Icon -->
+            <lightning-button-icon
+                icon-name="utility:search"
+                alternative-text="Search"
+                onclick={toggleSearch}>
+            </lightning-button-icon>
+            <div class={searchClass}>
+                <lightning-input
+                    type="text"
+                    variant="label-hidden"
+                    placeholder="Search..."
+                    onchange={handleSearch}>
+                </lightning-input>
+            </div>
+            <!-- Refresh Icon -->
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                alternative-text="Refresh"
+                onclick={handleRefresh}>
+            </lightning-button-icon>
+        </div>
+    </div>
     <template if:true={stockData}>
         <div class="slds-card">
             <div class="slds-card__body slds-card__body_inner">
@@ -6,25 +47,23 @@
                     <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_header-fixed custom-investments-table">
                         <thead>
                             <tr>
-                                <th scope="col" class="col-name"><div class="slds-truncate" title="Stock Name">Stock Name</div></th>
-                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Buyed">Total Buyed</div></th>
-                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Sold">Total Sold</div></th>
-                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Invested">Total Invested</div></th>
+                                <th scope="col" class="col-name"><div class="slds-truncate" title="Stock Name">Stock</div></th>
+                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Invested">Invested</div></th>
                                 <th scope="col" class="col-actions"><div class="slds-truncate" title="Actions">Actions</div></th>
                             </tr>
                         </thead>
                         <tbody class="slds-hint-parent">
                             <template for:each={formattedStockData} for:item="stock">
                                 <tr key={stock.recordId} class="slds-hint-parent">
-                                    <td data-label="Stock Name" class="col-name slds-p-vertical_xx-small">
-                                        <a href={stock.recordURL} target="_blank">{stock.stockName}</a>
+                                    <td data-label="Stock Name" class="col-name slds-p-vertical_xx-small word-break">
+                                        <a href={stock.recordURL} target="_blank">{stock.stockName} <b>({stock.quantity})</b></a>
                                     </td>
-                                    <td data-label="Total Buyed" class="col-num slds-p-vertical_xx-small">
+                                    <!-- <td data-label="Total Buyed" class="col-num slds-p-vertical_xx-small">
                                         {stock.totalBuyed}
                                     </td>
                                     <td data-label="Total Sold" class="col-num slds-p-vertical_xx-small">
                                         {stock.totalSold}
-                                    </td>
+                                    </td> -->
                                     <td data-label="Total Invested" class="col-num slds-p-vertical_xx-small">
                                         {stock.totalInvested}
                                     </td>
@@ -60,7 +99,7 @@
                                                             <div class="slds-col slds-size_1-of-6"><strong>Exec.</strong></div>
                                                         </div>
                                                         <template for:each={stock.lines} for:item="line">
-                                                            <div key={line.recordId} class="slds-grid slds-gutters slds-var-p-vertical_xx-small">
+                                                            <div key={line.recordId} class={line.styleclass}>
                                                                 <div class="slds-col slds-size_1-of-4">{line.sdate}</div>
                                                                 <div class="slds-col slds-size_1-of-4">{line.pricePerShare}</div>
                                                                 <div class="slds-col slds-size_1-of-6">{line.quantity}</div>

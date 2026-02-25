@@ -2,6 +2,7 @@ import { api } from 'lwc';
 import LightningModal from 'lightning/modal';
 import { toString, log, logError } from 'c/utilityClass';
 import manageStock from '@salesforce/apex/ExpenseManagerUtil.manageStock';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class BuySellStockModal extends LightningModal {
     @api content;
@@ -16,6 +17,14 @@ export default class BuySellStockModal extends LightningModal {
         this.close(closeMessage);
     }
 
+    get today() {
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const year = today.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+
     handleSave(event) {
         const allElements = this.template.querySelectorAll('lightning-input');
         log('content *** : '+this.content);
@@ -23,7 +32,8 @@ export default class BuySellStockModal extends LightningModal {
         this.actionLabel = this.content.actionLabel;
         log('invId*** : '+invId);
         let obj = {
-            'Investment__c': invId
+            'Investment__c': invId,
+
         };
 
         allElements.forEach(element => {
@@ -43,6 +53,13 @@ export default class BuySellStockModal extends LightningModal {
         })
         .catch(error => {
             logError('record creation failed.... : '+toString(error));
+            const event = new ShowToastEvent({
+                title: 'Error',
+                message: 'Record creation failed... : '+toString(error),
+                variant: 'error',
+                mode: 'sticky'
+            });
+            this.dispatchEvent(event);
         })
     }
 

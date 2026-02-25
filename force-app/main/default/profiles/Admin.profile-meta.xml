@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Profile xmlns="http://soap.sforce.com/2006/04/metadata">
+    <layoutAssignments>
+        <layout>Earning__c-Earning Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Expense_Line_Item__c-Expense Line Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Expense__c-Expense Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Income__c-Income Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Investment_Line_Items__c-Investment Line Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Investment__c-Investment Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Investment__c-Investment Layout</layout>
+        <recordType>Investment__c.Investment</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Investment__c-Stock Layout</layout>
+        <recordType>Investment__c.Stock</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Payment__c-Payment Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Salary_Structure__c-Salary Structur Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Sync_Data_Configuration__mdt-Sync Data Configuration Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Sync_Data_Item__c-Sync Data Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Sync_Data__c-Sync Data Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Treasure__c-Treasure Layout</layout>
+    </layoutAssignments>
+</Profile>
