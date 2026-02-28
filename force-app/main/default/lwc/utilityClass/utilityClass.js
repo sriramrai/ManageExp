@@ -73,7 +73,7 @@ const formatDate = (data) => {
     const formatter = new Intl.DateTimeFormat('en-IN', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
+        year: '2-digit'
     });
     return data  ? formatter.format(new Date(data)) : '';
 }

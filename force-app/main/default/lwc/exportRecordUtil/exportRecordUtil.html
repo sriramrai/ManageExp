@@ -1,0 +1,77 @@
+<template>
+    <lightning-card title="Export Records">
+        <div class="slds-p-around_medium">
+            <template if:true={messageObj}>
+                <div class={messageObj.class}>
+                    {messageObj.type} : {messageObj.message}
+                </div>
+            </template>
+            <div class="slds-grid slds-wrap slds-gutters">
+                <!-- Object selector -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox
+                        name="objectName"
+                        label="Object Name"
+                        value={objectName}
+                        placeholder="Select an object"
+                        options={objectOptions}
+                        onchange={handleObjectChange}>
+                    </lightning-combobox>
+                </div>
+
+                <!-- Grouped Field Name text input -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input
+                        type="text"
+                        name="groupedField"
+                        label="Grouped Field Name"
+                        value={groupedField}
+                        onchange={handleGroupedFieldChange}>
+                    </lightning-input>
+                </div>
+
+                <!-- From Date -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input
+                        type="date"
+                        name="fromDate"
+                        label="From Date"
+                        value={fromDate}
+                        onchange={handleFromDateChange}>
+                    </lightning-input>
+                </div>
+
+                <!-- To Date -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-input
+                        type="date"
+                        name="toDate"
+                        label="To Date"
+                        value={toDate}
+                        onchange={handleToDateChange}>
+                    </lightning-input>
+                </div>
+
+                <!-- filter field -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                    <lightning-combobox
+                        name="filterField"
+                        label="Fielter Field"
+                        value={filterField}
+                        placeholder="Select an Field"
+                        options={fieldOptions}
+                        onchange={handlerFilterFieldChange}>
+                    </lightning-combobox>
+                </div>
+            </div>
+
+            <div class="slds-m-top_medium">
+                <lightning-button 
+                    label="Export to Excel" 
+                    onclick={exportToExcel}
+                    variant="brand">
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>
