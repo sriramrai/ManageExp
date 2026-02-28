@@ -11,6 +11,8 @@ export default class StockInvestmentList extends LightningElement {
     @track last10Transaction = [];
     isOpen = false;
     totalInvested = 0;
+    headerNote = '';
+    @track originalData;
 
     get searchClass() {
         return this.isOpen ? 'search-box open' : 'search-box';
@@ -22,17 +24,21 @@ export default class StockInvestmentList extends LightningElement {
 
     handleSearch(event) {
         let searchString = event.target.value.toLowerCase();
-        const result = this.stockData.filter(item => {
-            item.stockName.toLowerCase().includes(searchString);
-        })
-        this.stockData = result;
+        if(!searchString) {
+            this.stockData = this.originalData;
+            return;
+        }
+        this.stockData = this.originalData.filter(item =>
+            item.stockName.toLowerCase().includes(searchString)
+        );
+    
     }
 
     @api refreshData() {
         refreshApex(this.stockProvisionedData);
     }
 
-    get headerNote() {
+    getHeaderNote() {
         if(this.last10Transaction.length < 1) {
             return '';
         }
@@ -51,6 +57,8 @@ export default class StockInvestmentList extends LightningElement {
             this.totalInvested = 0;
             stocks.forEach(stock => {
                 this.totalInvested += Number(stock.totalInvested);
+                stock.quantity = Number(stock.quantity);
+                stock.totalSold = Number(stock.totalSold);
                 stock.lines.forEach(
                     stockLine => {
                         stockLine.styleclass = 'slds-grid slds-gutters slds-var-p-vertical_xx-small';
@@ -60,11 +68,14 @@ export default class StockInvestmentList extends LightningElement {
                         if(this.last10Transaction.length < 10) {
                             this.last10Transaction.push(stockLine);
                         }
+                        stockLine.sdate = formatDate(new Date(stockLine.sdate));
                     }
                 );
             });
             //this.stockData = stockObjs.data;
             this.stockData = stocks;
+            this.headerNote = this.getHeaderNote();
+            this.originalData = stocks;
             log('stock data fetched successfully.... : '+toString(this.stockData));
         }
     }

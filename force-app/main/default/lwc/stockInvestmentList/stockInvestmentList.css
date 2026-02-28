@@ -16,6 +16,30 @@
 .search-box .slds-input {
     border: 1px solid #d8dde6;
 }
+.badge-row {
+    display: flex;
+    align-items: center;
+}
+
+.circle-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: white;
+}
+
+.available {
+    background-color: #2e844a; /* SLDS green */
+}
+
+.sold {
+    background-color: #ba0517; /* SLDS red */
+}
 
 /* Keep border on focus */
 .search-box .slds-input:focus {

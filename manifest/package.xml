@@ -22,6 +22,7 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>Export_Data</members>
 		<members>Treasure__c</members>
 		<name>CustomTab</name>
 	</types>
@@ -47,10 +48,6 @@
 	<types>
 		<members>DevOrg</members>
 		<name>NamedCredential</name>
-	</types>
-	<types>
-		<members>Admin</members>
-		<name>Profile</name>
 	</types>
 	<types>
 		<members>Sync_Data__c.Analyze_Sync</members>

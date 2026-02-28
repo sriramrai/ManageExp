@@ -169,7 +169,7 @@ public with sharing class SyncDataController {
         Database.executeBatch(new SyncDataQueueable(objectName, offset, step, filter, syncDataId, syncDataItemId), 1);
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<Map<String,String>> getAvailableObjects() {
         List<Map<String,String>> objects = new List<Map<String,String>>();
         Map<String, Schema.SObjectType> results = Schema.getGlobalDescribe();
@@ -185,7 +185,7 @@ public with sharing class SyncDataController {
         return objects;
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<Map<String,String>> getFieldsForObject(String objectName) {
         List<Map<String,String>> fields = new List<Map<String,String>>();
         Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectName);
@@ -742,5 +742,32 @@ public with sharing class SyncDataController {
         public ProgressDataError(String error) {
             this.error = error;
         }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Expense__c> exportExpenseRecord() {
+        return [SELECT id, name, Other__c, Ragini__c, Sriram__c, Shivam__c, Start_Date__c, End_Date__c 
+                FROM Expense__c  
+                ORDER BY CreatedDate ASC];
+    }
+
+    @AuraEnabled
+    public static List<sObject> exportRecords(String objectName, String groupedField, Date fromDate, Date toDate, String filterField) {
+        System.debug('fromDate**** : '+fromDate);
+        System.debug('toDate***** : '+toDate);
+        Map<String, Schema.SObjectType> globalMap = Schema.getGlobalDescribe();
+        Schema.SObjectType sobjectType = globalMap.get(objectName);
+        Schema.DescribeSObjectResult descResult = sobjectType.getDescribe();
+        Map<String, Schema.SObjectField> fieldMap = descResult.fields.getMap();
+        List<String> fieldNames = new List<String>(fieldMap.keySet());
+        String fieldList = String.join(fieldNames, ',');
+        if(String.isNotBlank(groupedField)) {
+            fieldList += ', '+groupedField;
+        }
+        String query = 'SELECT ' + fieldList + ' FROM ' + objectName;
+        if(fromDate != null && toDate != null) {
+            query += ' WHERE ' + filterField + ' >= :fromDate AND ' + filterField + ' <= :toDate';
+        }
+        return Database.query(query);
     }
 }

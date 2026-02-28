@@ -194,7 +194,7 @@ public with sharing class DataProvider {
         Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
         List<StockWrapper> stockList = new List<StockWrapper>();
         for(Investment__c ivt : [
-            SELECT Id, Account_Number__c, Total_buy__c, Total_Sold__c, Amount__c, Available_Quantity__c, 
+            SELECT Id, Account_Number__c, Buyed_Quantity__c, Sold_Quantity__c, Amount__c, Available_Quantity__c, 
                 (SELECT Id, Amount__c, Buy_Sell__c, Exchange__c, Quantity__c, Date__c, Per_Share_Price__c FROM Investment_Line_Items__r ORDER BY LastmodifiedDate DESC)
             FROM Investment__c WHERE RecordTypeId =: stockRT ORDER BY LastmodifiedDate DESC
         ]) {
@@ -219,8 +219,8 @@ public with sharing class DataProvider {
             this.recordId = ivt.Id;
             this.recordURL = '/'+this.recordId;
             this.stockName = ivt.Account_Number__c;
-            this.totalBuyed = Integer.valueOf(ivt.Total_buy__c);
-            this.totalSold = Integer.valueOf(ivt.Total_Sold__c);
+            this.totalBuyed = Integer.valueOf(ivt.Buyed_Quantity__c);
+            this.totalSold = Integer.valueOf(ivt.Sold_Quantity__c);
             this.totalInvested = ivt.Amount__c;
             this.quantity = Integer.valueOf(ivt.Available_Quantity__c);
             this.lines = new List<StockLinesWrapper>();

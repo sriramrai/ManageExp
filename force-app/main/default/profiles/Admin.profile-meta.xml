@@ -29,19 +29,4 @@
     <layoutAssignments>
         <layout>Payment__c-Payment Layout</layout>
     </layoutAssignments>
-    <layoutAssignments>
-        <layout>Salary_Structure__c-Salary Structur Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Sync_Data_Configuration__mdt-Sync Data Configuration Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Sync_Data_Item__c-Sync Data Item Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Sync_Data__c-Sync Data Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Treasure__c-Treasure Layout</layout>
-    </layoutAssignments>
 </Profile>
