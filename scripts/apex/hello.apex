@@ -65,7 +65,7 @@ Date endDate = lastDateOfMonth.addMonths(-5);
 endDate = Date.newInstance(endDate.year(), endDate.month(), 1);
 System.debug('endDate*** : '+JSON.serialize(SyncDataController.getAvailableObjects()));
 
-Sy
+System.debug
 
 
 delete [select id, name, Bank__c, RecordType.Name, Account_Number__c from Investment__c order by Account_Number__c desc];
