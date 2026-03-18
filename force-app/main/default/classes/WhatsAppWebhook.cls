@@ -21,7 +21,16 @@ global without sharing class WhatsAppWebhook {
 
 		String body = req.requestBody.toString();
 
-		parsePayload(body);
+		try {
+			parsePayload(body);
+		}catch(Exception exp) {
+			Error_Logs__c error = new Error_Logs__c(
+				Class_Name__c = 'WhatsAppWebhook',
+				Method_name__c = 'receiveMessage',
+				Details__c = exp.getStackTraceString()
+			);
+			insert error;
+		}
 	}
 
 	public static ExpenseData parseLine(String line){
