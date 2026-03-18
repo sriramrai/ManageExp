@@ -26,6 +26,7 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>Error_Logs__c</members>
 		<members>Export_Data</members>
 		<members>Treasure__c</members>
 		<name>CustomTab</name>

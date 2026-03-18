@@ -16,6 +16,10 @@
         <apexClass>InvestmentController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <externalCredentialPrincipalAccesses>
+        <enabled>true</enabled>
+        <externalCredentialPrincipal>DevOrg_External_Cred-Named Principal</externalCredentialPrincipal>
+    </externalCredentialPrincipalAccesses>
     <fieldPermissions>
         <editable>true</editable>
         <field>Earning__c.Bonus__c</field>
@@ -89,6 +93,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Earning__c.Telephone_Allowance__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Error_Logs__c.Class_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Error_Logs__c.Details__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Error_Logs__c.Method_name__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -542,6 +561,15 @@
         <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Error_Logs__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>Expense_Line_Item__c</object>
         <viewAllRecords>false</viewAllRecords>
@@ -640,6 +668,10 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
+        <tab>Error_Logs__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
         <tab>Expense_Line_Item__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
@@ -649,6 +681,10 @@
     </tabSettings>
     <tabSettings>
         <tab>Expense__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>Export_Data</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
