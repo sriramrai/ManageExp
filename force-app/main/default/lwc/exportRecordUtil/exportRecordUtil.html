@@ -25,6 +25,7 @@
                         type="text"
                         name="groupedField"
                         label="Grouped Field Name"
+                        placeholder="Enter Field Name to Group Expense__r.Name"
                         value={groupedField}
                         onchange={handleGroupedFieldChange}>
                     </lightning-input>
@@ -69,6 +70,11 @@
                 <lightning-button 
                     label="Export to Excel" 
                     onclick={exportToExcel}
+                    variant="brand">
+                </lightning-button>
+                <lightning-button 
+                    label="Export to pdf" 
+                    onclick={exportToPdf}
                     variant="brand">
                 </lightning-button>
             </div>

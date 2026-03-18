@@ -6,6 +6,9 @@
 	</types>
 	<types>
 		<members>Earning__c.Month__c</members>
+		<members>Error_Logs__c.Class_Name__c</members>
+		<members>Error_Logs__c.Details__c</members>
+		<members>Error_Logs__c.Method_name__c</members>
 		<members>Treasure__c.Amount__c</members>
 		<members>Treasure__c.Date__c</members>
 		<members>Treasure__c.Details__c</members>
@@ -17,6 +20,7 @@
 		<name>CustomMetadata</name>
 	</types>
 	<types>
+		<members>Error_Logs__c</members>
 		<members>Sync_Data_Configuration__mdt</members>
 		<members>Treasure__c</members>
 		<name>CustomObject</name>
@@ -36,6 +40,7 @@
 	</types>
 	<types>
 		<members>Earning__c-Earning Layout</members>
+		<members>Error_Logs__c-Error Log Layout</members>
 		<members>Treasure__c-Treasure Layout</members>
 		<name>Layout</name>
 	</types>
@@ -57,5 +62,5 @@
 		<members>*</members>
 		<name>StaticResource</name>
 	</types>
-	<version>65.0</version>
+	<version>66.0</version>
 </Package>

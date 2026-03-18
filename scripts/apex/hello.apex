@@ -65,7 +65,7 @@ Date endDate = lastDateOfMonth.addMonths(-5);
 endDate = Date.newInstance(endDate.year(), endDate.month(), 1);
 System.debug('endDate*** : '+JSON.serialize(SyncDataController.getAvailableObjects()));
 
-Sy
+System.debug
 
 
 delete [select id, name, Bank__c, RecordType.Name, Account_Number__c from Investment__c order by Account_Number__c desc];
@@ -159,4 +159,18 @@ String serilized = JSON.serialize(records);
 List<String> recordsD = (List<String>)JSON.deserialize(serilized, List<String>.class);
 System.debug('serilized*** : '+ serilized);
 System.debug('recordsD**** : '+recordsD);
+
+
+String input = '600 purchased rice icici cc  emi 12m';
+
+Pattern p = Pattern.compile('\\b(\\d{1,2}m)\\b');
+Matcher m = p.matcher(input);
+
+String emiTenure = null;
+
+if (m.find()) {
+    emiTenure = m.group(1);
+}
+
+System.debug(emiTenure); // Output: 3m
 
