@@ -1,4 +1,4 @@
-public with sharing class ExpenseLineItemTriggerHandler {
+public without sharing class ExpenseLineItemTriggerHandler {
     Set<String> applicableSource = new Set<String>{'Axis CC', 'ICICI CC'};
     Integer AXIS_BILLING_DAY = 18;
     Integer ICICI_BILLING_DAY = 24;

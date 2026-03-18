@@ -110,6 +110,20 @@ export default class ExportRecordUtil extends LightningElement {
         return true;
     }
 
+    exportToPdf() {
+        let valid = this.checkFormValidity();
+        if(valid) {
+            let url = '/apex/ExportDataPage';
+            let parameter = '?objectName='+this.objectName+'&groupedField='+this.groupedField+'&fromDate='+this.fromDate;
+            parameter += '&toDate='+this.toDate+'&filterField='+this.filterField;
+            window.open(url+parameter);
+        }else {
+            this.messageObj.type = 'ERROR';
+            this.messageObj.class = 'msg-error';
+            this.messageObj.message = 'Please fill all fields prior to Export Data';
+        }
+    }
+
     exportToExcel() {
         //if (!this.records || this.records.length === 0) return;
         let valid = this.checkFormValidity();

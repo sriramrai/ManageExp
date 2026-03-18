@@ -160,3 +160,17 @@ List<String> recordsD = (List<String>)JSON.deserialize(serilized, List<String>.c
 System.debug('serilized*** : '+ serilized);
 System.debug('recordsD**** : '+recordsD);
 
+
+String input = '600 purchased rice icici cc  emi 12m';
+
+Pattern p = Pattern.compile('\\b(\\d{1,2}m)\\b');
+Matcher m = p.matcher(input);
+
+String emiTenure = null;
+
+if (m.find()) {
+    emiTenure = m.group(1);
+}
+
+System.debug(emiTenure); // Output: 3m
+

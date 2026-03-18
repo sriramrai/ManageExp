@@ -110,7 +110,61 @@ global without sharing class WhatsAppWebhook {
 		expenseLineItem.Details__c = data.details;
 		expenseLineItem.Expense__c = getExpense(data.expenseDate);
 		expenseLineItem.Category__c = getExpenseCategory(data.details);
+		expenseLineItem.Source__c = getExpenseSource(data.details);
+		if(expenseLineItem.Source__c == 'Axis CC' || expenseLineItem.Source__c == 'ICICI CC') {
+			expenseLineItem.EMI_Term__c = getEMITerm(data.details);
+		}
 		return expenseLineItem;
+	}
+
+	public static String getEMITerm(String details) {
+		details = details.toLowerCase();
+		if(details.contains('emi')) {
+			Pattern p = Pattern.compile('\\b(\\d{1,2}m)\\b');
+			Matcher m = p.matcher(details);
+			String emiTenure = null;
+			if (m.find()) {
+				emiTenure = m.group(1);
+			}
+			if(String.isNotBlank(emiTenure)) {
+				if(emiTenure == '3m') {
+					return '3 Months';
+				}else if(emiTenure == '6m') {
+					return '3 Months';
+				}else if(emiTenure == '12m') {
+					return '12 Months';
+				}else {
+					return '1 Time';
+				}
+			}else {
+				return '1 Time';
+			}
+		}else {
+			return '1 Time';
+		}
+	}
+
+	public static String getExpenseSource(String details) {
+		details = details.toLowerCase();
+		if(details.contains('axis')) {
+			return 'Axis CC';
+		}
+		if(details.contains('icici')) {
+			return 'ICICI CC';
+		}
+		if(details.contains('phone')) {
+			return 'Phone';
+		}
+		if(details.contains('apay')) {
+			return 'Apay';
+		}
+		if(details.contains('pluxee')) {
+			return 'Pluxee';
+		}
+		if(details.contains('cash')) {
+			return 'Cash';
+		}
+		return 'Gpay';
 	}
 
 	public static Id getExpense(Date expenseDate) {
@@ -181,5 +235,6 @@ global without sharing class WhatsAppWebhook {
 		public Decimal amount;
 		public Date expenseDate;
 		public String details;
+		public String source;
 	}
 }
