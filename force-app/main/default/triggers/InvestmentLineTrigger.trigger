@@ -1,4 +1,7 @@
 trigger InvestmentLineTrigger on Investment_Line_Items__c (after insert, after update) {
+    if(ApexUtilityClass.isTriggerDisabled()) {
+        return;
+    }
     if(trigger.isAfter) {
         if(trigger.isInsert) {
             InvestmentLineTriggerHandler.handleAfterInsert(trigger.new);

@@ -153,7 +153,7 @@ for(AsyncApexJob job : jobs) {
     System.abortJob(job.Id);
 }
 
-
+// Processing the whatsapp messages manually from execute anonymous
 List<String> records = new List<String>{'a', 'b', 'c'};
 String serilized = JSON.serialize(records);
 List<String> recordsD = (List<String>)JSON.deserialize(serilized, List<String>.class);
