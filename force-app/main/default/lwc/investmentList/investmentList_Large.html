@@ -1,0 +1,80 @@
+<template>
+    <div class="slds-card inv-list-large-card">
+        <div class="slds-card__body slds-card__body_inner slds-p-around_x-small inv-list-body">
+            <div class="inv-totals slds-text-align_center slds-text-title_bold">
+                <lightning-formatted-number maximum-fraction-digits="0" value={totalInvested} format-style="currency" currency-code="INR" class="slds-m-right_x-small">
+                </lightning-formatted-number>
+                <span class="slds-m-horizontal_x-small">—</span>
+                <lightning-formatted-number maximum-fraction-digits="0" value={totalMaturity} format-style="currency" currency-code="INR">
+                </lightning-formatted-number>
+            </div>
+            <div class="inv-table-outer">
+                <div class="inv-table-scroll">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered inv-table">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Account">Account</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Principle">Principle</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Maturity">Maturity</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Rate">Rate</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Matured On">Matured On</div>
+                            </th>
+                            <th scope="col">
+                                <div class="slds-truncate" title="Days Left">Days Left</div>
+                            </th>
+                            <th scope="col" class="inv-col-actions">
+                                <div class="slds-truncate" title="Actions">Actions</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={investments} for:item="ivt">
+                            <tr key={ivt.Id}>
+                                <td>
+                                    <lightning-badge
+                                        label={ivt.Account_Number__c}
+                                        class={ivt.badgeStyle}
+                                        onclick={badgeClickHandler}
+                                        data-id={ivt.Id}>
+                                    </lightning-badge>
+                                </td>
+                                <td>
+                                    <lightning-formatted-number value={ivt.Amount__c} format-style="currency" currency-code="INR">
+                                    </lightning-formatted-number>
+                                </td>
+                                <td>
+                                    <lightning-formatted-number value={ivt.Maturity_Amount__c} format-style="currency" currency-code="INR">
+                                    </lightning-formatted-number>
+                                </td>
+                                <td>{ivt.Rate__c}%</td>
+                                <td>
+                                    <lightning-formatted-date-time value={ivt.Maturity_Date__c}></lightning-formatted-date-time>
+                                </td>
+                                <td><strong>{ivt.daysLeft}</strong></td>
+                                <td class="inv-col-actions">
+                                    <lightning-badge
+                                        label="More"
+                                        data-id={ivt.Id}
+                                        data-acc={ivt.Account_Number__c}
+                                        onclick={renewCloseHandler}
+                                        class="inv-more-badge">
+                                    </lightning-badge>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -119,6 +119,7 @@ public with sharing class InvestmentController {
             ivt = updateInvestment(lineItem, data);
         }else {
             ivt.Is_Closed__c = true;
+            ivt.Closed_Date__c = Date.today();
             lineItem.Maturity_Date__c = lineItem.Date__c;
         }
 

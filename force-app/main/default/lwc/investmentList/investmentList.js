@@ -3,6 +3,9 @@ import {log, deepClone} from 'c/utilityClass';
 import renewalModal from 'c/renewalModal';
 import getAllInvestmentByBank from '@salesforce/apex/ExpenseManagerUtil.getAllInvestmentByBank';
 import { refreshApex } from '@salesforce/apex';
+import templateMobile from './investmentList.html';
+import templateLarge from './investmentList_Large.html';
+import FORM_FACTOR from '@salesforce/client/formFactor';
 
 export default class InvestmentList extends LightningElement {
     @api ivts;
@@ -11,7 +14,13 @@ export default class InvestmentList extends LightningElement {
     totalMaturity = 0;
     @track investments = [];
     provisionedItem;
+    isMobile = FORM_FACTOR === 'Small' ? true : false;
 
+    /** Same shadow root and investmentList.css for both; only the template changes. */
+    render() {
+        return this.isMobile ? templateMobile : templateLarge;
+    }
+    
     @wire(getAllInvestmentByBank, {'bankName' : '$bankName'})
     allInvestment(result) {
         this.provisionedItem = result;
@@ -83,16 +92,16 @@ export default class InvestmentList extends LightningElement {
         let result = '';
         if(days >= 365) {
             let yr = Math.floor(days / 365);
-            result += yr + ' Year ';
+            result += yr + 'Y ';
             days = days % 365;
         }
         if(days >= 30) {
             let month = Math.floor(days / 30);
-            result += month + ' Month '
+            result += month + 'M '
             days = days%30;
         }
         if(days > 0) {
-            result += days + ' Days'
+            result += days + 'D '
         }
 
         return result;
