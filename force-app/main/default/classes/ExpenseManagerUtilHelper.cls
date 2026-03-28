@@ -84,6 +84,8 @@ public with sharing class ExpenseManagerUtilHelper {
         Map<String, Decimal> tdsByAccountNumber = new Map<String, Decimal>();
         Map<String, Decimal> accumulatedInterest = new Map<String, Decimal>();
         Map<String, String> accountNumberById = new Map<String, String>();
+        Map<String, Boolean> isClosedByAccount = new Map<String, Boolean>();
+        Map<String, Date> closedDateByAccount = new Map<String, Date>();
         Map<String, InterestWrapper> wrapperByAccountMap = new Map<String, InterestWrapper>();
 
         for(Investment_Line_Items__c line : lines) {
@@ -111,18 +113,24 @@ public with sharing class ExpenseManagerUtilHelper {
             }
             tdsByAccountNumber.put(accountNumber, tds);
             accountNumberById.put(accountNumber, ivt.Id);
+            isClosedByAccount.put(accountNumber, ivt.Is_Closed__c);
+            closedDateByAccount.put(accountNumber, ivt.Closed_Date__c);
         }
 
         for(String key : alreadyPaidIntByAcct.keySet()) {
+            Boolean isClosed = isClosedByAccount.containsKey(key) ? isClosedByAccount.get(key) : false;
+            Date closedDate = closedDateByAccount.containsKey(key) ? closedDateByAccount.get(key) : null;
             Decimal tds = tdsByAccountNumber.get(key);
             Decimal paidInterest = alreadyPaidIntByAcct.get(key);
             String recordId = accountNumberById.get(key);
-            InterestWrapper iwrapper = new InterestWrapper(key, bankName, paidInterest, tds, recordId);
+            InterestWrapper iwrapper = new InterestWrapper(key, bankName, paidInterest, tds, recordId, isClosed, closedDate);
             wrapperByAccountMap.put(key, iwrapper);
         }
 
         for(String key : accumulatedInterest.keySet()) {
             InterestWrapper tempWrapper;
+            Boolean isClosed = isClosedByAccount.containsKey(key) ? isClosedByAccount.get(key) : false;
+            Date closedDate = closedDateByAccount.containsKey(key) ? closedDateByAccount.get(key) : null;
             Decimal accIntr = accumulatedInterest.get(key);
             String recordId = accountNumberById.get(key);
             if(wrapperByAccountMap.containsKey(key)) {
@@ -130,7 +138,7 @@ public with sharing class ExpenseManagerUtilHelper {
                 tempWrapper.accumulatedInteres = accIntr;
             }else {
                 Decimal tds = tdsByAccountNumber.get(key);
-                tempWrapper = new InterestWrapper(key, bankName, accIntr, recordId, tds);
+                tempWrapper = new InterestWrapper(key, bankName, accIntr, recordId, tds, isClosed, closedDate);
             }
             wrapperByAccountMap.put(key, tempWrapper);
         }
@@ -153,25 +161,47 @@ public with sharing class ExpenseManagerUtilHelper {
         @AuraEnabled public Decimal interestPaid {get; set;}
         @AuraEnabled public Decimal tds {get; set;}
         @AuraEnabled public Id recordId {get; set;}
+        @AuraEnabled public Boolean isClosed {get; set;}
+        @AuraEnabled public Date closedDate {get; set;} 
         
         public InterestWrapper(InterestWrapper iwrapper, Decimal accumulatedInteres) {
             iwrapper.accumulatedInteres = accumulatedInteres;
         }
 
-        public InterestWrapper(String accountNumber, String bankName, Decimal interestPaid, Decimal tds, String recordId) {
+        public InterestWrapper(
+            String accountNumber, 
+            String bankName, 
+            Decimal interestPaid, 
+            Decimal tds, 
+            String recordId,
+            Boolean isClosed,
+            Date closedDate
+        ) {
             this.accountNumber = accountNumber;
             this.bankName = bankName;
             this.interestPaid = interestPaid;
             this.tds = tds != null ? tds : 0;
             this.recordId = recordId;
+            this.isClosed = isClosed;
+            this.closedDate = closedDate;
         }
 
-        public InterestWrapper(String accountNumber, String bankName, Decimal accumulatedInteres, String recordId, Decimal tds) {
+        public InterestWrapper(
+            String accountNumber, 
+            String bankName, 
+            Decimal accumulatedInteres, 
+            String recordId, 
+            Decimal tds, 
+            Boolean isClosed,
+            Date closedDate
+        ) {
             this.accountNumber = accountNumber;
             this.bankName = bankName;
             this.accumulatedInteres = accumulatedInteres;
             this.recordId = recordId;
             this.tds = tds;
+            this.isClosed = isClosed;
+            this.closedDate = closedDate;
         }
     }
 

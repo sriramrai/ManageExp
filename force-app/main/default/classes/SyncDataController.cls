@@ -29,6 +29,11 @@ public with sharing class SyncDataController {
         // Defensive defaults
         String opMessage = isFetch ? 'Fetching...' : 'Saving...';
         ProgressData pd = new ProgressData(opMessage, false, 0);
+        // Check if it saving the data to database but trigger is not disabled
+        if(!isFetch && !ApexUtilityClass.isTriggerDisabled()) {
+            pd = new ProgressData('Error While Saving: ' + 'Please make sure Trigger is disabled before saving record', false, 0);
+            return JSON.serialize(pd);
+        }
         try {
             // Example status computation:
             // Progress is derived from number of Sync_Data_Item__c created vs. some target.

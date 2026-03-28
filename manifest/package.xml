@@ -1,67 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Salesforce</members>
-		<name>AuthProvider</name>
-	</types>
-	<types>
-		<members>Earning__c.Month__c</members>
-		<members>Error_Logs__c.Class_Name__c</members>
-		<members>Error_Logs__c.Details__c</members>
-		<members>Error_Logs__c.Method_name__c</members>
-		<members>Treasure__c.Amount__c</members>
-		<members>Treasure__c.Date__c</members>
-		<members>Treasure__c.Details__c</members>
-		<members>Treasure__c.Tresuree__c</members>
+		<members>Automation_Switch__c.Disable_Trigger__c</members>
+		<members>Investment__c.Closed_Date__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
-		<members>*</members>
-		<name>CustomMetadata</name>
-	</types>
-	<types>
-		<members>Error_Logs__c</members>
-		<members>Sync_Data_Configuration__mdt</members>
-		<members>Treasure__c</members>
+		<members>Automation_Switch__c</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
-		<members>Error_Logs__c</members>
-		<members>Export_Data</members>
-		<members>Treasure__c</members>
-		<name>CustomTab</name>
-	</types>
-	<types>
-		<members>DevOrg_External_Cred</members>
-		<name>ExternalCredential</name>
-	</types>
-	<types>
-		<members>Investment_Dashboard</members>
-		<name>FlexiPage</name>
-	</types>
-	<types>
-		<members>Earning__c-Earning Layout</members>
-		<members>Error_Logs__c-Error Log Layout</members>
-		<members>Treasure__c-Treasure Layout</members>
-		<name>Layout</name>
-	</types>
-	<types>
-		<members>declarationComp</members>
-		<members>futureInvestmentList</members>
-		<members>investmentList</members>
-		<name>LightningComponentBundle</name>
-	</types>
-	<types>
-		<members>DevOrg</members>
-		<name>NamedCredential</name>
-	</types>
-	<types>
-		<members>Sync_Data__c.Analyze_Sync</members>
-		<name>QuickAction</name>
-	</types>
-	<types>
-		<members>*</members>
-		<name>StaticResource</name>
+		<members>ExpenseManager</members>
+		<name>PermissionSet</name>
 	</types>
 	<version>66.0</version>
 </Package>

@@ -40,6 +40,8 @@ export default class FyIntrestMonitor extends NavigationMixin(LightningElement) 
         {label: 'Acc. Interest', fieldName: 'accumulatedInteres'},
         {label: 'Paid Interest', fieldName: 'interestPaid'},
         {label: 'TDS', fieldName: 'tds'},
+        /* {label: 'Is Closed', fieldName: 'isClosed', type: 'boolean'}, */
+        {label: 'Closed Date', fieldName: 'closedDate', type: 'date'}
     ];
 
     @wire(MessageContext)

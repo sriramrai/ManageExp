@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "path": "/Users/sriram/Workspace/ManageExp"
+    }
+  ],
+  "settings": {
+    "eslint.workingDirectories": [
+      "/Users/sriram/Workspace/ManageExp"
+    ],
+    "eslint.validate": [
+      "javascript",
+      "typescript"
+    ],
+    "eslint.options": {
+      "overrideConfigFile": "/Users/sriram/Workspace/ManageExp/.eslintrc.json"
+    }
+  }
+}

@@ -53,6 +53,7 @@
 
   .inv-totals {
     margin-bottom: 0.5rem;
+    font-size: 15px;
   }
 
   /* Fixed height shell so inner area can shrink and scroll (flex parents need min-height: 0). */
@@ -102,7 +103,6 @@
     cursor: pointer;
   }
 
-  /* Large template uses plain slds-card (investmentList_Large.html) — no lightning-card header slot */
-  .inv-list-large-card {
-    margin-top: 0;
+  .no-header-card .slds-card__header {
+    display: none !important;
   }

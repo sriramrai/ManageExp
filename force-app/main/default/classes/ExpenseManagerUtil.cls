@@ -176,10 +176,18 @@ public with sharing class ExpenseManagerUtil {
 
     @AuraEnabled(cacheable = true)
     public static Map<String, List<ExpenseManagerUtilHelper.OneViewWrapper>> getOneViewWrapper(String fiscalYear) {
+        fiscalYear = getCurrentFiscalYear();
         List<Date> fyDates = constructFyDate(fiscalYear);
         Date startDate = fyDates[0];
         Date endDate = fyDates[1];
         return ExpenseManagerUtilHelper.getOneViewMap(startDate, endDate, fiscalYear);
+    }
+
+    public static String getCurrentFiscalYear() {
+        List<Date> currentFyDates = ExpenseManagerUtilHelper.getFiscalYear(Date.today());
+        String currentFy = '';
+        currentFy = currentFyDates[0].year() + '-' + (currentFyDates[1].year());
+        return currentFy;
     }
 
     @AuraEnabled(cacheable = true)

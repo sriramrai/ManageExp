@@ -153,7 +153,7 @@ for(AsyncApexJob job : jobs) {
     System.abortJob(job.Id);
 }
 
-
+// Processing the whatsapp messages manually from execute anonymous
 List<String> records = new List<String>{'a', 'b', 'c'};
 String serilized = JSON.serialize(records);
 List<String> recordsD = (List<String>)JSON.deserialize(serilized, List<String>.class);
@@ -174,3 +174,49 @@ if (m.find()) {
 
 System.debug(emiTenure); // Output: 3m
 
+
+// One-time script: Populate Closed_Date__c from Investment_Line_Item__c records
+List<Investment__c> investmentsToUpdate = new List<Investment__c>();
+
+// Query all closed investments that don't have a Closed_Date__c yet
+List<Investment__c> closedInvestments = [
+    SELECT Id, Is_Closed__c, Closed_Date__c
+    FROM Investment__c
+    WHERE Is_Closed__c = true 
+    AND Closed_Date__c = null
+];
+
+System.debug('Found ' + closedInvestments.size() + ' investments to process');
+
+for(Investment__c inv : closedInvestments) {
+    // Find the related Investment_Line_Item__c with Type = 'closed'
+    List<Investment_Line_Items__c> closedLineItems = [
+        SELECT Id, Date__c, Type__c
+        FROM Investment_Line_Items__c
+        WHERE Investment__c = :inv.Id
+        AND Type__c = 'closed'
+        ORDER BY Date__c DESC
+        LIMIT 1
+    ];
+    
+    // If a closed line item exists, use its date to populate Closed_Date__c
+    if(!closedLineItems.isEmpty()) {
+        inv.Closed_Date__c = closedLineItems[0].Date__c;
+        investmentsToUpdate.add(inv);
+        System.debug('Investment ' + inv.Id + ' will be updated with Closed_Date: ' + closedLineItems[0].Date__c);
+    } else {
+        System.debug('Warning: No closed line item found for Investment ' + inv.Id);
+    }
+}
+
+// Update all investments
+if(!investmentsToUpdate.isEmpty()) {
+    try {
+        update investmentsToUpdate;
+        System.debug('Successfully updated ' + investmentsToUpdate.size() + ' investments');
+    } catch(Exception e) {
+        System.debug('Error updating investments: ' + e.getMessage());
+    }
+} else {
+    System.debug('No investments needed updating');
+}
