@@ -220,3 +220,5 @@ if(!investmentsToUpdate.isEmpty()) {
 } else {
     System.debug('No investments needed updating');
 }
+
+System.debug('result**** : '+WhatsAppWebhook.parseLine('panir roll shopping 29/03'));
