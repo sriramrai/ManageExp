@@ -192,31 +192,25 @@ public with sharing class ExpenseManagerUtil {
 
     @AuraEnabled(cacheable = true)
     public static Map<String, Decimal> getExpenseByMonth(String fy) {
+        Date fromDate;
+        Date toDate;
         // Check if the fiscal year is the current fiscal year
-        List<Date> currentFyDates = ExpenseManagerUtilHelper.getFiscalYear(Date.today());
-        String currentFy = '';
-        
-        // Construct current fiscal year string in the same format as passed parameter
-        currentFy = currentFyDates[0].year() + '-' + (currentFyDates[1].year());
-        // If the requested fiscal year is the current one, get data for last 6 months from today
-        if(fy.equals(currentFy)) {
+        if(String.isBlank(fy) || fy.equals(getCurrentFiscalYear())) {
             Date today = Date.today();
             Date todayDate = Date.today();
             Integer lastDay = Date.daysInMonth(todayDate.year(), todayDate.month());
             // toDate current date's last day of month
-            Date toDate = Date.newInstance(todayDate.year(), todayDate.month(), lastDay);
+            toDate = Date.newInstance(todayDate.year(), todayDate.month(), lastDay);
             // From Date 6 months ago
-            Date fromDate = toDate.addMonths(-5);
+            fromDate = toDate.addMonths(-5);
             fromDate = Date.newInstance(fromDate.year(), fromDate.month(), 1);
-        
-            // Get expense data for last 6 months from today
-            return DataProvider.getExpenseByMonth(fromDate, toDate);
         } else {
             // For non-current fiscal years, use the existing logic
             List<Date> fyDates = constructFyDate(fy);
-            Date startDate = fyDates[0];
-            Date endDate = fyDates[1];
-            return DataProvider.getExpenseByMonth(startDate, endDate);
+            fromDate = fyDates[0];
+            toDate = fyDates[1];
         }
+
+        return DataProvider.getExpenseByMonth(fromDate, toDate);
     }
 }

@@ -16,7 +16,7 @@ export default class ExpenseAnalysisChart extends LightningElement {
     data;
     chartData = [];      // Stores the ACTUAL expense values
     chartLabel = [];
-    selectedFiscalYear = '2025-2026'; // Default fiscal year
+    selectedFiscalYear = ''; // Default fiscal year
     
     // 🔥 New properties for capping logic
     maxPercent = 0.01;   // Max allowed visual size for any slice (30%)
