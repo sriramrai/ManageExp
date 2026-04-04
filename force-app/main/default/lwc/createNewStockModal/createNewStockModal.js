@@ -5,6 +5,7 @@ import postData from '@salesforce/apex/ExpenseManagerUtil.createStock';
 export default class CreateNewStockModal extends LightningModal {
     @api content;
     dataObj = {};
+    errorMessage;
     handleOkay(message) {
         let closeMessage = message == null ? 'ok' : message;
         this.content = null;
@@ -40,6 +41,7 @@ export default class CreateNewStockModal extends LightningModal {
             })
             .catch(error => {
                 logError('Error occured while saving record.... : '+toString(error));
+                this.errorMessage = toString(error);
             })
         }
     }

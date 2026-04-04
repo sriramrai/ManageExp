@@ -1,0 +1,7 @@
+SELECT Id, Start_Date__c, Amount__c, Account_Number__c, Maturity_Date__c, Bank__c,
+                                    (SELECT Id, Date__c, Amount__c FROM Investment_Line_Items__r ORDER BY Date__c DESC)
+                                    FROM Investment__c
+                                    WHERE Bank__c IN ('NPS', 'PPF') AND Account_Number__c IN ('1893PPF0000000138', '110168495351')]
+
+                                    
+1000 => 3 bhk

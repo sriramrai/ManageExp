@@ -1,6 +1,9 @@
 <template>
     <lightning-modal-header label="New"></lightning-modal-header>
     <lightning-modal-body>
+        <template if:true={errorMessage}>
+            <span style="color: red;">{errorMessage}</span>
+        </template>
         <lightning-layout multiple-rows="true" >
             <lightning-layout-item padding="around-small" size="12" large-device-size="6" small-device-size="12">
                 <lightning-input type="text" label="Name" field-name="Account_Number__c"></lightning-input>
