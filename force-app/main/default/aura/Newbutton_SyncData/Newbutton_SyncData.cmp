@@ -1,6 +1,0 @@
-<aura:component implements="lightning:actionOverride,
-                            flexipage:availableForAllPageTypes,
-                            force:hasRecordId"
-                access="global">
-    <c:syncDataForm />
-</aura:component>
