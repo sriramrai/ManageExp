@@ -1,4 +1,5 @@
 import { LightningElement } from 'lwc';
+import FORM_FACTOR from '@salesforce/client/formFactor';
 
 const isValid = (data) => {
     console.log('inside isvalid method...');
@@ -78,4 +79,6 @@ const formatDate = (data) => {
     return data  ? formatter.format(new Date(data)) : '';
 }
 
-export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue, formatDate};
+const isMobile = FORM_FACTOR === 'Small' ? true : false;
+
+export { isValid, log, logError, getFYForExpManager,  getMonthOptionForExpManager, getSalaryAmountFields, toString, deepClone, isValidValue, formatDate, isMobile};
