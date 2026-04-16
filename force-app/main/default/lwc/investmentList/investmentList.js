@@ -1,12 +1,10 @@
 import { LightningElement, api, track, wire} from 'lwc';
-import {log, deepClone} from 'c/utilityClass';
+import {log, deepClone, isMobile} from 'c/utilityClass';
 import renewalModal from 'c/renewalModal';
 import getAllInvestmentByBank from '@salesforce/apex/ExpenseManagerUtil.getAllInvestmentByBank';
 import { refreshApex } from '@salesforce/apex';
 import templateMobile from './investmentList.html';
 import templateLarge from './investmentList_Large.html';
-import FORM_FACTOR from '@salesforce/client/formFactor';
-
 export default class InvestmentList extends LightningElement {
     @api ivts;
     @api bankName;
@@ -14,11 +12,9 @@ export default class InvestmentList extends LightningElement {
     totalMaturity = 0;
     @track investments = [];
     provisionedItem;
-    isMobile = FORM_FACTOR === 'Small' ? true : false;
-
     /** Same shadow root and investmentList.css for both; only the template changes. */
     render() {
-        return this.isMobile ? templateMobile : templateLarge;
+        return isMobile ? templateMobile : templateLarge;
     }
     
     @wire(getAllInvestmentByBank, {'bankName' : '$bankName'})
