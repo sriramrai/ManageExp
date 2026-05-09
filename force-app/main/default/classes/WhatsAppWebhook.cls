@@ -75,6 +75,7 @@ global without sharing class WhatsAppWebhook {
 	}
 
 	public static void parsePayload(String jsonPayload){
+        System.debug('jsonPayload=== : '+jsonPayload);
 		Map<String,Object> payload = (Map<String,Object>) JSON.deserializeUntyped(jsonPayload);
 		List<Expense_Line_Item__c> expensesToInsert = new List<Expense_Line_Item__c>();
 		List<Object> entries = (List<Object>) payload.get('entry');
@@ -89,18 +90,23 @@ global without sharing class WhatsAppWebhook {
 
 				for(Object msgObj : messages){
 					Map<String,Object> msg = (Map<String,Object>) msgObj;
+                    String fromNo = (String)msg.get('from');
+                    System.debug('fromNo*** : '+fromNo);
 					Map<String,Object> textMap = (Map<String,Object>) msg.get('text');
 					String body = (String) textMap.get('body');
-
-					// Split by new line (\n) to create multiple records
-					List<String> lines = body.split('\\n');
-					for(String line : lines){
-						line = line.trim();
-						if(String.isBlank(line)) continue;
-						ExpenseData data = parseLine(line);
-						Expense_Line_Item__c expenseLineItem = createExpenseLineItem(data);
-						expensesToInsert.add(expenseLineItem);
-					}
+                    if(body.tolowercase().contains('nj')) {
+                        createNaamJaap(body, fromNo);
+                    }else {
+                        // Split by new line (\n) to create multiple records
+                        List<String> lines = body.split('\\n');
+                        for(String line : lines){
+                            line = line.trim();
+                            if(String.isBlank(line)) continue;
+                            ExpenseData data = parseLine(line);
+                            Expense_Line_Item__c expenseLineItem = createExpenseLineItem(data);
+                            expensesToInsert.add(expenseLineItem);
+                        }
+                    }
 				}
 			}
 		}
@@ -110,6 +116,36 @@ global without sharing class WhatsAppWebhook {
 			insert expensesToInsert;
 		}
 	}
+    
+    private static void createNaamJaap(String body, String fromNo) {
+        String entity = 'Anshu';
+        if(fromNo == '918149862436') {
+            entity = 'Sriram';
+        }else if(fromNO == '918210139388') {
+            entity = 'Ragini';
+        }
+        
+        List<String> token = body.split(' ');
+        Date today = Date.Today();
+        Date applicableDt;
+        NaamJapp__c nj = new NaamJapp__c();
+        Integer count;
+        if(token.size() > 2) {
+            String dt = token[0];
+            List<String> dtTokens = dt.split('/');
+            Integer day = Integer.valueOf(dtTokens[0]);
+            Integer month = Integer.valueOf(dtTokens[1]);
+            applicableDt = Date.newInstance(today.year(), month, day);
+            count = Integer.valueOf(token[1]);
+        }else {
+            applicableDt = today;
+            count = Integer.valueOf(token[0]);
+        }
+        nj.Date__c = applicableDt;
+        nj.Entity__c = entity;
+        nj.Count__c = count;
+        insert nj;
+    }
 
 	public static Expense_Line_Item__c createExpenseLineItem(ExpenseData data) {
 		Expense_Line_Item__c expenseLineItem = new Expense_Line_Item__c();

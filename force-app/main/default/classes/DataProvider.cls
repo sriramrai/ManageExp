@@ -325,7 +325,7 @@ public with sharing class DataProvider {
         if(startDate != null && endDate != null) {
             queryStr += 'WHERE Date__c >= :startDate AND Date__c <= :endDate ';
         }
-        queryStr += 'ORDER BY Date__c DESC';
+        queryStr += 'ORDER BY Tresuree__c, Date__c DESC';
 
         return (List<Treasure__c>) Database.query(queryStr);
     }
@@ -344,5 +344,13 @@ public with sharing class DataProvider {
         }
 
         return dataMap;
+    }
+
+    public static List<NaamJapp__c> getNaamJaapRecords() {
+        return [
+            SELECT Id, Date__c, Entity__c, Count__c
+            FROM NaamJapp__c
+            ORDER BY Date__c DESC
+        ];
     }
 }
