@@ -1,13 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
 		<members>Automation_Switch__c.Disable_Trigger__c</members>
 		<members>Investment__c.Closed_Date__c</members>
+		<members>Investment__c.Code__c</members>
+		<members>Investment__c.Current_Price__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
 		<members>Automation_Switch__c</members>
 		<name>CustomObject</name>
+	</types>
+	<types>
+		<members>Investment_Record_Page</members>
+		<name>FlexiPage</name>
 	</types>
 	<types>
 		<members>NaamJapp__c-NaamJapp Layout</members>
@@ -16,6 +22,10 @@
 	<types>
 		<members>ExpenseManager</members>
 		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>cloudflare</members>
+		<name>RemoteSiteSetting</name>
 	</types>
 	<version>66.0</version>
 </Package>

@@ -1,136 +1,238 @@
 <template>
-    <div class="header-container">
-        <!-- LEFT SIDE -->
-        <div class="left-section">
-            <div class="amount">
-                <!-- ₹ {totalInvested} -->
-                <lightning-formatted-number 
-                    value={totalInvested}
-                    format-style="currency"
-                    currency-code="INR"    
-                    minimum-fraction-digits="0"
-                    maximum-fraction-digits="0">
-                </lightning-formatted-number>
-            </div>
-            <div class="message header-note">
-                {headerNote}
-            </div>
+  <div class="header-container">
+    <!-- LEFT SIDE -->
+    <div class="left-section">
+      <div class="amount-row">
+        <div class="amount inline-amount">
+          <lightning-formatted-number
+            value={totalInvested}
+            format-style="currency"
+            currency-code="INR"
+            minimum-fraction-digits="0"
+            maximum-fraction-digits="0"
+          >
+          </lightning-formatted-number>
         </div>
-        <!-- RIGHT SIDE -->
-        <div class="right-section">
-            <!-- Search Icon -->
-            <lightning-button-icon
-                icon-name="utility:search"
-                alternative-text="Search"
-                onclick={toggleSearch}>
-            </lightning-button-icon>
-            <div class={searchClass}>
-                <lightning-input
-                    type="text"
-                    variant="label-hidden"
-                    placeholder="Search..."
-                    onchange={handleSearch}>
-                </lightning-input>
-            </div>
-            <!-- Refresh Icon -->
-            <lightning-button-icon
-                icon-name="utility:refresh"
-                alternative-text="Refresh"
-                onclick={handleRefresh}>
-            </lightning-button-icon>
+        <div class="amount-separator">-</div>
+        <div class="amount inline-amount">
+          <lightning-formatted-number
+            value={totalCurrentValue}
+            format-style="currency"
+            currency-code="INR"
+            minimum-fraction-digits="0"
+            maximum-fraction-digits="0"
+          >
+          </lightning-formatted-number>
         </div>
+      </div>
+      <div class={totalDiffClass}>
+        <lightning-formatted-number
+          value={totalDiff}
+          format-style="currency"
+          currency-code="INR"
+          minimum-fraction-digits="0"
+          maximum-fraction-digits="0"
+        >
+        </lightning-formatted-number>
+      </div>
+      <div class="message header-note">{headerNote}</div>
     </div>
-    <template if:true={stockData}>
-        <div class="slds-card">
-            <div class="slds-card__body slds-card__body_inner">
-                <div class="slds-scrollable_y" style="max-height: 60vh;">
-                    <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_header-fixed custom-investments-table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="col-name"><div class="slds-truncate" title="Stock Name">Stock</div></th>
-                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Invested">Invested</div></th>
-                                <th scope="col" class="col-actions"><div class="slds-truncate" title="Actions">Actions</div></th>
-                            </tr>
-                        </thead>
-                        <tbody class="slds-hint-parent">
-                            <template for:each={formattedStockData} for:item="stock">
-                                <tr key={stock.recordId} class="slds-hint-parent">
-                                    <td data-label="Stock Name" class="col-name slds-p-vertical_xx-small word-break">
-                                        <a href={stock.recordURL} target="_blank"><strong>{stock.stockName} {stock.quantity}</strong>
-                                            <!-- <span class="slds-m-left_x-small">
-                                                <template if:true={stock.quantity}>
-                                                    <span class="slds-badge slds-badge_lightest slds-theme_success slds-m-right_xx-small custom-pill">
-                                                        {stock.quantity}
-                                                    </span>
-                                                </template>
-                                                <template if:true={stock.totalSold}>
-                                                    <span class="slds-badge slds-badge_lightest slds-theme_error custom-pill">
-                                                        {stock.totalSold}
-                                                    </span>
-                                                </template>
-                                            </span>   -->                                  
-                                        </a>
-                                    </td>
-                                    <!-- <td data-label="Total Buyed" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalBuyed}
-                                    </td>
-                                    <td data-label="Total Sold" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalSold}
-                                    </td> -->
-                                    <td data-label="Total Invested" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalInvested}
-                                    </td>
-                                    <td data-label="Actions" class="action-cell slds-p-vertical_xx-small">
-                                        <!-- Single actions menu button -->
-                                        <lightning-button-menu
-                                            alternative-text="Actions"
-                                            icon-name="utility:down"
-                                            menu-alignment="auto"
-                                            onselect={handleActionsMenuSelect}
-                                            data-id={stock.recordId}>
-                                            <span slot="trigger">
-                                                <lightning-button variant="neutral" label="Actions" data-id={stock.recordId}></lightning-button>
-                                            </span>
-                                            <lightning-menu-item value="more" label="More"></lightning-menu-item>
-                                            <lightning-menu-item value="buy" label="Buy"></lightning-menu-item>
-                                            <lightning-menu-item value="sell" label="Sell"></lightning-menu-item>
-                                        </lightning-button-menu>
-                                    </td>
-                                </tr>
-                                <!-- Expanded details row - only rendered when expanded -->
-                                <template if:true={stock.isExpanded}>
-                                    <tr key={stock.expandedRowKey} data-stock-id={stock.recordId}>
-                                        <td colspan="5" class="slds-p-vertical_xx-small">
-                                            <div class="text-align-left">
-                                                <template if:true={stock.lines}>
-                                                    <div class="slds-p-around_x-small">
-                                                        <div class="slds-grid slds-gutters slds-var-p-bottom_x-small slds-text-title_caps">
-                                                            <div class="slds-col slds-size_1-of-4"><strong>Date</strong></div>
-                                                            <div class="slds-col slds-size_1-of-4"><strong>Price/S</strong></div>
-                                                            <div class="slds-col slds-size_1-of-6"><strong>Qty</strong></div>
-                                                            <div class="slds-col slds-size_1-of-6"><strong>Amount</strong></div>
-                                                            <div class="slds-col slds-size_1-of-6"><strong>Exec.</strong></div>
-                                                        </div>
-                                                        <template for:each={stock.lines} for:item="line">
-                                                            <div key={line.recordId} class={line.styleclass}>
-                                                                <div class="slds-col slds-size_1-of-4">{line.sdate}</div>
-                                                                <div class="slds-col slds-size_1-of-4">{line.pricePerShare}</div>
-                                                                <div class="slds-col slds-size_1-of-6">{line.quantity}</div>
-                                                                <div class="slds-col slds-size_1-of-6">{line.amount}</div>
-                                                                <div class="slds-col slds-size_1-of-6">{line.buySell}</div>
-                                                            </div>
-                                                        </template>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
+    <!-- RIGHT SIDE -->
+    <div class="right-section">
+      <!-- Search Icon -->
+      <lightning-button-icon
+        icon-name="utility:search"
+        alternative-text="Search"
+        onclick={toggleSearch}
+      >
+      </lightning-button-icon>
+      <div class={searchClass}>
+        <lightning-input
+          type="text"
+          variant="label-hidden"
+          placeholder="Search..."
+          onchange={handleSearch}
+        >
+        </lightning-input>
+      </div>
+      <!-- Refresh Icon -->
+      <lightning-button-icon
+        icon-name="utility:refresh"
+        alternative-text="Refresh"
+        onclick={handleRefresh}
+      >
+      </lightning-button-icon>
+    </div>
+  </div>
+  <template if:true={stockData}>
+    <div class="slds-card">
+      <div class="slds-card__body slds-card__body_inner">
+        <div class="slds-scrollable_y" style="max-height: 60vh">
+          <table
+            class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_header-fixed custom-investments-table"
+          >
+            <thead>
+              <tr>
+                <th scope="col" class="col-name">
+                  <div class="slds-truncate" title="Stock Name">Stock</div>
+                </th>
+                <th scope="col" class="col-num">
+                  <div class="slds-truncate" title="Total Sold">
+                    Current Price
+                  </div>
+                </th>
+                <th scope="col" class="col-num">
+                  <div class="slds-truncate" title="Return">Return</div>
+                </th>
+                <th
+                  scope="col"
+                  class="col-num sortable-header"
+                  onclick={handleDiffSort}
+                >
+                  <div class="slds-truncate" title="Difference">
+                    Diff
+                    <template if:true={diffSortOrder}>
+                      <lightning-icon
+                        icon-name={diffSortIconName}
+                        size="x-small"
+                        class="slds-m-left_x-small"
+                      >
+                      </lightning-icon>
+                    </template>
+                  </div>
+                </th>
+                <th scope="col" class="col-actions">
+                  <div class="slds-truncate" title="Actions">Actions</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="slds-hint-parent">
+              <template for:each={formattedStockData} for:item="stock">
+                <tr key={stock.recordId} class="slds-hint-parent">
+                  <td
+                    data-label="Stock Name"
+                    class="col-name slds-p-vertical_xx-small word-break"
+                  >
+                    <a
+                      style="text-decoration: none"
+                      href={stock.recordURL}
+                      target="_blank"
+                    >
+                      <div style="font-weight: bold">{stock.stockName}</div>
+                      <div style="font-size: 11px">{stock.quantity} Stocks</div>
+                    </a>
+                  </td>
+                  <td
+                    data-label="Current Price"
+                    class="col-num slds-p-vertical_xx-small"
+                  >
+                    {stock.currentPrice}
+                  </td>
+                  <td
+                    data-label="Return"
+                    class="col-num slds-p-vertical_xx-small"
+                  >
+                    <div class={stock.returnClass}>
+                      <div class="current-amount">₹ {stock.currentValue}</div>
+                      <div class="invested-amount">₹ {stock.totalInvested}</div>
+                    </div>
+                  </td>
+                  <td
+                    data-label="Diff"
+                    class="col-num slds-p-vertical_xx-small"
+                  >
+                    <div class={stock.diffClass}>{stock.diffValue}</div>
+                  </td>
+                  <td
+                    data-label="Actions"
+                    class="action-cell slds-p-vertical_xx-small"
+                  >
+                    <!-- Single actions menu button -->
+                    <lightning-button-menu
+                      alternative-text="Actions"
+                      icon-name="utility:down"
+                      menu-alignment="auto"
+                      onselect={handleActionsMenuSelect}
+                      data-id={stock.recordId}
+                    >
+                      <span slot="trigger">
+                        <lightning-button
+                          variant="neutral"
+                          label="Actions"
+                          data-id={stock.recordId}
+                        ></lightning-button>
+                      </span>
+                      <lightning-menu-item
+                        value="more"
+                        label="More"
+                      ></lightning-menu-item>
+                      <lightning-menu-item
+                        value="buy"
+                        label="Buy"
+                      ></lightning-menu-item>
+                      <lightning-menu-item
+                        value="sell"
+                        label="Sell"
+                      ></lightning-menu-item>
+                    </lightning-button-menu>
+                  </td>
+                </tr>
+                <!-- Expanded details row - only rendered when expanded -->
+                <template if:true={stock.isExpanded}>
+                  <tr key={stock.expandedRowKey} data-stock-id={stock.recordId}>
+                    <td colspan="5" class="slds-p-vertical_xx-small">
+                      <div class="text-align-left">
+                        <template if:true={stock.lines}>
+                          <div class="slds-p-around_x-small">
+                            <div
+                              class="slds-grid slds-gutters slds-var-p-bottom_x-small slds-text-title_caps"
+                            >
+                              <div class="slds-col slds-size_1-of-4">
+                                <strong>Date</strong>
+                              </div>
+                              <div class="slds-col slds-size_1-of-4">
+                                <strong>Price/S</strong>
+                              </div>
+                              <div class="slds-col slds-size_1-of-6">
+                                <strong>Qty</strong>
+                              </div>
+                              <div class="slds-col slds-size_1-of-6">
+                                <strong>Amount</strong>
+                              </div>
+                              <div class="slds-col slds-size_1-of-6">
+                                <strong>Exec.</strong>
+                              </div>
+                            </div>
+                            <template for:each={stock.lines} for:item="line">
+                              <div key={line.recordId} class={line.styleclass}>
+                                <div class="slds-col slds-size_1-of-4">
+                                  {line.sdate}
+                                </div>
+                                <div class="slds-col slds-size_1-of-4">
+                                  {line.pricePerShare}
+                                </div>
+                                <div class="slds-col slds-size_1-of-6">
+                                  {line.quantity}
+                                </div>
+                                <div class="slds-col slds-size_1-of-6">
+                                  {line.amount}
+                                </div>
+                                <div class="slds-col slds-size_1-of-6">
+                                  {line.buySell}
+                                </div>
+                              </div>
                             </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                          </div>
+                        </template>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </template>
+            </tbody>
+          </table>
         </div>
-    </template>
+      </div>
+    </div>
+  </template>
 </template>

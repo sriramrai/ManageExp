@@ -1,0 +1,9 @@
+{
+  "defaultdevhubusername": "your-hub-org",
+  "defaultusername": "your-org",
+  "restDeploy": false,
+  "apiVersion": "65.0",
+  "logging": {
+    "level": "DEBUG"
+  }
+}

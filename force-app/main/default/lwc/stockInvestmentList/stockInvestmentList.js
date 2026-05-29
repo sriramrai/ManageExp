@@ -1,6 +1,7 @@
 import { LightningElement, wire, api, track } from 'lwc';
 import {log, logError, isValidValue, toString, formatDate} from 'c/utilityClass';
 import getAllStock from '@salesforce/apex/ExpenseManagerUtil.getAllStocks';
+import refreshStockPrice from '@salesforce/apex/ExpenseManagerUtil.refreshStockPrice';
 import buySellStock from 'c/buySellStockModal';
 import { refreshApex } from '@salesforce/apex';
 
@@ -11,8 +12,12 @@ export default class StockInvestmentList extends LightningElement {
     @track last10Transaction = [];
     isOpen = false;
     totalInvested = 0;
+    totalCurrentValue = 0;
+    totalDiff = 0;
     headerNote = '';
     @track originalData;
+    @track diffSortOrder = null; // null (original), 'desc' (greater to smaller), 'asc' (smaller to greater)
+    totalDiffClass = 'header-diff-positive';
 
     get searchClass() {
         return this.isOpen ? 'search-box open' : 'search-box';
@@ -34,8 +39,17 @@ export default class StockInvestmentList extends LightningElement {
     
     }
 
-    @api refreshData() {
-        refreshApex(this.stockProvisionedData);
+    handleReset() {
+        this.stockData = this.originalData;
+    }
+
+    handleRefresh() {
+        refreshStockPrice().then(result => {
+            log('Stock prices refreshed successfully: '+result);
+            refreshApex(this.stockProvisionedData);
+        }).catch(error => {
+            logError('Error refreshing stock prices: '+toString(error));
+        });
     }
 
     getHeaderNote() {
@@ -55,8 +69,10 @@ export default class StockInvestmentList extends LightningElement {
         if(stockObjs.data) {
             let stocks = JSON.parse(JSON.stringify(stockObjs.data));
             this.totalInvested = 0;
+            this.totalCurrentValue = 0;
             stocks.forEach(stock => {
-                this.totalInvested += Number(stock.totalInvested);
+                this.totalInvested += Number(stock.totalInvested) || 0;
+                this.totalCurrentValue += Number(stock.currentValue) || 0;
                 stock.quantity = Number(stock.quantity);
                 stock.totalSold = Number(stock.totalSold);
                 stock.lines.forEach(
@@ -72,6 +88,8 @@ export default class StockInvestmentList extends LightningElement {
                     }
                 );
             });
+            this.totalDiff = this.totalInvested - this.totalCurrentValue;
+            this.totalDiffClass = this.totalCurrentValue < this.totalInvested ? 'header-diff-negative' : 'header-diff-positive';
             //this.stockData = stockObjs.data;
             this.stockData = stocks;
             this.headerNote = this.getHeaderNote();
@@ -91,12 +109,53 @@ export default class StockInvestmentList extends LightningElement {
         this.expandedStockIds = expandedStockIds;
     }
 
-    // Getter for formatted stock data with expanded state
+    // Handle diff column header click for sorting
+    handleDiffSort() {
+        if (this.diffSortOrder === null) {
+            // First click: sort descending (greater to smaller)
+            this.diffSortOrder = 'desc';
+        } else if (this.diffSortOrder === 'desc') {
+            // Second click: sort ascending (smaller to greater)
+            this.diffSortOrder = 'asc';
+        } else {
+            // Third click: back to original order
+            this.diffSortOrder = null;
+        }
+    }
+
+    // Get icon name based on sort order
+    get diffSortIconName() {
+        return this.diffSortOrder === 'desc' ? 'utility:arrowdown' : 'utility:arrowup';
+    }
+
+    // Getter for formatted stock data with expanded state and sorting
     get formattedStockData() {
         if (!this.stockData) return [];
         
-        return this.stockData.map(stock => {
+        let dataToFormat = [...this.stockData];
+        
+        // Apply diff sorting if active
+        if (this.diffSortOrder) {
+            dataToFormat.sort((a, b) => {
+                const diffA = (Number(a.currentValue) || 0) - (Number(a.totalInvested) || 0);
+                const diffB = (Number(b.currentValue) || 0) - (Number(b.totalInvested) || 0);
+                return this.diffSortOrder === 'desc' ? diffB - diffA : diffA - diffB;
+            });
+        }
+        
+        return dataToFormat.map(stock => {
             // Create a copy of the stock object
+            // Determine if return is positive or negative
+            const investedAmount = Number(stock.totalInvested) || 0;
+            const currentValueAmount = Number(stock.currentValue) || 0;
+            const returnStatus = currentValueAmount >= investedAmount ? 'positive' : 'negative';
+            
+            // Calculate diff value and class
+            const diff = currentValueAmount - investedAmount;
+            const diffSign = diff < 0 ? '- ₹ ' : '₹ ';
+            const diffValue = diffSign + this.formatAmount(Math.abs(diff));
+            const diffClass = diff >= 0 ? 'diff-positive' : 'diff-negative';
+            
             const formattedStock = {
                 ...stock,
                 totalBuyed: this.formatAmount(stock.totalBuyed),
@@ -104,7 +163,11 @@ export default class StockInvestmentList extends LightningElement {
                 totalInvested: this.formatAmount(stock.totalInvested),
                 // Add expanded state property
                 isExpanded: this.expandedStockIds.has(stock.recordId),
-                expandedRowKey: stock.recordId + '_expanded'
+                expandedRowKey: stock.recordId + '_expanded',
+                returnStatus: returnStatus,
+                returnClass: returnStatus === 'positive' ? 'return-cell positive' : 'return-cell negative',
+                diffValue: diffValue,
+                diffClass: diffClass
             };
             
             // Format the lines if they exist
