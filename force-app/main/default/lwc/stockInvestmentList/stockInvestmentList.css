@@ -147,6 +147,81 @@
       width: 25%;
       text-align: center;
   }
+
+  /* Return Column Styling */
+  .return-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  }
+
+  .invested-amount {
+      font-size: 0.75rem;
+      font-weight: normal;
+      color: #000;
+  }
+
+  .current-amount {
+      font-size: 0.8rem;
+      font-weight: normal;
+      color: #000;
+  }
+
+  /* Color coding based on return status */
+  .return-cell.positive {
+      color: #2e844a;
+  }
+
+  .return-cell.positive .invested-amount,
+  .return-cell.positive .current-amount {
+      color: #2e844a;
+  }
+
+  .return-cell.negative {
+      color: #ba0517;
+  }
+
+  .return-cell.negative .invested-amount,
+  .return-cell.negative .current-amount {
+      color: #ba0517;
+  }
+
+  .header-diff-label {
+      font-size: 0.8rem;
+      color: #4b4b4b;
+      margin-bottom: 0.15rem;
+  }
+
+  .header-diff-positive {
+      color: #2e844a;
+      font-weight: 600;
+  }
+
+  .header-diff-negative {
+      color: #ba0517;
+      font-weight: 600;
+  }
+
+  /* Diff Column Styling */
+  .diff-positive {
+      color: #2e844a;
+      font-weight: 500;
+  }
+
+  .diff-negative {
+      color: #ba0517;
+      font-weight: 500;
+  }
+
+  /* Sortable Header Styling */
+  .sortable-header {
+      cursor: pointer;
+      user-select: none;
+  }
+
+  .sortable-header:hover {
+      background-color: #f4f4f4;
+  }
   
   /* Ensure proper link styling */
   .custom-investments-table .col-name a {
@@ -217,10 +292,21 @@
     font-weight: 600;
 }
 
-.message {
-    font-size: 12px;
-    color: #706e6b;
-}
+  .amount-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+
+  .inline-amount {
+      display: inline-flex;
+  }
+
+  .amount-separator {
+      font-size: 20px;
+      font-weight: 600;
+      color: inherit;
+  }
 
 .right-section {
     display: flex;

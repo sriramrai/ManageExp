@@ -1,0 +1,1 @@
+SELECT Id, Name, Date__c, Amount__c, Bank__c FROM Investment_Line_Items__c

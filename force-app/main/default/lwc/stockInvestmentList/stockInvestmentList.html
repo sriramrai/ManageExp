@@ -2,10 +2,30 @@
     <div class="header-container">
         <!-- LEFT SIDE -->
         <div class="left-section">
-            <div class="amount">
-                <!-- ₹ {totalInvested} -->
+            <div class="amount-row">
+                <div class="amount inline-amount">
+                    <lightning-formatted-number 
+                        value={totalInvested}
+                        format-style="currency"
+                        currency-code="INR"    
+                        minimum-fraction-digits="0"
+                        maximum-fraction-digits="0">
+                    </lightning-formatted-number>
+                </div>
+                <div class="amount-separator">-</div>
+                <div class="amount inline-amount">
+                    <lightning-formatted-number 
+                        value={totalCurrentValue}
+                        format-style="currency"
+                        currency-code="INR"    
+                        minimum-fraction-digits="0"
+                        maximum-fraction-digits="0">
+                    </lightning-formatted-number>
+                </div>
+            </div>
+            <div class={totalDiffClass}>
                 <lightning-formatted-number 
-                    value={totalInvested}
+                    value={totalDiff}
                     format-style="currency"
                     currency-code="INR"    
                     minimum-fraction-digits="0"
@@ -48,7 +68,20 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="col-name"><div class="slds-truncate" title="Stock Name">Stock</div></th>
-                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Invested">Invested</div></th>
+                                <th scope="col" class="col-num"><div class="slds-truncate" title="Total Sold">Current Price</div></th>
+                                <th scope="col" class="col-num"><div class="slds-truncate" title="Return">Return</div></th>
+                                <th scope="col" class="col-num sortable-header" onclick={handleDiffSort}>
+                                    <div class="slds-truncate" title="Difference">
+                                        Diff
+                                        <template if:true={diffSortOrder}>
+                                            <lightning-icon 
+                                                icon-name={diffSortIconName} 
+                                                size="x-small" 
+                                                class="slds-m-left_x-small">
+                                            </lightning-icon>
+                                        </template>
+                                    </div>
+                                </th>
                                 <th scope="col" class="col-actions"><div class="slds-truncate" title="Actions">Actions</div></th>
                             </tr>
                         </thead>
@@ -71,14 +104,19 @@
                                             </span>   -->                                  
                                         </a>
                                     </td>
-                                    <!-- <td data-label="Total Buyed" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalBuyed}
+                                    <td data-label="Current Price" class="col-num slds-p-vertical_xx-small">
+                                        {stock.currentPrice}
                                     </td>
-                                    <td data-label="Total Sold" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalSold}
-                                    </td> -->
-                                    <td data-label="Total Invested" class="col-num slds-p-vertical_xx-small">
-                                        {stock.totalInvested}
+                                    <td data-label="Return" class="col-num slds-p-vertical_xx-small">
+                                        <div class={stock.returnClass}>
+                                            <div class="current-amount">₹ {stock.currentValue}</div>
+                                            <div class="invested-amount">₹ {stock.totalInvested}</div>
+                                        </div>
+                                    </td>
+                                    <td data-label="Diff" class="col-num slds-p-vertical_xx-small">
+                                        <div class={stock.diffClass}>
+                                            {stock.diffValue}
+                                        </div>
                                     </td>
                                     <td data-label="Actions" class="action-cell slds-p-vertical_xx-small">
                                         <!-- Single actions menu button -->

@@ -222,3 +222,23 @@ if(!investmentsToUpdate.isEmpty()) {
 }
 
 System.debug('result**** : '+WhatsAppWebhook.parseLine('panir roll shopping 29/03'));
+
+System.debug('result**** : '+GoogleFinanceService.getStockPrice('PLOYCAB:NSE'));
+
+StockSyncScheduler.syncStockPrices();
+
+System.debug('test&&&1 and 2');
+
+List<Investment__c> investments = [
+    SELECT Id, Name, Current_Price__c 
+    FROM Investment__c 
+];
+for(Investment__c inv : investments) {
+    inv.Current_Price__c = null; // Just an example update
+}
+update investments;
+
+decimal price = 949.2;
+integer quantity = 10;
+decimal totalValue = price * quantity;
+System.debug('totalValue*** : '+totalValue);

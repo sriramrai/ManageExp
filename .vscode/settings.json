@@ -41,5 +41,9 @@
   ],
   "eslint.options": {
     "overrideConfigFile": "/Users/sriram/Workspace/ManageExp/.eslintrc.json"
+  },
+  "editor.formatOnSave": true,
+  "[apex]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
