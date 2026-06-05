@@ -1,320 +1,314 @@
 .c-container {
-  border: 1px solid #d8dde6;
-  margin: 10px 0 20px;
+    border: 1px solid #d8dde6;
+    margin: 10px 0 20px;
 }
 .custom-box {
-  text-align: center;
-  padding: 1rem;
-  border: 1px solid #d8dde6;
-}
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #d8dde6;
+  }
 
-.search-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 .search-box .slds-input {
-  border: 1px solid #d8dde6;
+    border: 1px solid #d8dde6;
 }
 .badge-row {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .circle-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: white;
 }
 
 .available {
-  background-color: #2e844a; /* SLDS green */
+    background-color: #2e844a; /* SLDS green */
 }
 
 .sold {
-  background-color: #ba0517; /* SLDS red */
+    background-color: #ba0517; /* SLDS red */
 }
 
 /* Keep border on focus */
 .search-box .slds-input:focus {
-  border: 1px solid #1589ee; /* Salesforce blue */
-  box-shadow: none; /* Remove default glow */
+    border: 1px solid #1589ee;   /* Salesforce blue */
+    box-shadow: none;            /* Remove default glow */
 }
 /* Hidden State */
 .search-box {
-  width: 0;
-  opacity: 0;
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Visible State */
 .search-box.open {
-  width: 200px;
-  opacity: 1;
+    width: 200px;
+    opacity: 1;
 }
-.text-align-left {
-  text-align: left;
-}
-
-.text-align-center {
-  text-align: center;
-}
-
-.badge-green {
-  margin-bottom: 5px;
-  color: white;
-  background: green;
-  cursor: pointer;
-}
-
-.badge-red {
-  margin-bottom: 5px;
-  color: white;
-  background: red;
-  cursor: pointer;
-}
-
-/* Ensure scroll container actually scrolls */
-.slds-scrollable_y {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.word-break {
-  word-break: break-word;
-  white-space: normal;
-}
-
-/* Ensure table header stays fixed */
-.custom-investments-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background-color: white;
-  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #c9c9c9;
-}
-
-/* Ensure tbody has proper scrolling behavior */
-.slds-table_header-fixed_container .slds-scrollable_y {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-/* Remove default table borders to prevent double borders */
-.custom-investments-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-/* Ensure proper spacing and alignment */
-.custom-investments-table td,
-.custom-investments-table th {
-  padding: 0.75rem;
-  word-wrap: break-word;
-  word-break: break-word;
-}
-
-/* Row separators only - no column borders */
-.custom-investments-table tbody tr {
-  border-bottom: 1px solid #c9c9c9;
-}
-
-/* Remove bottom border from last row */
-.custom-investments-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-/* Ensure proper column alignment */
-.custom-investments-table .col-name {
-  width: 50%;
-  min-width: 150px;
-}
-
-.custom-investments-table .col-num {
-  width: 25%;
-  text-align: right;
-}
-
-.custom-investments-table .col-actions {
-  width: 25%;
-  text-align: center;
-}
-
-/* Return Column Styling */
-.return-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.invested-amount {
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: #000;
-}
-
-.current-amount {
-  font-size: 0.8rem;
-  font-weight: normal;
-  color: #000;
-}
-
-/* Color coding based on return status */
-.return-cell.positive {
-  color: #2e844a;
-}
-
-.return-cell.positive .invested-amount,
-.return-cell.positive .current-amount {
-  color: #2e844a;
-}
-
-.return-cell.negative {
-  color: #ba0517;
-}
-
-.return-cell.negative .invested-amount,
-.return-cell.negative .current-amount {
-  color: #ba0517;
-}
-
-.header-diff-label {
-  font-size: 0.8rem;
-  color: #4b4b4b;
-  margin-bottom: 0.15rem;
-}
-
-.header-diff-positive {
-  color: #2e844a;
-  font-weight: 600;
-}
-
-.header-diff-negative {
-  color: #ba0517;
-  font-weight: 600;
-}
-
-/* Diff Column Styling */
-.diff-positive {
-  color: #2e844a;
-  font-weight: 500;
-}
-
-.diff-negative {
-  color: #ba0517;
-  font-weight: 500;
-}
-
-/* Diff Value - Red for both positive and negative */
-.diff-value {
-  color: #ba0517;
-  font-weight: 500;
-}
-
-/* Sortable Header Styling */
-.sortable-header {
-  cursor: pointer;
-  user-select: none;
-}
-
-.sortable-header:hover {
-  background-color: #f4f4f4;
-}
-
-/* Ensure proper link styling */
-.custom-investments-table .col-name a {
-  color: #0070d2;
-  text-decoration: none;
-  word-wrap: break-word;
-}
-
-.custom-investments-table .col-name a:hover {
-  text-decoration: underline;
-}
-
-/* Ensure action buttons are properly aligned */
-.custom-investments-table .action-cell {
-  text-align: center;
-}
-
-.sold-hilighter {
-  color: red;
-}
-
-.header-note {
-  color: blue;
-  text-align: center;
-}
-
-/* Mobile responsiveness - keep table structure but allow text wrapping */
-@media (max-width: 768px) {
-  /* Reduce column widths slightly for better mobile fit */
-  .custom-investments-table .col-name {
-    width: 50%;
+  .text-align-left {
+    text-align: left;
   }
 
-  .custom-investments-table .col-num {
-    width: 25%;
+  .text-align-center {
+    text-align: center;
   }
 
-  .custom-investments-table .col-actions {
-    width: 25%;
+  .badge-green {
+    margin-bottom: 5px;
+    color: white;
+    background: green;
+    cursor: pointer;
   }
 
-  /* Ensure text wraps properly on mobile */
-  .custom-investments-table .col-name a {
+  .badge-red {
+    margin-bottom: 5px;
+    color: white;
+    background: red;
+    cursor: pointer;
+  }
+
+  /* Ensure scroll container actually scrolls */
+  .slds-scrollable_y {
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+
+  .word-break {
     word-break: break-word;
-    hyphens: auto;
+    white-space: normal;
   }
 
-  /* Make table cells more compact on mobile */
+  /* Ensure table header stays fixed */
+  .custom-investments-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: white;
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid #c9c9c9;
+  }
+  
+  /* Ensure tbody has proper scrolling behavior */
+  .slds-table_header-fixed_container .slds-scrollable_y {
+      overflow-y: auto;
+      overflow-x: hidden;
+  }
+  
+  /* Remove default table borders to prevent double borders */
+  .custom-investments-table {
+      border-collapse: collapse;
+      width: 100%;
+  }
+  
+  /* Ensure proper spacing and alignment */
   .custom-investments-table td,
   .custom-investments-table th {
-    padding: 0.5rem;
+      padding: 0.75rem;
+      word-wrap: break-word;
+      word-break: break-word;
   }
-}
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 12px;
+  
+  /* Row separators only - no column borders */
+  .custom-investments-table tbody tr {
+      border-bottom: 1px solid #c9c9c9;
+  }
+  
+  /* Remove bottom border from last row */
+  .custom-investments-table tbody tr:last-child {
+      border-bottom: none;
+  }
+  
+  /* Ensure proper column alignment */
+  .custom-investments-table .col-name {
+      width: 50%;
+      min-width: 150px;
+  }
+  
+  .custom-investments-table .col-num {
+      width: 25%;
+      text-align: right;
+  }
+  
+  .custom-investments-table .col-actions {
+      width: 25%;
+      text-align: center;
+  }
+
+  /* Return Column Styling */
+  .return-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  }
+
+  .invested-amount {
+      font-size: 0.75rem;
+      font-weight: normal;
+      color: #000;
+  }
+
+  .current-amount {
+      font-size: 0.8rem;
+      font-weight: normal;
+      color: #000;
+  }
+
+  /* Color coding based on return status */
+  .return-cell.positive {
+      color: #2e844a;
+  }
+
+  .return-cell.positive .invested-amount,
+  .return-cell.positive .current-amount {
+      color: #2e844a;
+  }
+
+  .return-cell.negative {
+      color: #ba0517;
+  }
+
+  .return-cell.negative .invested-amount,
+  .return-cell.negative .current-amount {
+      color: #ba0517;
+  }
+
+  .header-diff-label {
+      font-size: 0.8rem;
+      color: #4b4b4b;
+      margin-bottom: 0.15rem;
+  }
+
+  .header-diff-positive {
+      color: #2e844a;
+      font-weight: 600;
+  }
+
+  .header-diff-negative {
+      color: #ba0517;
+      font-weight: 600;
+  }
+
+  /* Diff Column Styling */
+  .diff-positive {
+      color: #2e844a;
+      font-weight: 500;
+  }
+
+  .diff-negative {
+      color: #ba0517;
+      font-weight: 500;
+  }
+
+  /* Sortable Header Styling */
+  .sortable-header {
+      cursor: pointer;
+      user-select: none;
+  }
+
+  .sortable-header:hover {
+      background-color: #f4f4f4;
+  }
+  
+  /* Ensure proper link styling */
+  .custom-investments-table .col-name a {
+      color: #0070d2;
+      text-decoration: none;
+      word-wrap: break-word;
+  }
+  
+  .custom-investments-table .col-name a:hover {
+      text-decoration: underline;
+  }
+  
+  /* Ensure action buttons are properly aligned */
+  .custom-investments-table .action-cell {
+      text-align: center;
+  }
+
+  .sold-hilighter {
+    color: red;
+  }
+
+  .header-note {
+    color: blue;
+    text-align: center;
+  }
+  
+  /* Mobile responsiveness - keep table structure but allow text wrapping */
+  @media (max-width: 768px) {
+      /* Reduce column widths slightly for better mobile fit */
+      .custom-investments-table .col-name {
+          width: 50%;
+      }
+      
+      .custom-investments-table .col-num {
+          width: 25%;
+      }
+      
+      .custom-investments-table .col-actions {
+          width: 25%;
+      }
+      
+      /* Ensure text wraps properly on mobile */
+      .custom-investments-table .col-name a {
+          word-break: break-word;
+          hyphens: auto;
+      }
+      
+      /* Make table cells more compact on mobile */
+      .custom-investments-table td,
+      .custom-investments-table th {
+          padding: 0.5rem;
+      }
+  }
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
 }
 
 .left-section {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .amount {
-  font-size: 20px;
-  font-weight: 600;
+    font-size: 20px;
+    font-weight: 600;
 }
 
-.amount-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+  .amount-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
 
-.inline-amount {
-  display: inline-flex;
-}
+  .inline-amount {
+      display: inline-flex;
+  }
 
-.amount-separator {
-  font-size: 20px;
-  font-weight: 600;
-  color: inherit;
-}
+  .amount-separator {
+      font-size: 20px;
+      font-weight: 600;
+      color: inherit;
+  }
 
 .right-section {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
