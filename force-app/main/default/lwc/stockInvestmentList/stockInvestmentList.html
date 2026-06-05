@@ -101,14 +101,17 @@
                     </template>
                   </div>
                 </th>
-                <th scope="col" class="col-actions">
-                  <div class="slds-truncate" title="Actions">Actions</div>
-                </th>
               </tr>
             </thead>
             <tbody class="slds-hint-parent">
               <template for:each={formattedStockData} for:item="stock">
-                <tr key={stock.recordId} class="slds-hint-parent">
+                <tr
+                  key={stock.recordId}
+                  class="slds-hint-parent"
+                  onclick={handleRowClick}
+                  data-id={stock.recordId}
+                  style="cursor: pointer"
+                >
                   <td
                     data-label="Stock Name"
                     class="col-name slds-p-vertical_xx-small word-break"
@@ -143,44 +146,11 @@
                   >
                     <div class={stock.diffClass}>{stock.diffValue}</div>
                   </td>
-                  <td
-                    data-label="Actions"
-                    class="action-cell slds-p-vertical_xx-small"
-                  >
-                    <!-- Single actions menu button -->
-                    <lightning-button-menu
-                      alternative-text="Actions"
-                      icon-name="utility:down"
-                      menu-alignment="auto"
-                      onselect={handleActionsMenuSelect}
-                      data-id={stock.recordId}
-                    >
-                      <span slot="trigger">
-                        <lightning-button
-                          variant="neutral"
-                          label="Actions"
-                          data-id={stock.recordId}
-                        ></lightning-button>
-                      </span>
-                      <lightning-menu-item
-                        value="more"
-                        label="More"
-                      ></lightning-menu-item>
-                      <lightning-menu-item
-                        value="buy"
-                        label="Buy"
-                      ></lightning-menu-item>
-                      <lightning-menu-item
-                        value="sell"
-                        label="Sell"
-                      ></lightning-menu-item>
-                    </lightning-button-menu>
-                  </td>
                 </tr>
                 <!-- Expanded details row - only rendered when expanded -->
                 <template if:true={stock.isExpanded}>
                   <tr key={stock.expandedRowKey} data-stock-id={stock.recordId}>
-                    <td colspan="5" class="slds-p-vertical_xx-small">
+                    <td colspan="4" class="slds-p-vertical_xx-small">
                       <div class="text-align-left">
                         <template if:true={stock.lines}>
                           <div class="slds-p-around_x-small">
@@ -235,4 +205,13 @@
       </div>
     </div>
   </template>
+
+  <!-- Button Modal -->
+  <c-modal
+    title="Stock Actions"
+    is-open={showButtonModal}
+    buttons={modalButtons}
+    onbuttonclick={handleModalButtonClick}
+  >
+  </c-modal>
 </template>
