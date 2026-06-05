@@ -1,4 +1,26 @@
 .slds-modal__content {
-    max-height: 400px;
-    overflow-y: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+:global(.stacked-button) {
+  flex: 1;
+}
+
+/* Mobile responsive - stack buttons vertically on small screens */
+@media (max-width: 768px) {
+  .button-container {
+    flex-direction: column;
+  }
+
+  :global(.stacked-button) {
+    width: 100%;
+  }
 }
