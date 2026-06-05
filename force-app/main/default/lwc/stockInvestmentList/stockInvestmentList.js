@@ -214,6 +214,11 @@ export default class StockInvestmentList extends LightningElement {
     return Math.round(Number(amount)).toLocaleString();
   }
 
+  // Handle stock name click - prevent row click from firing
+  handleStockNameClick(event) {
+    event.stopPropagation();
+  }
+
   // Handle row click to open modal
   handleRowClick(event) {
     const stockId = event.currentTarget.dataset.id;

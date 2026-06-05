@@ -120,10 +120,11 @@
                       style="text-decoration: none"
                       href={stock.recordURL}
                       target="_blank"
+                      onclick={handleStockNameClick}
                     >
                       <div style="font-weight: bold">{stock.stockName}</div>
-                      <div style="font-size: 11px">{stock.quantity} Stocks</div>
                     </a>
+                    <div style="font-size: 11px">{stock.quantity} Stocks</div>
                   </td>
                   <td
                     data-label="Current Price"
