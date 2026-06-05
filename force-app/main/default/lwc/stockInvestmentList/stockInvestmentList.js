@@ -221,6 +221,11 @@ export default class StockInvestmentList extends LightningElement {
     this.showButtonModal = true;
   }
 
+  // Handle modal close event
+  handleModalClose() {
+    this.showButtonModal = false;
+  }
+
   // Handle modal button click
   handleModalButtonClick(event) {
     const buttonLabel = event.detail.label;
