@@ -172,9 +172,8 @@ export default class StockInvestmentList extends LightningElement {
 
       // Calculate diff value and class
       const diff = currentValueAmount - investedAmount;
-      const diffSign = diff < 0 ? "- ₹ " : "₹ ";
-      const diffValue = diffSign + this.formatAmount(Math.abs(diff));
-      const diffClass = diff >= 0 ? "diff-positive" : "diff-negative";
+      const diffValue = "₹ " + this.formatAmount(Math.abs(diff));
+      const diffClass = "diff-value"; // Single class for both positive and negative
 
       const formattedStock = {
         ...stock,
