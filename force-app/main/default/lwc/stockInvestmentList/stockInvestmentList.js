@@ -267,6 +267,18 @@ export default class StockInvestmentList extends LightningElement {
     this.selectedStockId = stockId;
     this.selectedStockName = stockName;
     this.showButtonModal = true;
+
+    // Scroll to top on mobile to ensure modal is visible
+    if (this.isMobile()) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  // Check if running on mobile device or Salesforce1
+  isMobile() {
+    const isSF1 = typeof sforce !== "undefined" && sforce.one;
+    const isSmallScreen = window.innerWidth <= 768;
+    return isSF1 || isSmallScreen;
   }
 
   // Handle modal close event
