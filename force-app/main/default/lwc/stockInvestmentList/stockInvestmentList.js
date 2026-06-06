@@ -257,11 +257,11 @@ export default class StockInvestmentList extends LightningElement {
   // Handle row click to open modal (works for both click and touch events)
   handleRowClick(event) {
     // Prevent default and stop propagation for touch events
-    if (event.type === 'touchend') {
+    if (event.type === "touchend") {
       event.preventDefault();
     }
     event.stopPropagation();
-    
+
     const stockId = event.currentTarget.dataset.id;
     const stockName = event.currentTarget.dataset.stockName;
     this.selectedStockId = stockId;
