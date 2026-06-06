@@ -308,6 +308,13 @@
   color: inherit;
 }
 
+/* Improve touch/click interaction on mobile and SF1 */
+.clickable-row {
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+
 .right-section {
   display: flex;
   gap: 8px;
