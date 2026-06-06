@@ -34,6 +34,9 @@ export default class StockInvestmentList extends LightningElement {
     { label: "Sell", variant: "brand" },
     { label: "Online Price", variant: "brand" }
   ];
+  savedScrollPosition = 0;
+  touchStartY = 0;
+  touchEndY = 0;
 
   get searchClass() {
     return this.isOpen ? "search-box open" : "search-box";
@@ -256,8 +259,13 @@ export default class StockInvestmentList extends LightningElement {
 
   // Handle row click to open modal (works for both click and touch events)
   handleRowClick(event) {
-    // Prevent default and stop propagation for touch events
+    // For touch events, check if this was a scroll gesture
     if (event.type === "touchend") {
+      const touchMoveDistance = Math.abs(this.touchEndY - this.touchStartY);
+      // If user moved more than 10px, consider it a scroll, not a tap
+      if (touchMoveDistance > 10) {
+        return; // Ignore this touch - it was a scroll
+      }
       event.preventDefault();
     }
     event.stopPropagation();
@@ -266,24 +274,34 @@ export default class StockInvestmentList extends LightningElement {
     const stockName = event.currentTarget.dataset.stockName;
     this.selectedStockId = stockId;
     this.selectedStockName = stockName;
-    this.showButtonModal = true;
 
-    // Scroll to top on mobile to ensure modal is visible
-    if (this.isMobile()) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    // Save current scroll position before opening modal
+    this.savedScrollPosition =
+      window.pageYOffset || document.documentElement.scrollTop;
+
+    this.showButtonModal = true;
   }
 
-  // Check if running on mobile device or Salesforce1
-  isMobile() {
-    const isSF1 = typeof sforce !== "undefined" && sforce.one;
-    const isSmallScreen = window.innerWidth <= 768;
-    return isSF1 || isSmallScreen;
+  // Track touch start position
+  handleTouchStart(event) {
+    this.touchStartY = event.touches[0].clientY;
+  }
+
+  // Track touch end position
+  handleTouchEnd(event) {
+    this.touchEndY = event.changedTouches[0].clientY;
   }
 
   // Handle modal close event
   handleModalClose() {
     this.showButtonModal = false;
+
+    // Restore scroll position after modal closes (on mobile)
+    if (this.savedScrollPosition > 0) {
+      setTimeout(() => {
+        window.scrollTo({ top: this.savedScrollPosition, behavior: "auto" });
+      }, 100);
+    }
   }
 
   // Handle modal button click
