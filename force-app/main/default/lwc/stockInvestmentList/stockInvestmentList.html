@@ -121,11 +121,11 @@
               <template for:each={formattedStockData} for:item="stock">
                 <tr
                   key={stock.recordId}
-                  class="slds-hint-parent"
+                  class="slds-hint-parent clickable-row"
                   onclick={handleRowClick}
+                  ontouchend={handleRowClick}
                   data-id={stock.recordId}
                   data-stock-name={stock.stockName}
-                  style="cursor: pointer"
                 >
                   <td
                     data-label="Stock Name"
