@@ -3,7 +3,7 @@
   overflow-y: auto;
 }
 
-/* On mobile, position modal in viewport center regardless of scroll position */
+/* On mobile, position modal in viewport center regardless of scroll position  */
 @media (max-width: 768px) {
   .slds-modal {
     position: fixed;
