@@ -22,6 +22,7 @@ export default class StockInvestmentList extends LightningElement {
   headerNote = "";
   @track originalData;
   @track diffSortOrder = null; // null (original), 'desc' (greater to smaller), 'asc' (smaller to greater)
+  @track stockSortOrder = null; // null (original), 'asc' (A-Z), 'desc' (Z-A)
   totalDiffClass = "header-diff-positive";
   @track showButtonModal = false;
   @track selectedStockId = null;
@@ -127,6 +128,20 @@ export default class StockInvestmentList extends LightningElement {
     this.expandedStockIds = expandedStockIds;
   }
 
+  // Handle stock name column header click for sorting
+  handleStockSort() {
+    if (this.stockSortOrder === null) {
+      // First click: sort ascending (A-Z)
+      this.stockSortOrder = "asc";
+    } else if (this.stockSortOrder === "asc") {
+      // Second click: sort descending (Z-A)
+      this.stockSortOrder = "desc";
+    } else {
+      // Third click: back to original order
+      this.stockSortOrder = null;
+    }
+  }
+
   // Handle diff column header click for sorting
   handleDiffSort() {
     if (this.diffSortOrder === null) {
@@ -141,6 +156,13 @@ export default class StockInvestmentList extends LightningElement {
     }
   }
 
+  // Get icon name based on stock sort order
+  get stockSortIconName() {
+    return this.stockSortOrder === "asc"
+      ? "utility:arrowup"
+      : "utility:arrowdown";
+  }
+
   // Get icon name based on sort order
   get diffSortIconName() {
     return this.diffSortOrder === "desc"
@@ -153,6 +175,16 @@ export default class StockInvestmentList extends LightningElement {
     if (!this.stockData) return [];
 
     let dataToFormat = [...this.stockData];
+
+    // Apply stock name sorting if active
+    if (this.stockSortOrder) {
+      dataToFormat.sort((a, b) => {
+        const nameA = (a.stockName || "").toLowerCase();
+        const nameB = (b.stockName || "").toLowerCase();
+        const comparison = nameA.localeCompare(nameB);
+        return this.stockSortOrder === "asc" ? comparison : -comparison;
+      });
+    }
 
     // Apply diff sorting if active
     if (this.diffSortOrder) {

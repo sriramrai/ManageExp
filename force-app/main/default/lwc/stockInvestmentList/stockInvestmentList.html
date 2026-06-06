@@ -73,8 +73,22 @@
           >
             <thead>
               <tr>
-                <th scope="col" class="col-name">
-                  <div class="slds-truncate" title="Stock Name">Stock</div>
+                <th
+                  scope="col"
+                  class="col-name sortable-header"
+                  onclick={handleStockSort}
+                >
+                  <div class="slds-truncate" title="Stock Name">
+                    Stock
+                    <template if:true={stockSortOrder}>
+                      <lightning-icon
+                        icon-name={stockSortIconName}
+                        size="x-small"
+                        class="slds-m-left_x-small"
+                      >
+                      </lightning-icon>
+                    </template>
+                  </div>
                 </th>
                 <th scope="col" class="col-num">
                   <div class="slds-truncate" title="Total Sold">
