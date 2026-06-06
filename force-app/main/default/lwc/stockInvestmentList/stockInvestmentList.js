@@ -254,6 +254,16 @@ export default class StockInvestmentList extends LightningElement {
     event.stopPropagation();
   }
 
+  // Handle action button click - mobile friendly way to open modal
+  handleActionButtonClick(event) {
+    event.stopPropagation();
+    const stockId = event.currentTarget.dataset.id;
+    const stockName = event.currentTarget.dataset.stockName;
+    this.selectedStockId = stockId;
+    this.selectedStockName = stockName;
+    this.showButtonModal = true;
+  }
+
   // Handle row click to open modal
   handleRowClick(event) {
     const stockId = event.currentTarget.dataset.id;

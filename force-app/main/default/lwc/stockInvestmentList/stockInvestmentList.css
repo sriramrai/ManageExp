@@ -247,7 +247,12 @@
     color: blue;
     text-align: center;
   }
-  
+
+  /* Action button icon styling */
+  :global(.action-button-icon) {
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
   /* Mobile responsiveness - keep table structure but allow text wrapping */
   @media (max-width: 768px) {
       /* Reduce column widths slightly for better mobile fit */
