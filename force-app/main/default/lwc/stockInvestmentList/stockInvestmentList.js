@@ -25,10 +25,13 @@ export default class StockInvestmentList extends LightningElement {
   totalDiffClass = "header-diff-positive";
   @track showButtonModal = false;
   @track selectedStockId = null;
-  @track modalButtons = [
+  @track selectedStockName = null;
+  @track
+  modalButtons = [
     { label: "More", variant: "neutral" },
     { label: "Buy", variant: "brand" },
-    { label: "Sell", variant: "brand" }
+    { label: "Sell", variant: "brand" },
+    { label: "Online Price", variant: "brand" }
   ];
 
   get searchClass() {
@@ -222,7 +225,9 @@ export default class StockInvestmentList extends LightningElement {
   // Handle row click to open modal
   handleRowClick(event) {
     const stockId = event.currentTarget.dataset.id;
+    const stockName = event.currentTarget.dataset.stockName;
     this.selectedStockId = stockId;
+    this.selectedStockName = stockName;
     this.showButtonModal = true;
   }
 
@@ -252,6 +257,8 @@ export default class StockInvestmentList extends LightningElement {
       this.sellOrder({
         currentTarget: { dataset: { id: this.selectedStockId } }
       });
+    } else if (buttonLabel === "Online Price") {
+      this.onlinePriceOrder();
     }
   }
 
@@ -350,6 +357,13 @@ export default class StockInvestmentList extends LightningElement {
     if (result === "CREATED") {
       refreshApex(this.stockProvisionedData);
     }
+  }
+
+  async onlinePriceOrder() {
+    // Open Online Price modal
+    console.log("selected stock name: " + this.selectedStockName);
+    const url = `https://www.google.com/search?q=${encodeURIComponent(this.selectedStockName + " share price")}`;
+    window.open(url, "_blank");
   }
 
   async sellOrder(event) {
