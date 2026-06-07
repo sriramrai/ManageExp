@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <!-- LEFT SIDE -->
+    <!-- LEFT SIDE  -->
     <div class="left-section">
       <div class="amount-row">
         <div class="amount inline-amount">
@@ -90,31 +90,37 @@
                     </template>
                   </div>
                 </th>
-                <th scope="col" class="col-num">
-                  <div class="slds-truncate" title="Total Sold">
-                    Current Price
-                  </div>
-                </th>
-                <th scope="col" class="col-num">
-                  <div class="slds-truncate" title="Return">Return</div>
-                </th>
-                <th
-                  scope="col"
-                  class="col-num sortable-header"
-                  onclick={handleDiffSort}
-                >
-                  <div class="slds-truncate" title="Difference">
-                    Diff
-                    <template if:true={diffSortOrder}>
-                      <lightning-icon
-                        icon-name={diffSortIconName}
-                        size="x-small"
-                        class="slds-m-left_x-small"
-                      >
-                      </lightning-icon>
-                    </template>
-                  </div>
-                </th>
+                <template if:true={showCurrentPrice}>
+                  <th scope="col" class="col-num" onclick={handleCounter}>
+                    <div class="slds-truncate" title="Total Sold">
+                      Current Price
+                    </div>
+                  </th>
+                </template>
+                <template if:true={showReturn}>
+                  <th scope="col" class="col-num" onclick={handleCounter}>
+                    <div class="slds-truncate" title="Return">Return</div>
+                  </th>
+                </template>
+                <template if:true={showDiff}>
+                  <th
+                    scope="col"
+                    class="col-num sortable-header"
+                    onclick={handleDiffSort}
+                  >
+                    <div class="slds-truncate" title="Difference">
+                      Diff
+                      <template if:true={diffSortOrder}>
+                        <lightning-icon
+                          icon-name={diffSortIconName}
+                          size="x-small"
+                          class="slds-m-left_x-small"
+                        >
+                        </lightning-icon>
+                      </template>
+                    </div>
+                  </th>
+                </template>
               </tr>
             </thead>
             <tbody class="slds-hint-parent">
@@ -142,27 +148,35 @@
                     </a>
                     <div style="font-size: 11px">{stock.quantity} Stocks</div>
                   </td>
-                  <td
-                    data-label="Current Price"
-                    class="col-num slds-p-vertical_xx-small"
-                  >
-                    {stock.currentPrice}
-                  </td>
-                  <td
-                    data-label="Return"
-                    class="col-num slds-p-vertical_xx-small"
-                  >
-                    <div class={stock.returnClass}>
-                      <div class="current-amount">₹ {stock.currentValue}</div>
-                      <div class="invested-amount">₹ {stock.totalInvested}</div>
-                    </div>
-                  </td>
-                  <td
-                    data-label="Diff"
-                    class="col-num slds-p-vertical_xx-small"
-                  >
-                    <div class={stock.diffClass}>{stock.diffValue}</div>
-                  </td>
+                  <template if:true={showCurrentPrice}>
+                    <td
+                      data-label="Current Price"
+                      class="col-num slds-p-vertical_xx-small"
+                    >
+                      {stock.currentPrice}
+                    </td>
+                  </template>
+                  <template if:true={showReturn}>
+                    <td
+                      data-label="Return"
+                      class="col-num slds-p-vertical_xx-small"
+                    >
+                      <div class={stock.returnClass}>
+                        <div class="current-amount">₹ {stock.currentValue}</div>
+                        <div class="invested-amount">
+                          ₹ {stock.totalInvested}
+                        </div>
+                      </div>
+                    </td>
+                  </template>
+                  <template if:true={showDiff}>
+                    <td
+                      data-label="Diff"
+                      class="col-num slds-p-vertical_xx-small"
+                    >
+                      <div class={stock.diffClass}>{stock.diffValue}</div>
+                    </td>
+                  </template>
                 </tr>
                 <!-- Expanded details row - only rendered when expanded -->
                 <template if:true={stock.isExpanded}>

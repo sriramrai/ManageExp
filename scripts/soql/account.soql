@@ -1,1 +1,1 @@
-SELECT Id, Name, Date__c, Amount__c, Bank__c FROM Investment_Line_Items__c
+SELECT Id, Account_number__c, Code__c, Amount__c, Available_Quantity__c FROM Investment__c WHERE RecordType.Name = 'Stock' ORDER BY Account_number__c ASC

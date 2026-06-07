@@ -4,7 +4,8 @@ import {
   logError,
   isValidValue,
   toString,
-  formatDate
+  formatDate,
+  isMobile
 } from "c/utilityClass";
 import getAllStock from "@salesforce/apex/ExpenseManagerUtil.getAllStocks";
 import refreshStockPrice from "@salesforce/apex/ExpenseManagerUtil.refreshStockPrice";
@@ -37,13 +38,49 @@ export default class StockInvestmentList extends LightningElement {
   savedScrollPosition = 0;
   touchStartY = 0;
   touchEndY = 0;
+  @track clickCounter = 0; // Counter to track clicks/taps for debugging
 
   get searchClass() {
     return this.isOpen ? "search-box open" : "search-box";
   }
 
+  get showCurrentPrice() {
+    if (!isMobile()) {
+      return true; // Always show on desktop
+    }
+    let show = false;
+    show = isMobile() && this.clickCounter == 1 ? true : false; // Show current price on mobile, hide on desktop
+    return show;
+  }
+
+  get showDiff() {
+    if (!isMobile()) {
+      return true; // Always show on desktop
+    }
+    let show = false;
+    show = isMobile() && this.clickCounter == 2 ? true : false; // Show diff on desktop, hide on mobile
+    return show;
+  }
+
+  get showReturn() {
+    if (!isMobile()) {
+      return true; // Always show on desktop
+    }
+    let show = false;
+    show = isMobile() && this.clickCounter == 0 ? true : false;
+    return show;
+  }
+
   toggleSearch() {
     this.isOpen = !this.isOpen;
+  }
+
+  handleCounter(event) {
+    if (!isMobile()) {
+      return; // Only toggle on mobile
+    }
+    this.clickCounter = (this.clickCounter + 1) % 3; // Cycle through 0, 1, 2
+    log("Return header clicked. Click counter: " + this.clickCounter);
   }
 
   handleSearch(event) {
@@ -147,15 +184,19 @@ export default class StockInvestmentList extends LightningElement {
 
   // Handle diff column header click for sorting
   handleDiffSort() {
-    if (this.diffSortOrder === null) {
-      // First click: sort descending (greater to smaller)
-      this.diffSortOrder = "desc";
-    } else if (this.diffSortOrder === "desc") {
-      // Second click: sort ascending (smaller to greater)
-      this.diffSortOrder = "asc";
+    if (isMobile()) {
+      this.handleCounter();
     } else {
-      // Third click: back to original order
-      this.diffSortOrder = null;
+      if (this.diffSortOrder === null) {
+        // First click: sort descending (greater to smaller)
+        this.diffSortOrder = "desc";
+      } else if (this.diffSortOrder === "desc") {
+        // Second click: sort ascending (smaller to greater)
+        this.diffSortOrder = "asc";
+      } else {
+        // Third click: back to original order
+        this.diffSortOrder = null;
+      }
     }
   }
 
