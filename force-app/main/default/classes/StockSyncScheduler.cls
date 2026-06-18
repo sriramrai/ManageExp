@@ -1,12 +1,50 @@
-public with sharing class StockSyncScheduler implements Schedulable {
+public with sharing class StockSyncScheduler implements Schedulable, Database.AllowsCallouts {
   public StockSyncScheduler() {
   }
 
   public void execute(SchedulableContext sc) {
-    syncStockPrices();
+    System.enqueueJob(new StockSyncQueableJob());
+    scheduleNextRun();
   }
 
-  @AuraEnabled(Cacheable=true)
+  private void scheduleNextRun() {
+    // 2. Calculate next run time
+    Datetime nextRun = System.now().addMinutes(1);
+
+    // Assuming scheduler user timezone is IST
+    Integer dayOfWeek = Integer.valueOf(nextRun.format('u')); // 1=Mon ... 7=Sun
+    Integer hour = nextRun.hour();
+    Integer minute = nextRun.minute();
+
+    Boolean shouldSchedule =
+      dayOfWeek <= 5 &&
+      ((hour > 9 &&
+      hour < 16) ||
+      (hour == 9) ||
+      (hour == 16 &&
+      minute == 0));
+
+    if (shouldSchedule) {
+      String cron = String.format(
+        '{0} {1} {2} {3} {4} ? {5}',
+        new List<String>{
+          String.valueOf(nextRun.second()),
+          String.valueOf(nextRun.minute()),
+          String.valueOf(nextRun.hour()),
+          String.valueOf(nextRun.day()),
+          String.valueOf(nextRun.month()),
+          String.valueOf(nextRun.year())
+        }
+      );
+
+      System.schedule(
+        'StockSyncScheduler_' + nextRun.getTime(),
+        cron,
+        new StockSyncScheduler()
+      );
+    }
+  }
+
   public static void syncStockPrices() {
     List<Investment__c> stockRecords = DataProvider.getAllStockRecords();
 
@@ -50,6 +88,10 @@ public with sharing class StockSyncScheduler implements Schedulable {
     if (!recordsToUpdate.isEmpty()) {
       try {
         update recordsToUpdate;
+        StockUpdateEvent__e stockUpdateEvent = new StockUpdateEvent__e(
+          Price_Updated__c = true
+        );
+        EventBus.publish(stockUpdateEvent);
         System.debug(
           'Updated ' +
             recordsToUpdate.size() +

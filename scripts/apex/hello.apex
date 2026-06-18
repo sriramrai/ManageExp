@@ -242,3 +242,22 @@ decimal price = 949.2;
 integer quantity = 10;
 decimal totalValue = price * quantity;
 System.debug('totalValue*** : '+totalValue);
+
+Datetime startTime = Datetime.newInstance(2026, 6, 18, 9, 0, 0);
+
+String cron = String.format(
+    '{0} {1} {2} {3} {4} ? {5}',
+    new List<String>{
+        String.valueOf(startTime.second()),
+        String.valueOf(startTime.minute()),
+        String.valueOf(startTime.hour()),
+        String.valueOf(startTime.day()),
+        String.valueOf(startTime.month()),
+        String.valueOf(startTime.year())
+    }
+);
+
+System.schedule('StockSyncScheduler', cron, new StockSyncScheduler());
+
+System.debug('Liimits **** : '+Limits.getPublishImmediateDML());
+System.debug(Limits.getLimitPublishImmediateDML());

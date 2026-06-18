@@ -11,6 +11,9 @@ import getAllStock from "@salesforce/apex/ExpenseManagerUtil.getAllStocks";
 import refreshStockPrice from "@salesforce/apex/ExpenseManagerUtil.refreshStockPrice";
 import buySellStock from "c/buySellStockModal";
 import { refreshApex } from "@salesforce/apex";
+import { subscribe, unsubscribe } from "lightning/empApi";
+const CHANNEL = "/event/StockUpdateEvent__e";
+
 export default class StockInvestmentList extends LightningElement {
   @track stockData;
   stockProvisionedData;
@@ -39,6 +42,25 @@ export default class StockInvestmentList extends LightningElement {
   touchStartY = 0;
   touchEndY = 0;
   @track clickCounter = 0; // Counter to track clicks/taps for debugging
+  subscription = null;
+
+  connectedCallback() {
+    subscribe(CHANNEL, -1, (event) => {
+      this.handleEvent(event);
+    }).then((response) => {
+      this.subscription = response;
+    });
+  }
+
+  disconnectedCallback() {
+    unsubscribe(this.subscription);
+  }
+
+  handleEvent(event) {
+    console.log("event payload*** : " + event.data.payload);
+    // Refresh data here
+    refreshApex(this.stockProvisionedData);
+  }
 
   get searchClass() {
     return this.isOpen ? "search-box open" : "search-box";
