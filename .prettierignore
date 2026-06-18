@@ -7,5 +7,10 @@
 .sfdx
 .sf
 .vscode
-
+.asset
+.config
+.Diff
+.manifest
+.node_modules
+.scripts
 coverage/

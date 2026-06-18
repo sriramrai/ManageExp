@@ -9,6 +9,7 @@
 	</types>
 	<types>
 		<members>Automation_Switch__c</members>
+		<members>StockUpdateEvent__e</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
@@ -27,5 +28,5 @@
 		<members>cloudflare</members>
 		<name>RemoteSiteSetting</name>
 	</types>
-	<version>66.0</version>
+	<version>67.0</version>
 </Package>
