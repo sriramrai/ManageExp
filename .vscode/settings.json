@@ -44,4 +44,7 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "vibes.salesforce.defaultOrg": "test-yqy2rkdlrxfu@example.com",
+  "xml.preferences.showSchemaDocumentationType": "none",
+  "salesforce.einsteinForDevelopers.enable": true,
 }
