@@ -21,7 +21,20 @@
                         {earning.Credit_Date__c}
                     </lightning-layout-item>
                     <lightning-layout-item padding="around-small" size="4">
-                        <b>{earning.displayNetInHand}</b>
+                        <template if:true={isValuesVisible}>
+                            <b>
+                                <lightning-formatted-number
+                                    value={earning.Net_In_Hand__c}
+                                    format-style="currency"
+                                    currency-code="INR"
+                                    minimum-fraction-digits="0"
+                                    maximum-fraction-digits="0">
+                                </lightning-formatted-number>
+                            </b>
+                        </template>
+                        <template if:false={isValuesVisible}>
+                            <b>****</b>
+                        </template>
                     </lightning-layout-item>
                 </lightning-layout>
             </template>
