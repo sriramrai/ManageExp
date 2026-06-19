@@ -9,12 +9,6 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>naamJaapTracker</componentName>
-                <identifier>c_naamJaapTracker</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentName>summrizerComponent</componentName>
                 <identifier>c_summrizerComponent</identifier>
             </componentInstance>
@@ -45,6 +39,12 @@
             <componentInstance>
                 <componentName>manageInvestment</componentName>
                 <identifier>c_manageInvestment</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>naamJaapTracker</componentName>
+                <identifier>c_naamJaapTracker</identifier>
             </componentInstance>
         </itemInstances>
         <name>region2</name>
