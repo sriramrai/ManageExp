@@ -4,6 +4,8 @@ public with sharing class HeaderController {
     static final String SBI_KEY = 'SBI';
     static final String SC_KEY = 'SC';
     static final Integer OLAKH = 100000;
+    static final String GOLD = 'Gold';
+    
     private static String getKey(Investment__c ivt) {
         if(ivt.TAX_SAVER__c) {
             return TAX_SAVER_KEY;
@@ -21,13 +23,31 @@ public with sharing class HeaderController {
         List<Total> total = new List<Total>();
         Map<String, Decimal> depositeMap = new Map<String, Decimal>();
         Map<String, Decimal> maturedMap = new Map<String, Decimal>();
+        
+        // Process Investment (Bank) data - existing logic
         for(Investment__c ivt : DataProvider.getAllInvestments()) {
-            
             String mapKey = getKey(ivt);
             Decimal totalDeposite = depositeMap.containsKey(mapKey) ? depositeMap.get(mapKey) : 0;
             Decimal totalMatured = maturedMap.containsKey(mapKey) ? maturedMap.get(mapKey) : 0;
             depositeMap.put(mapKey, totalDeposite + ivt.Amount__c);
             maturedMap.put(mapKey, totalMatured + ivt.Maturity_Amount__c);
+        }
+        
+        // Process Treasure__c records excluding Gold - combine all into single "Treasuree" row
+        Decimal totalTreasureDeposit = 0;
+        for(Treasure__c treasure : [
+            SELECT Id, Tresuree__c, Amount__c 
+            FROM Treasure__c 
+            WHERE Tresuree__c != :GOLD
+        ]) {
+            totalTreasureDeposit += treasure.Amount__c;
+        }
+        
+        // Add combined Treasure data as single row if there are any Treasure records
+        if(totalTreasureDeposit > 0) {
+            String treasureeKey = 'Treasuree';
+            depositeMap.put(treasureeKey, totalTreasureDeposit);
+            maturedMap.put(treasureeKey, 0);
         }
 
         Decimal totalDeposite = 0;
@@ -35,7 +55,7 @@ public with sharing class HeaderController {
     
         for(String mapKey : depositeMap.keySet()) {
             Decimal deposite = depositeMap.get(mapKey);
-            Decimal matured = maturedMap.get(mapKey);
+            Decimal matured = maturedMap.containsKey(mapKey) ? maturedMap.get(mapKey) : 0;
             total.add(new Total(deposite, matured, mapKey));
             totalDeposite += deposite;
             totalMatured += matured;
@@ -66,6 +86,15 @@ public with sharing class HeaderController {
         public Integer compareTo(Object tot) {
             Total obj = (Total) tot;
 
+            // Always put 'Total' row at the end
+            if(this.type.equals('Total')) {
+                return 1;
+            }
+            if(obj.type.equals('Total')) {
+                return -1;
+            }
+
+            // For all other rows, sort alphabetically
             if(this.type < obj.type) {
                 return -1;
             }else if(this.type > obj.type){
