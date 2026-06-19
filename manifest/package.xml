@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
 		<members>Automation_Switch__c.Disable_Trigger__c</members>
@@ -13,7 +13,14 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>Expense_Line_Item_Record_Page</members>
+		<members>Expense_Line_Item_Record_Page1</members>
+		<members>Expense_Management</members>
+		<members>Expense_Record_Page</members>
+		<members>Investment_Dashboard</members>
 		<members>Investment_Record_Page</members>
+		<members>LightningSales_UtilityBar</members>
+		<members>SalesCloudMobile_UtilityBar</members>
 		<name>FlexiPage</name>
 	</types>
 	<types>
