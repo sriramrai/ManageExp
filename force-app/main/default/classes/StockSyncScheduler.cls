@@ -91,7 +91,8 @@ public with sharing class StockSyncScheduler implements Schedulable, Database.Al
         StockUpdateEvent__e stockUpdateEvent = new StockUpdateEvent__e(
           Price_Updated__c = true
         );
-        EventBus.publish(stockUpdateEvent);
+        //EventBus.publish(stockUpdateEvent);
+        // commenting the platform event for now as it is not needed the data is being refreshed from the client side using polling
         System.debug(
           'Updated ' +
             recordsToUpdate.size() +

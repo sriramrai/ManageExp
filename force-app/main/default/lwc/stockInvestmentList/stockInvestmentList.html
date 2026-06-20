@@ -36,6 +36,19 @@
         </lightning-formatted-number>
       </div>
       <div class="message header-note">{headerNote}</div>
+      <!-- Last Refresh Time -->
+      <template if:true={lastRefreshTime}>
+        <div class="last-refresh-time">
+          <template if:true={showRefreshIndicator}>
+            <lightning-spinner
+              alternative-text="Refreshing..."
+              size="x-small"
+              class="refresh-spinner"
+            ></lightning-spinner>
+          </template>
+          {lastRefreshDisplay}
+        </div>
+      </template>
     </div>
     <!-- RIGHT SIDE -->
     <div class="right-section">
@@ -60,6 +73,7 @@
         icon-name="utility:refresh"
         alternative-text="Refresh"
         onclick={handleRefresh}
+        disabled={showRefreshIndicator}
       >
       </lightning-button-icon>
     </div>

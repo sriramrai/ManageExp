@@ -43,6 +43,12 @@ export default class StockInvestmentList extends LightningElement {
   touchEndY = 0;
   @track clickCounter = 0; // Counter to track clicks/taps for debugging
   subscription = null;
+  
+  // Polling properties
+  pollingIntervalId = null;
+  @track lastRefreshTime = null;
+  @track isRefreshing = false;
+  POLLING_INTERVAL = 30000; // 30 seconds in milliseconds
 
   connectedCallback() {
     subscribe(CHANNEL, -1, (event) => {
@@ -50,16 +56,126 @@ export default class StockInvestmentList extends LightningElement {
     }).then((response) => {
       this.subscription = response;
     });
+    
+    // Start polling when component connects
+    this.startPolling();
   }
 
   disconnectedCallback() {
     unsubscribe(this.subscription);
+    
+    // Stop polling when component disconnects
+    this.stopPolling();
   }
 
   handleEvent(event) {
     console.log("event payload*** : " + event.data.payload);
     // Refresh data here
+    this.updateLastRefreshTime();
     refreshApex(this.stockProvisionedData);
+  }
+
+  // Market hours validation - IST timezone (Monday-Friday, 9 AM - 3 PM)
+  isMarketHours() {
+    const now = new Date();
+    
+    // Get IST time (UTC+5:30)
+    const istOffset = 5.5 * 60; // IST offset in minutes
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const istTime = new Date(utcTime + (istOffset * 60000));
+    
+    const dayOfWeek = istTime.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+    const hours = istTime.getHours();
+    const minutes = istTime.getMinutes();
+    
+    // Check if it's Monday-Friday (1-5)
+    const isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;
+    
+    // Check if time is between 9:00 AM and 3:00 PM
+    const isWithinHours = (hours > 9 || (hours === 9 && minutes >= 0)) && 
+                          (hours < 15 || (hours === 15 && minutes === 0));
+    
+    return isWeekday && isWithinHours;
+    //return true;
+  }
+
+  // Start polling mechanism
+  startPolling() {
+    // Clear any existing interval
+    this.stopPolling();
+    
+    log("Starting stock price polling...");
+    
+    // Set up interval for polling
+    this.pollingIntervalId = setInterval(() => {
+      if (this.isMarketHours()) {
+        log("Market is open - performing auto refresh");
+        this.performAutoRefresh();
+      } else {
+        log("Market is closed - skipping auto refresh");
+      }
+    }, this.POLLING_INTERVAL);
+    
+    // Also check immediately on start
+    if (this.isMarketHours()) {
+      log("Market is open on component load - performing initial refresh");
+      // Small delay to ensure component is fully rendered
+      setTimeout(() => {
+        this.performAutoRefresh();
+      }, 2000);
+    }
+  }
+
+  // Stop polling mechanism
+  stopPolling() {
+    if (this.pollingIntervalId) {
+      clearInterval(this.pollingIntervalId);
+      this.pollingIntervalId = null;
+      log("Stopped stock price polling");
+    }
+  }
+
+  // Perform automatic refresh
+  performAutoRefresh() {
+    // Don't refresh if already refreshing
+    if (this.isRefreshing) {
+      log("Refresh already in progress, skipping...");
+      return;
+    }
+    
+    this.isRefreshing = true;
+    
+    refreshStockPrice()
+      .then((result) => {
+        log("Auto-refresh: Stock prices updated successfully");
+        this.updateLastRefreshTime();
+        return refreshApex(this.stockProvisionedData);
+      })
+      .catch((error) => {
+        logError("Auto-refresh error: " + toString(error));
+      })
+      .finally(() => {
+        this.isRefreshing = false;
+      });
+  }
+
+  // Update last refresh timestamp
+  updateLastRefreshTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    this.lastRefreshTime = `${hours}:${minutes}:${seconds}`;
+  }
+
+  // Getter for formatted last refresh time
+  get lastRefreshDisplay() {
+    return this.lastRefreshTime ? `Last updated: ${this.lastRefreshTime}` : '';
+  }
+
+  // Getter to show refresh indicator
+  get showRefreshIndicator() {
+    return this.isRefreshing;
   }
 
   get searchClass() {
@@ -121,13 +237,24 @@ export default class StockInvestmentList extends LightningElement {
   }
 
   handleRefresh() {
+    if (this.isRefreshing) {
+      log("Refresh already in progress");
+      return;
+    }
+    
+    this.isRefreshing = true;
+    
     refreshStockPrice()
       .then((result) => {
-        log("Stock prices refreshed successfully: " + result);
-        refreshApex(this.stockProvisionedData);
+        log("Manual refresh: Stock prices refreshed successfully: " + result);
+        this.updateLastRefreshTime();
+        return refreshApex(this.stockProvisionedData);
       })
       .catch((error) => {
         logError("Error refreshing stock prices: " + toString(error));
+      })
+      .finally(() => {
+        this.isRefreshing = false;
       });
   }
 
@@ -175,6 +302,12 @@ export default class StockInvestmentList extends LightningElement {
       this.stockData = stocks;
       this.headerNote = this.getHeaderNote();
       this.originalData = stocks;
+      
+      // Update refresh time on data load
+      if (!this.lastRefreshTime) {
+        this.updateLastRefreshTime();
+      }
+      
       log("stock data fetched successfully.... : " + toString(this.stockData));
     }
   }
