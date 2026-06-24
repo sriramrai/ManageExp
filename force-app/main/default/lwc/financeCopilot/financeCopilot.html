@@ -1,0 +1,25 @@
+<template>
+
+    <lightning-card title="Finance Copilot">
+
+        <lightning-input
+            label="Ask me"
+            value={question}
+            onchange={handleChange}>
+        </lightning-input>
+
+        <lightning-button
+            label="Send"
+            onclick={send}>
+        </lightning-button>
+
+
+        <template if:true={response}>
+            <div class="slds-p-top_medium">
+                {response}
+            </div>
+        </template>
+
+    </lightning-card>
+
+</template>

@@ -4,7 +4,7 @@ public with sharing class StockSyncScheduler implements Schedulable, Database.Al
 
   public void execute(SchedulableContext sc) {
     System.enqueueJob(new StockSyncQueableJob());
-    scheduleNextRun();
+    //scheduleNextRun();
   }
 
   private void scheduleNextRun() {
