@@ -7,3 +7,5 @@ public with sharing class ApexUtilityClass {
     return automationSwitch.Disable_Trigger__c;
   }
 }
+
+// Added commetnt
