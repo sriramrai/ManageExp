@@ -19,9 +19,9 @@ The `sfdx-project.json` file contains useful configuration information for your 
 
 https://www.pantherschools.com/setup-ci-cd-using-github-actions/
 
-sf org create scratch --definition-file config/project-scratch-def.json --alias MyHub --set-default --target-dev-hub ExpenseApp --duration-days 30 (Make Sure that ExpenseApp should have same name as the hub name which you want to connect to , you can find out that using sf org list)
+sf org create scratch --definition-file config/project-scratch-def.json --alias MyHub --set-default --target-dev-hub sriramrai --duration-days 30 (Make Sure that ExpenseApp should have same name as the hub name which you want to connect to , you can find out that using sf org list)
 
-sf project deploy start -a 58.0
+sf project deploy start -a 62.0
 sf project retrieve start -o ExpenseApp -x ./package.xml
 sf project retrieve start --ignore-conflicts -o ExpenseApp -x ./package.xml
 

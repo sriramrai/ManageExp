@@ -5,6 +5,9 @@ public with sharing class HeaderController {
     static final String SC_KEY = 'SC';
     static final Integer OLAKH = 100000;
     static final String GOLD = 'Gold';
+    static final String TREASUREE_KEY = 'Treasuree';
+    static final String NET_WEALTH_KEY = 'Net Wealth';
+    static final String TOTAL_KEY = 'Total';
     
     private static String getKey(Investment__c ivt) {
         if(ivt.TAX_SAVER__c) {
@@ -33,21 +36,34 @@ public with sharing class HeaderController {
             maturedMap.put(mapKey, totalMatured + ivt.Maturity_Amount__c);
         }
         
-        // Process Treasure__c records excluding Gold - combine all into single "Treasuree" row
+        // Accumulate Treasure for display row and Net Wealth; Stock, PPF, and NPS for Net Wealth only
         Decimal totalTreasureDeposit = 0;
         for(Treasure__c treasure : [
             SELECT Id, Tresuree__c, Amount__c 
             FROM Treasure__c 
             WHERE Tresuree__c != :GOLD
         ]) {
-            totalTreasureDeposit += treasure.Amount__c;
+            totalTreasureDeposit += treasure.Amount__c != null ? treasure.Amount__c : 0;
         }
-        
-        // Add combined Treasure data as single row if there are any Treasure records
-        if(totalTreasureDeposit > 0) {
-            String treasureeKey = 'Treasuree';
-            depositeMap.put(treasureeKey, totalTreasureDeposit);
-            maturedMap.put(treasureeKey, 0);
+
+        Decimal totalStockAmount = 0;
+        Id stockRT = Schema.SobjectType.Investment__c.getRecordTypeInfosByName().get('Stock').getRecordTypeId();
+        for(Investment__c stock : [
+            SELECT Amount__c
+            FROM Investment__c
+            WHERE RecordTypeId = :stockRT
+        ]) {
+            totalStockAmount += stock.Amount__c != null ? stock.Amount__c : 0;
+        }
+
+        Decimal totalPPF = 0;
+        Decimal totalNPS = 0;
+        for(DataProvider.FutureInvestmentWrapper futureInvestment : DataProvider.getAllFutureInvestments()) {
+            if(futureInvestment.bankName == 'PPF') {
+                totalPPF += futureInvestment.amount != null ? futureInvestment.amount : 0;
+            } else if(futureInvestment.bankName == 'NPS') {
+                totalNPS += futureInvestment.amount != null ? futureInvestment.amount : 0;
+            }
         }
 
         Decimal totalDeposite = 0;
@@ -60,10 +76,31 @@ public with sharing class HeaderController {
             totalDeposite += deposite;
             totalMatured += matured;
         }
+
+        if(totalTreasureDeposit > 0) {
+            total.add(new Total(totalTreasureDeposit, 0, TREASUREE_KEY));
+        }
         
-        total.add(new Total(totalDeposite, totalMatured, 'Total'));
+        total.add(new Total(totalDeposite + totalTreasureDeposit, totalMatured, TOTAL_KEY));
+
+        Decimal netWealth = totalStockAmount + totalTreasureDeposit + totalPPF + totalNPS + totalDeposite;
+        total.add(new Total(netWealth, 0, NET_WEALTH_KEY));
+
         total.sort();
         return total;
+    }
+
+    private static Integer getRowOrder(String type) {
+        if(type == NET_WEALTH_KEY) {
+            return 3;
+        }
+        if(type == TOTAL_KEY) {
+            return 2;
+        }
+        if(type == TREASUREE_KEY) {
+            return 1;
+        }
+        return 0;
     }
 
     public class Total implements comparable {
@@ -86,15 +123,12 @@ public with sharing class HeaderController {
         public Integer compareTo(Object tot) {
             Total obj = (Total) tot;
 
-            // Always put 'Total' row at the end
-            if(this.type.equals('Total')) {
-                return 1;
-            }
-            if(obj.type.equals('Total')) {
-                return -1;
+            Integer thisOrder = getRowOrder(this.type);
+            Integer objOrder = getRowOrder(obj.type);
+            if(thisOrder != objOrder) {
+                return thisOrder < objOrder ? -1 : 1;
             }
 
-            // For all other rows, sort alphabetically
             if(this.type < obj.type) {
                 return -1;
             }else if(this.type > obj.type){
