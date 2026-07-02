@@ -1,166 +1,179 @@
 <template>
-    <lightning-modal-body>
-        <div class="slds-p-horizontal_small">
-            <template if:true={data}>
-                <lightning-record-edit-form object-api-name="Earning__c" record-id={data.Id} density="auto" onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
-                    <lightning-layout multiple-rows="true" size="12">
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Credit_Date__c" 
-                                value={data.Credit_Date__c}
-                                ></lightning-input-field>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field
-                                field-name="Month__c" 
-                                value={data.Month__c}
-                            ></lightning-input-field>
-                            <div style="display: none;">
-                                <lightning-input-field
-                                    field-name="Fiscal_Year__c" 
-                                    value={data.Fiscal_Year__c}
-                                ></lightning-input-field>
-                            </div>
-                        </lightning-layout-item>
-                        
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Basic__c" 
-                                value={data.Basic__c}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Basic__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="HRA__c" 
-                                value={data.HRA__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.HRA__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Conveyance__c" 
-                                value={data.Conveyance__c}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Conveyance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Food_Allowance__c" 
-                                value={data.Food_Allowance__c}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Food_Allowance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Telephone_Allowance__c" 
-                                value={data.Telephone_Allowance__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.Telephone_Allowance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="LTA__c" 
-                                value={data.LTA__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.LTA__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Telephone_Allowance__c" 
-                                value={data.Telephone_Allowance__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.Telephone_Allowance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Project_Allowance__c" 
-                                value={data.Project_Allowance__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.Project_Allowance__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="EPF_Contribution__c" 
-                                value={data.EPF_Contribution__c}
-                                disabled=true
-                                ></lightning-input-field>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Income_Tax__c" 
-                                value={data.Income_Tax__c}
-                                onchange={inputChangeHandler}></lightning-input-field>
-                                <span class="diff-data">{diffData.Income_Tax__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Professional_Tax__c" 
-                                value={data.Professional_Tax__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.Professional_Tax__c}</span>
-                        </lightning-layout-item>
-                        <lightning-layout-item size="6">
-                            <lightning-input-field 
-                                field-name="Labor_Welfare_Fund__c" 
-                                value={data.Labor_Welfare_Fund__c}
-                                onchange={inputChangeHandler}
-                                ></lightning-input-field>
-                                <span class="diff-data">{diffData.Labor_Welfare_Fund__c}</span>
-                        </lightning-layout-item>
-                    </lightning-layout>
-                    <template if:true={data.Id}>
-                        <lightning-layout horizontal-align="left">
-                            <span class="medium-font">Net Component</span>
-                        </lightning-layout>
-                        <lightning-layout multiple-rows="true" size="12">
-                            <lightning-layout-item size="6">
-                                <lightning-input-field 
-                                    field-name="Net_Total__c" 
-                                    ></lightning-input-field>
-                            </lightning-layout-item>
-                            <lightning-layout-item size="6">
-                                <lightning-input-field 
-                                    field-name="Net_Taxable__c" 
-                                    ></lightning-input-field>
-                            </lightning-layout-item>
-                            <lightning-layout-item size="6">
-                                <lightning-input-field 
-                                    field-name="Net_In_Hand__c" 
-                                    ></lightning-input-field>
-                            </lightning-layout-item>
-                            <lightning-layout-item size="6">
-                                <lightning-input-field 
-                                    field-name="Net_Deduction__c" 
-                                    ></lightning-input-field>
-                            </lightning-layout-item>
-                        </lightning-layout>
-                    </template>
-                    <lightning-layout horizontal-align="center">
-                        <div class="slds-var-m-top_medium align-center">
-                            <lightning-button 
-                                class="padding-around" 
-                                variant="brand" 
-                                type="submit" 
-                                label="Save"
-                                disabled={disableSave}>
-                            </lightning-button>
-                            <lightning-button 
-                                class="padding-around" 
-                                variant="neutral" 
-                                label="cancel" 
-                                onclick={handleCancel}>
-                            </lightning-button>
-                        </div>
-                    </lightning-layout>
-                </lightning-record-edit-form>
-            </template>
-        </div>
-    </lightning-modal-body>
+  <lightning-modal-body>
+    <div class="slds-p-horizontal_small">
+      <template if:true={data}>
+        <lightning-record-edit-form
+          object-api-name="Earning__c"
+          record-id={data.Id}
+          density="auto"
+          onsubmit={handleSubmit}
+          onsuccess={handleSuccess}
+          onerror={handleError}
+        >
+          <lightning-layout multiple-rows="true" size="12">
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Credit_Date__c"
+                value={data.Credit_Date__c}
+              ></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Month__c"
+                value={data.Month__c}
+              ></lightning-input-field>
+              <div style="display: none">
+                <lightning-input-field
+                  field-name="Fiscal_Year__c"
+                  value={data.Fiscal_Year__c}
+                ></lightning-input-field>
+              </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Basic__c"
+                value={data.Basic__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Basic__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="HRA__c"
+                value={data.HRA__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.HRA__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Conveyance__c"
+                value={data.Conveyance__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Conveyance__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Food_Allowance__c"
+                value={data.Food_Allowance__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Food_Allowance__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Telephone_Allowance__c"
+                value={data.Telephone_Allowance__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Telephone_Allowance__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="LTA__c"
+                value={data.LTA__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.LTA__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Bonus__c"
+                value={data.Bonus__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <!-- <span class="diff-data">{diffData.Bonus__c}</span> -->
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Project_Allowance__c"
+                value={data.Project_Allowance__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Project_Allowance__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="EPF_Contribution__c"
+                value={data.EPF_Contribution__c}
+                disabled="true"
+              ></lightning-input-field>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Income_Tax__c"
+                value={data.Income_Tax__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Income_Tax__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Professional_Tax__c"
+                value={data.Professional_Tax__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Professional_Tax__c}</span>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+              <lightning-input-field
+                field-name="Labor_Welfare_Fund__c"
+                value={data.Labor_Welfare_Fund__c}
+                onchange={inputChangeHandler}
+              ></lightning-input-field>
+              <span class="diff-data">{diffData.Labor_Welfare_Fund__c}</span>
+            </lightning-layout-item>
+          </lightning-layout>
+          <template if:true={data.Id}>
+            <lightning-layout horizontal-align="left">
+              <span class="medium-font">Net Component</span>
+            </lightning-layout>
+            <lightning-layout multiple-rows="true" size="12">
+              <lightning-layout-item size="6">
+                <lightning-input-field
+                  field-name="Net_Total__c"
+                ></lightning-input-field>
+              </lightning-layout-item>
+              <lightning-layout-item size="6">
+                <lightning-input-field
+                  field-name="Net_Taxable__c"
+                ></lightning-input-field>
+              </lightning-layout-item>
+              <lightning-layout-item size="6">
+                <lightning-input-field
+                  field-name="Net_In_Hand__c"
+                ></lightning-input-field>
+              </lightning-layout-item>
+              <lightning-layout-item size="6">
+                <lightning-input-field
+                  field-name="Net_Deduction__c"
+                ></lightning-input-field>
+              </lightning-layout-item>
+            </lightning-layout>
+          </template>
+          <lightning-layout horizontal-align="center">
+            <div class="slds-var-m-top_medium align-center">
+              <lightning-button
+                class="padding-around"
+                variant="brand"
+                type="submit"
+                label="Save"
+                disabled={disableSave}
+              >
+              </lightning-button>
+              <lightning-button
+                class="padding-around"
+                variant="neutral"
+                label="cancel"
+                onclick={handleCancel}
+              >
+              </lightning-button>
+            </div>
+          </lightning-layout>
+        </lightning-record-edit-form>
+      </template>
+    </div>
+  </lightning-modal-body>
 </template>
