@@ -33,6 +33,22 @@ const getFYForExpManager = () => {
   ];
 };
 
+const getCurrentFY = () => {
+  let today = new Date();
+  let currentMonth = today.getMonth() + 1;
+  let currentYear = today.getFullYear();
+  let fyStart, fyEnd;
+  if (currentMonth < 4) {
+    fyStart = currentYear - 1;
+    fyEnd = currentYear;
+  } else {
+    fyStart = currentYear;
+    fyEnd = currentYear + 1;
+  }
+
+  return fyStart + "-" + fyEnd;
+};
+
 const getSalaryAmountFields = () => {
   return [
     "Basic__c",
@@ -124,6 +140,7 @@ export {
   log,
   logError,
   getFYForExpManager,
+  getCurrentFY,
   getMonthOptionForExpManager,
   getSalaryAmountFields,
   toString,
