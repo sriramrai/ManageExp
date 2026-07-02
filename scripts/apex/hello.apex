@@ -262,4 +262,5 @@ System.schedule('StockSyncScheduler', cron, new StockSyncScheduler());
 System.debug('Liimits **** : '+Limits.getPublishImmediateDML());
 System.debug(Limits.getLimitPublishImmediateDML());
 
-delete [SELECT Id FROM Investment__c];
+String question = 'what is expense last 6 months';
+System.debug('Answer is**' +FinanceService.answer(question));

@@ -16,7 +16,11 @@ public with sharing class FinanceService {
       if (lower.contains('net worth')) {
         return getNetWorth();
       }
-      if (lower.contains('salary')) {
+      if (
+        lower.contains('salary') ||
+        lower.contains('income') ||
+        lower.contains('earning')
+      ) {
         return getSalary();
       }
       if (
@@ -26,10 +30,14 @@ public with sharing class FinanceService {
       ) {
         return getFD();
       }
+      if (lower.contains('expense')) {
+        return getExpense(q);
+      }
       return 'Sorry, I do not know';
     } catch (Exception e) {
       // Return a safe message; controllers should wrap as AuraHandledException where needed
-      return 'An error occurred while evaluating the question.';
+      return 'An error occurred while evaluating the question.' +
+        e.getMessage();
     }
   }
 
@@ -163,5 +171,74 @@ public with sharing class FinanceService {
     } catch (Exception e) {
       return String.valueOf(d.setScale(2, RoundingMode.HALF_UP));
     }
+  }
+
+  private static String getExpense(String q) {
+    String query = buildQuery(q);
+
+    System.debug('query*** : ' + query);
+
+    Decimal expenseTotal = 0;
+    for (
+      Expense_Line_Item__c exp : (List<Expense_Line_Item__c>) Database.query(
+        query
+      )
+    ) {
+      expenseTotal += exp.Amount__c;
+    }
+    return 'Expense total: ₹' + formatDecimal(expenseTotal);
+  }
+
+  private static String buildQuery(String q) {
+    q = q.toLowerCase();
+    String query = 'SELECT Id, Amount__c FROM Expense_Line_Item__c';
+    Date startDate;
+    Date endDate;
+    Date today = Date.today();
+    endDate = today;
+    Map<String, Integer> MONTH_MAP = new Map<String, Integer>{
+      'january' => 1,
+      'february' => 2,
+      'march' => 3,
+      'april' => 4,
+      'may' => 5,
+      'june' => 6,
+      'july' => 7,
+      'august' => 8,
+      'september' => 9,
+      'october' => 10,
+      'november' => 11,
+      'december' => 12
+    };
+    if (q.contains('current month') || q.contains('this month')) {
+      startDate = today.toStartOfMonth();
+    } else if (q.contains('last month')) {
+      startDate = today.toStartOfMonth().addMonths(-1);
+      endDate = today.toStartOfMonth().addDays(-1);
+    } else if (q.contains('last 3 months')) {
+      startDate = today.toStartOfMonth().addMonths(-3);
+      //endDate = startDate.addMonths(1).addDays(-1);
+    } else if (q.contains('last 6 months')) {
+      startDate = today.toStartOfMonth().addMonths(-6);
+      //endDate = startDate.addMonths(1).addDays(-1);
+    } else if (q.contains('this fiscal year')) {
+      List<Date> fy = ExpenseManagerUtilHelper.getFiscalYear(today);
+      startDate = fy[0];
+      endDate = fy[1];
+    } else {
+      for (String monthname : MONTH_MAP.keySet()) {
+        if (monthname.contains(q)) {
+          Integer year = today.year();
+          Integer month = MONTH_MAP.get(monthname);
+          startDate = Date.newInstance(year, month, 1);
+          endDate = startDate.addMonths(1).addDays(-1);
+          break;
+        }
+      }
+    }
+    if (startDate != null) {
+      query += ' WHERE Date__c >= :startDate AND Date__c <= :endDate';
+    }
+    return query;
   }
 }
