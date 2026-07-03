@@ -263,3 +263,6 @@ System.debug('Liimits **** : '+Limits.getPublishImmediateDML());
 System.debug(Limits.getLimitPublishImmediateDML());
 
 delete [SELECT Id FROM Investment__c];
+
+
+ExpenseManagerUtil.totalFdInterest('2026-2027');
