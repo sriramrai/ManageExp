@@ -30,7 +30,9 @@ public with sharing class ExpenseManagerUtil {
           Medical_Allowance__c,
           Professional_Tax__c,
           Project_Allowance__c,
-          Telephone_Allowance__c
+          Telephone_Allowance__c,
+          Bonus__c,
+          Total_CTC__c
         FROM Salary_Structure__c
         WHERE Fiscal_Year__c = :fy
       ]
@@ -195,6 +197,29 @@ public with sharing class ExpenseManagerUtil {
     fyDates.add(startDate);
     fyDates.add(endDate);
     return fyDates;
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static Decimal totalFdInterest(String fy) {
+    try {
+      Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> interestWrapper = getInterestWrapper(
+        fy
+      );
+      Decimal totalInterest = 0;
+      for (String bankName : interestWrapper.keySet()) {
+        for (
+          ExpenseManagerUtilHelper.InterestWrapper eachWrapper : interestWrapper.get(
+            bankName
+          )
+        ) {
+          totalInterest +=
+            eachWrapper.interestPaid + eachWrapper.accumulatedInteres;
+        }
+      }
+      return totalInterest;
+    } catch (Exception e) {
+      throw new AuraHandledException(e.getMessage());
+    }
   }
 
   @AuraEnabled(cacheable=true)
