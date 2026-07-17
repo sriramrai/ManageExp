@@ -266,3 +266,23 @@ delete [SELECT Id FROM Investment__c];
 
 
 ExpenseManagerUtil.totalFdInterest('2026-2027');
+
+List<Transaction_Item__c> titems = [SELECT Id, Transaction__c, Amount__c, Date__c, Description__c, Type__c FROM Transaction_Item__c];
+List<Transaction_Item__c> newItems = new List<Transaction_Item__c>();
+List<Transaction__c> tranactions = [SELECT Id from Transaction__c WHERE Name != 'Axis'];
+for(Transaction__c trans : tranactions) {
+List<Transaction_Item__c> newItems = new List<Transaction_Item__c>();
+    for(Transaction_Item__c tItem: titems) {
+        Transaction_Item__c newItem = tItem.clone();
+        newItem.Transaction__c = trans.Id;
+        newItems.add(newItem);
+    }
+}
+insert newItems;
+
+List<Transaction_Item__c> tItems = new List<Transaction_Item__c>();
+for(Transaction_Item__c tItem : [SELECT Id, Transaction__c, Amount__c, Date__c, Description__c, Type__c, Transaction__r.Name FROM Transaction_Item__c]) {
+    tItem.Description__c = tItem.Transaction__r.Name + tItem.Description__c;
+    tItems.add(tItem);
+}
+update titems;

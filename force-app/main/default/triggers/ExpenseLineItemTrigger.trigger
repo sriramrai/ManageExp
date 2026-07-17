@@ -1,15 +1,24 @@
-trigger ExpenseLineItemTrigger on Expense_Line_Item__c (after insert, after update) {
-    if(ApexUtilityClass.isTriggerDisabled()) {
-        return;
+trigger ExpenseLineItemTrigger on Expense_Line_Item__c(
+  after insert,
+  after update,
+  before delete
+) {
+  if (ApexUtilityClass.isTriggerDisabled()) {
+    return;
+  }
+  ExpenseLineItemTriggerHandler ehandler = new ExpenseLineItemTriggerHandler();
+  if (Trigger.isAfter) {
+    System.debug('===Expense Line Item Trigger Started====');
+    if (Trigger.isInsert) {
+      ehandler.handleAfterInsert(Trigger.new);
     }
-    ExpenseLineItemTriggerHandler ehandler = new ExpenseLineItemTriggerHandler();
-    if(trigger.isAfter) {
-        System.debug('===Expense Line Item Trigger Started====');
-        if(trigger.isInsert) {
-            ehandler.handleAfterInsert(trigger.new);
-        }
-        if(trigger.isUpdate) {
-            ehandler.handleAfterUpdate(trigger.new, trigger.oldMap);
-        }
+    if (Trigger.isUpdate) {
+      ehandler.handleAfterUpdate(Trigger.new, Trigger.oldMap, Trigger.newMap);
     }
+  }
+  if (Trigger.isBefore) {
+    if (Trigger.isDelete) {
+      ehandler.handleBeforeDelete(Trigger.old, Trigger.oldMap);
+    }
+  }
 }
