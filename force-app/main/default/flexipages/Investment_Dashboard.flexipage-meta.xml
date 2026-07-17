@@ -9,6 +9,12 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>financeCopilot</componentName>
+                <identifier>c_financeCopilot</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>summrizerComponent</componentName>
                 <identifier>c_summrizerComponent</identifier>
             </componentInstance>
@@ -17,6 +23,12 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>transactionLog</componentName>
+                <identifier>c_transactionLog</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentName>fyIntrestMonitor</componentName>

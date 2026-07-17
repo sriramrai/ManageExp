@@ -322,4 +322,24 @@ public with sharing class ExpenseManagerUtil {
 
     return DataProvider.getExpenseByMonth(fromDate, toDate);
   }
+
+  @AuraEnabled(cacheable=true)
+  public static List<Transaction_Item__c> getAllTransactions(
+    String transactionId
+  ) {
+    try {
+      return DataProvider.getAllTransactionItems(transactionId);
+    } catch (Exception e) {
+      throw new AuraHandledException(e.getMessage());
+    }
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static List<Transaction__c> getBanks() {
+    try {
+      return DataProvider.getAllTransaction();
+    } catch (Exception e) {
+      throw new AuraHandledException(e.getMessage());
+    }
+  }
 }

@@ -1,0 +1,99 @@
+<template>
+  <lightning-card title="Transactions">
+    <div slot="actions">
+      <lightning-button-icon
+        icon-name={iconName}
+        alternative-text="Toggle visibility"
+        onclick={handleAdd}
+      >
+      </lightning-button-icon>
+    </div>
+    <template if:true={showAddSection}>
+      <lightning-record-edit-form
+        object-api-name="Transaction_Item__c"
+        onsuccess={handleSuccess}
+      >
+        <lightning-messages></lightning-messages>
+        <lightning-layout>
+          <lightning-layout-item size="4">
+            <lightning-input-field
+              field-name="Transaction__c"
+            ></lightning-input-field>
+          </lightning-layout-item>
+          <lightning-layout-item size="4">
+            <lightning-input-field field-name="Date__c"></lightning-input-field>
+          </lightning-layout-item>
+          <lightning-layout-item size="4">
+            <lightning-input-field
+              field-name="Amount__c"
+            ></lightning-input-field>
+          </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+          <lightning-layout-item size="4">
+            <lightning-input-field field-name="Type__c"></lightning-input-field>
+          </lightning-layout-item>
+          <lightning-layout-item size="8">
+            <lightning-input-field
+              field-name="Description__c"
+            ></lightning-input-field>
+          </lightning-layout-item>
+        </lightning-layout>
+        <lightning-button type="submit" label="Save" variant="brand">
+        </lightning-button>
+      </lightning-record-edit-form>
+    </template>
+    <div class="container">
+      <lightning-layout multiple-rows="false">
+        <!-- Left Panel -->
+        <lightning-layout-item size="3" class="left-panel">
+          <template for:each={bankList} for:item="bank">
+            <div
+              key={bank.id}
+              class={bank.className}
+              data-id={bank.id}
+              onclick={handleBankClick}
+            >
+              <div class="bank-name">{bank.name}</div>
+              <div class="bank-balance">
+                <lightning-formatted-number
+                  value={bank.balance}
+                  format-style="currency"
+                  currency-code="INR"
+                  minimum-fraction-digits="0"
+                ></lightning-formatted-number>
+              </div>
+            </div>
+          </template>
+        </lightning-layout-item>
+
+        <!-- Right Panel -->
+        <lightning-layout-item size="9" class="right-panel">
+          <!-- <div class="panel-title">Recent Transactions</div> -->
+          <template for:each={transactionList} for:item="transaction">
+            <div class="transaction-card" key={transaction.id}>
+              <div>
+                <div class="transaction-title">
+                  <a href={transaction.recordURL} target="_blank"
+                    >{transaction.description}</a
+                  >
+                </div>
+                <div class="transaction-date">{transaction.date}</div>
+              </div>
+              <div class={transaction.typeClass}>
+                <span>{transaction.sign}</span>&nbsp;
+                <lightning-formatted-number
+                  value={transaction.amount}
+                  format-style="currency"
+                  currency-code="INR"
+                  minimum-fraction-digits="0"
+                >
+                </lightning-formatted-number>
+              </div>
+            </div>
+          </template>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div>
+  </lightning-card>
+</template>

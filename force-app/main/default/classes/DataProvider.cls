@@ -613,4 +613,28 @@ public with sharing class DataProvider {
       ORDER BY Date__c DESC
     ];
   }
+
+  public static List<Transaction__c> getAllTransaction() {
+    return [
+      SELECT Id, Name, Total_Debited__c, Total_Credited__c, Balance__c
+      FROM Transaction__c
+    ];
+  }
+  public static List<Transaction_Item__c> getAllTransactionItems(
+    String transactionId
+  ) {
+    return [
+      SELECT
+        Id,
+        Transaction__c,
+        Amount__c,
+        Date__c,
+        Description__c,
+        Type__c,
+        Source_Record_Id__c
+      FROM Transaction_Item__c
+      WHERE Transaction__c = :transactionId
+      ORDER BY Date__c DESC
+    ];
+  }
 }

@@ -1,0 +1,116 @@
+.container {
+  background: #f4f6f9;
+  padding: 12px;
+}
+
+/* LEFT PANEL */
+
+.left-panel {
+  background: white;
+  border-right: 1px solid #d8dde6;
+  height: 350px;
+  overflow-y: auto;
+}
+
+/* BANK CARD */
+
+.bank-card {
+  padding: 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #eef1f6;
+  transition: all 0.2s ease;
+}
+
+.bank-card:hover {
+  background: #eef4ff;
+}
+
+.bank-card.active {
+  background: #0176d3;
+  color: white;
+  border-left: 5px solid #014486;
+}
+
+.bank-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bank-balance {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #2e844a;
+}
+
+.bank-card.active .bank-balance {
+  color: white;
+}
+
+/* RIGHT PANEL */
+
+.right-panel {
+  background: white;
+  padding: 20px;
+  height: 350px;
+  overflow-y: auto;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* TRANSACTION */
+
+.transaction-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.transaction-card:hover {
+  background: #f8fbff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.transaction-title {
+  font-weight: 600;
+}
+
+.transaction-date {
+  font-size: 12px;
+  color: #706e6b;
+  margin-top: 4px;
+}
+
+.credit {
+  color: #2e844a;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.debit {
+  color: #ba0517;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* Scrollbar */
+
+.left-panel::-webkit-scrollbar,
+.right-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.left-panel::-webkit-scrollbar-thumb,
+.right-panel::-webkit-scrollbar-thumb {
+  background: #c8ccd0;
+  border-radius: 20px;
+}
