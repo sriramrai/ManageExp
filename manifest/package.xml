@@ -23,6 +23,10 @@
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>Transaction__c</members>
+		<name>CustomTab</name>
+	</types>
+	<types>
 		<members>Expense_Line_Item_Record_Page</members>
 		<members>Expense_Line_Item_Record_Page1</members>
 		<members>Expense_Management</members>
