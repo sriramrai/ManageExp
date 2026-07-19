@@ -10,16 +10,14 @@
 		<members>Transaction_Item__c.Description__c</members>
 		<members>Transaction_Item__c.Transaction__c</members>
 		<members>Transaction_Item__c.Type__c</members>
+		<members>Transaction_Updator__e.Updated__c</members>
 		<members>Transaction__c.Balance__c</members>
 		<members>Transaction__c.Total_Credited__c</members>
 		<members>Transaction__c.Total_Debited__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
-		<members>Automation_Switch__c</members>
-		<members>StockUpdateEvent__e</members>
-		<members>Transaction_Item__c</members>
-		<members>Transaction__c</members>
+		<members>Transaction_Updator__e</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
