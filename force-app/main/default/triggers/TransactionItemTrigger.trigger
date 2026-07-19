@@ -9,6 +9,9 @@ trigger TransactionItemTrigger on Transaction_Item__c(
     Trigger.newMap,
     Trigger.oldMap
   );
+  if (ApexUtilityClass.isTriggerDisabled()) {
+    return;
+  }
   if (Trigger.isAfter) {
     if (Trigger.isInsert) {
       tHandler.afterInsert();
