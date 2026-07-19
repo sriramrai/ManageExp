@@ -3,8 +3,11 @@ import getTransactions from "@salesforce/apex/ExpenseManagerUtil.getAllTransacti
 import getBanks from "@salesforce/apex/ExpenseManagerUtil.getBanks";
 import { toString, log } from "c/utilityClass";
 import { refreshApex } from "@salesforce/apex";
+import { subscribe, unsubscribe, onError } from "lightning/empApi";
 
 export default class TransactionLog extends LightningElement {
+  channelName = "/event/Transaction_Updator__e";
+  subscription = null;
   errorMessage = "";
   @track selectedId;
   @track transactionList = [];
@@ -62,6 +65,53 @@ export default class TransactionLog extends LightningElement {
     } else if (error) {
       this.errorMessage = toString(error);
     }
+  }
+
+  connectedCallback() {
+    this.registerErrorListener();
+    this.handleSubscribe();
+  }
+
+  disconnectedCallback() {
+    this.handleUnsubscribe();
+  }
+
+  handleSubscribe() {
+    const messageCallback = (response) => {
+      console.log("Platform Event Received");
+      console.log(JSON.stringify(response));
+
+      // Access your event fields
+      const payload = response.data.payload;
+
+      console.log("Updated:", payload.Updated__c);
+      if (payload.Updated__c) {
+        refreshApex(this.transactionProvisionedData);
+        refreshApex(this.bankProvisionedData);
+      }
+      // Refresh your component here
+      // refreshApex(...)
+      // or call an Apex method
+    };
+
+    subscribe(this.channelName, -1, messageCallback).then((response) => {
+      this.subscription = response;
+      console.log("Subscribed to:", response.channel);
+    });
+  }
+
+  handleUnsubscribe() {
+    if (this.subscription) {
+      unsubscribe(this.subscription, () => {
+        console.log("Unsubscribed");
+      });
+    }
+  }
+
+  registerErrorListener() {
+    onError((error) => {
+      console.error("EMP API Error", JSON.stringify(error));
+    });
   }
 
   handleBankClick(event) {

@@ -282,7 +282,7 @@ insert newItems;
 
 List<Transaction_Item__c> tItems = new List<Transaction_Item__c>();
 for(Transaction_Item__c tItem : [SELECT Id, Transaction__c, Amount__c, Date__c, Description__c, Type__c, Transaction__r.Name FROM Transaction_Item__c]) {
-    tItem.Description__c = tItem.Transaction__r.Name + tItem.Description__c;
+    tItem.Amount__c = tItem.Type__c == 'Debit' ?  tItem.Amount__c * (-1) : ;
     tItems.add(tItem);
 }
 update titems;
