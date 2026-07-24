@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Type__c</fullName>
-    <label>Type</label>
-    <required>true</required>
+    <fullName>To_Account__c</fullName>
+    <label>To Account</label>
+    <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
@@ -10,19 +10,24 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Credit</fullName>
+                <fullName>SC</fullName>
                 <default>false</default>
-                <label>Credit</label>
+                <label>SC</label>
             </value>
             <value>
-                <fullName>Debit</fullName>
+                <fullName>HDFC</fullName>
                 <default>false</default>
-                <label>Debit</label>
+                <label>HDFC</label>
             </value>
             <value>
-                <fullName>A/C Transfer</fullName>
+                <fullName>Axis</fullName>
                 <default>false</default>
-                <label>A/C Transfer</label>
+                <label>Axis</label>
+            </value>
+            <value>
+                <fullName>SBI</fullName>
+                <default>false</default>
+                <label>SBI</label>
             </value>
         </valueSetDefinition>
     </valueSet>

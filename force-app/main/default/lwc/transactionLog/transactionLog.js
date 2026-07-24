@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from "lwc";
 import getTransactions from "@salesforce/apex/ExpenseManagerUtil.getAllTransactions";
 import getBanks from "@salesforce/apex/ExpenseManagerUtil.getBanks";
-import { toString, log } from "c/utilityClass";
+import { toString, log, formatDate } from "c/utilityClass";
 import { refreshApex } from "@salesforce/apex";
 import { subscribe, unsubscribe, onError } from "lightning/empApi";
 
@@ -12,6 +12,7 @@ export default class TransactionLog extends LightningElement {
   @track selectedId;
   @track transactionList = [];
   @track bankList = [];
+  @track showBankField = false;
   @track showAddSection = false;
   iconName = "utility:add";
   transactionProvisionedData;
@@ -30,7 +31,7 @@ export default class TransactionLog extends LightningElement {
       data.forEach((transaction) => {
         this.transactionList.push({
           id: transaction.Id,
-          date: transaction.Date__c,
+          date: formatDate(transaction.Date__c),
           description: transaction.Description__c,
           amount: transaction.Amount__c,
           recordURL: "/" + transaction.Id,
@@ -106,6 +107,10 @@ export default class TransactionLog extends LightningElement {
         console.log("Unsubscribed");
       });
     }
+  }
+  handleTypeChange(event) {
+    this.selectedId = event.target.value;
+    this.showBankField = this.selectedId === "A/C Transfer" ? true : false;
   }
 
   registerErrorListener() {
