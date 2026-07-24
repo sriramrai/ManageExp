@@ -3,7 +3,7 @@
  * Modified On : 03 Sept, to test the CI CD pro
  * Next Push
  */
-public with sharing class DataProvider {
+public without sharing class DataProvider {
   public static Boolean isTestMode() {
     Testing_Switch__c ts = Testing_Switch__c.getInstance();
     if (ts != null) {
@@ -634,7 +634,7 @@ public with sharing class DataProvider {
         Source_Record_Id__c
       FROM Transaction_Item__c
       WHERE Transaction__c = :transactionId
-      ORDER BY Date__c DESC
+      ORDER BY LastModifiedDate DESC
     ];
   }
 }

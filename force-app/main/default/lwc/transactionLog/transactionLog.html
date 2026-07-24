@@ -31,9 +31,22 @@
         </lightning-layout>
         <lightning-layout>
           <lightning-layout-item size="4">
-            <lightning-input-field field-name="Type__c"></lightning-input-field>
+            <lightning-input-field
+              field-name="Type__c"
+              onchange={handleTypeChange}
+            ></lightning-input-field>
           </lightning-layout-item>
-          <lightning-layout-item size="8">
+          <template if:true={showBankField}>
+            <lightning-layout-item size="4">
+              <lightning-input-field
+                field-name="To_Account__c"
+                required
+              ></lightning-input-field>
+            </lightning-layout-item>
+          </template>
+        </lightning-layout>
+        <lightning-layout>
+          <lightning-layout-item size="12">
             <lightning-input-field
               field-name="Description__c"
             ></lightning-input-field>

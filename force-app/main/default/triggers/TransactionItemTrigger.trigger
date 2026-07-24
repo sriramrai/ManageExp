@@ -1,4 +1,7 @@
 trigger TransactionItemTrigger on Transaction_Item__c(
+  before insert,
+  before update,
+  before delete,
   after insert,
   after update,
   after delete
@@ -11,6 +14,15 @@ trigger TransactionItemTrigger on Transaction_Item__c(
   );
   if (ApexUtilityClass.isTriggerDisabled()) {
     return;
+  }
+  if (Trigger.isBefore) {
+    if (Trigger.isInsert) {
+      tHandler.beforeInsert();
+    } else if (Trigger.isUpdate) {
+      //tHandler.beforeUpdate();
+    } else if (Trigger.isDelete) {
+      //tHandler.beforeDelete();
+    }
   }
   if (Trigger.isAfter) {
     if (Trigger.isInsert) {
