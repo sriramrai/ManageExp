@@ -252,6 +252,7 @@ public without sharing class ExpenseLineItemTriggerHandler {
       ]
     );
     List<Transaction_Item__c> tnxList = new List<Transaction_Item__c>();
+    List<Transaction_Item__c> tnxTobeDeleted = new List<Transaction_Item__c>();
     for (Transaction_Item__c tItem : transactionItems) {
       Expense_Line_Item__c expLine = newMap.get(tItem.Source_Record_Id__c);
       String bankName = getBankName(expLine.Source__c);
@@ -259,6 +260,7 @@ public without sharing class ExpenseLineItemTriggerHandler {
       if (
         string.isBlank(bankName) || !transactionIdByName.containsKey(bankName)
       ) {
+        tnxTobeDeleted.add(tItem);
         continue;
       }
       tItem.Transaction__c = transactionIdByName.get(bankName);
@@ -269,6 +271,9 @@ public without sharing class ExpenseLineItemTriggerHandler {
     }
     try {
       update tnxList;
+      if(!tnxTobeDeleted.isEmpty()){
+        delete tnxTobeDeleted;
+      }
     } catch (Exception exp) {
       throw exp;
     }
