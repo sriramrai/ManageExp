@@ -165,6 +165,8 @@ public without sharing class ExpenseLineItemTriggerHandler {
       bankName = 'HDFC';
     } else if (source == 'SBI') {
       bankName = 'SBI';
+    } else if(source == 'Cash') {
+      bankName = 'Cash';
     }
     return bankName;
   }
