@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.chat-card {
+  height: 700px;
+}
+
+.header {
+  border-bottom: 1px solid #ddd;
+  background: white;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.chat-body {
+  height: 500px;
+  overflow-y: auto;
+  background: #fafafa;
+  padding: 8px;
+}
+
+.footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-top: 1px solid #ddd;
+  align-items: flex-end;
+}
+
+.footer lightning-textarea {
+  flex: 1;
+}

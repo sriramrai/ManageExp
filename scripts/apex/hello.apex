@@ -1,3 +1,20 @@
+System.debug(OpenAIService.testConnection());
+System.debug(GeminiService.test());
+
+ChatRequest request =
+    new ChatRequest();
+request.message =
+    'What is my expense this month?';
+ToolDecision decision =
+    GeminiService.decideTool(request);
+System.debug(decision.tool);
+System.debug(decision.action);
+System.debug(decision.arguments);
+
+String str = '{"tool":"expense","action":"monthlyExpense","arguments":{"month":7,"year":2026}}';
+System.debug('str*** : '+GeminiService.parseToolDecision(str));
+
+
 String data = '[{"attributes":{"type":"Expense__c","url":"/services/data/v65.0/sobjects/Expense__c/a0TGA00000k5c8o2AA"},"OwnerId":"0057F000002MzEsQAK","Id":"a0TGA00000k5c8o2AA","End_Date__c":"2025-12-31","Name":"Dec 25","Start_Date__c":"2025-12-01"}]';
 String objectName = 'Expense__c';
 Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectName);

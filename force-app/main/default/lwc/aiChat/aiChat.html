@@ -1,0 +1,37 @@
+<template>
+  <lightning-card class="chat-card">
+    <!-- Header -->
+    <div class="header slds-p-around_medium">
+      <div class="title">🤖 Finance AI Assistant</div>
+      <div class="subtitle">
+        Ask me anything about your expenses, investments or salary.
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-body" lwc:ref="chatBody">
+      <template for:each={messages} for:item="message">
+        <c-ai-message key={message.id} message={message}> </c-ai-message>
+      </template>
+
+      <template if:true={isTyping}>
+        <c-ai-typing></c-ai-typing>
+      </template>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <lightning-textarea
+        variant="label-hidden"
+        placeholder="Ask me anything..."
+        value={userInput}
+        onchange={handleInput}
+        onkeydown={handleKeyDown}
+      >
+      </lightning-textarea>
+
+      <lightning-button label="Send" variant="brand" onclick={sendMessage}>
+      </lightning-button>
+    </div>
+  </lightning-card>
+</template>

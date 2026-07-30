@@ -109,8 +109,8 @@ export default class TransactionLog extends LightningElement {
     }
   }
   handleTypeChange(event) {
-    this.selectedId = event.target.value;
-    this.showBankField = this.selectedId === "A/C Transfer" ? true : false;
+    let selectedType = event.target.value;
+    this.showBankField = selectedType === "A/C Transfer" ? true : false;
   }
 
   registerErrorListener() {

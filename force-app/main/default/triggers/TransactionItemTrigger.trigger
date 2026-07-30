@@ -19,7 +19,7 @@ trigger TransactionItemTrigger on Transaction_Item__c(
     if (Trigger.isInsert) {
       tHandler.beforeInsert();
     } else if (Trigger.isUpdate) {
-      //tHandler.beforeUpdate();
+      tHandler.beforeUpdate();
     } else if (Trigger.isDelete) {
       //tHandler.beforeDelete();
     }
