@@ -7,6 +7,12 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class ExpenseDetailsList extends NavigationMixin(LightningElement) {
     @api recordList = [];
+    get records() {
+        return this.recordList.map(rec => ({
+            ...rec,
+            recordUrl: '/' + rec.Id
+        }));
+    }
     async moreActionHandler(event) {
         let recordId = event.target.getAttribute("data-id");
         this.result = await ltngMoreActionModal.open({
@@ -14,14 +20,14 @@ export default class ExpenseDetailsList extends NavigationMixin(LightningElement
             description: 'Accessible description of modal\'s purpose',
             content: recordId,
             headerText: 'Perform More',
-            modalData : [{'no': '1', 'label': 'View'}, {'no': '2', 'label': 'Edit'}, {'no': '3', 'label': 'Delete'}],
+            modalData : [{'no': '1', 'label': 'Edit'}, {'no': '2', 'label': 'Delete'}],
         });
-        if(this.result ==1 ) {
+        /* if(this.result ==1 ) {
             this.viewRecord(recordId);
-        }
-        if(this.result == 2) {
+        } */
+        if(this.result == 1) {
             this.editRecord(recordId);
-        }else if(this.result == 3) {
+        }else if(this.result == 2) {
             this.deleteRecord(recordId);
         }
     
