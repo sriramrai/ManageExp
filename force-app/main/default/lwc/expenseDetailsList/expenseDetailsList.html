@@ -1,10 +1,12 @@
 <template>
     <div class="expense_container1">
-        <template for:each={recordList} for:item="rec">
+        <template for:each={records} for:item="rec">
             <div key={rec.Id} data-record-id={rec.Id} style="padding: 10px;">
                 <lightning-layout padding="around-small" >
                     <lightning-layout-item size="3">
-                        <lightning-formatted-date-time value={rec.Date__c} month="short" day="2-digit"></lightning-formatted-date-time>
+                        <a href={rec.recordUrl} target="_blank">
+                            <lightning-formatted-date-time value={rec.Date__c} month="short" day="2-digit"></lightning-formatted-date-time>
+                        </a>
                     </lightning-layout-item>
                     <lightning-layout-item size="3">
                         <lightning-formatted-number format-style="currency" currency-code="INR" value={rec.Amount__c} maximum-fraction-digits=0></lightning-formatted-number>
