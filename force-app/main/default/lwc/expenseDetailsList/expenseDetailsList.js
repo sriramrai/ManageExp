@@ -3,8 +3,9 @@ import deleteELI from '@salesforce/apex/ExpenseController.deleteELI';
 import LightningConfirm from "lightning/confirm";
 import ltngMoreActionModal from 'c/expenseMoreActionModal';
 import ltngEditRecord from 'c/editExpenseForm';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class ExpenseDetailsList extends LightningElement {
+export default class ExpenseDetailsList extends NavigationMixin(LightningElement) {
     @api recordList = [];
     async moreActionHandler(event) {
         let recordId = event.target.getAttribute("data-id");
@@ -38,7 +39,15 @@ export default class ExpenseDetailsList extends LightningElement {
 
     viewRecord(recordId) {
         console.log('inside view record...');
-        window.open('/'+recordId, "_blank");
+        //window.open('/'+recordId, "_blank");
+        // Bug Fix as navigation not working in mobile device
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: recordId,
+                actionName: 'view'
+            }
+        });
     }
 
     async editRecord(recordId) {
