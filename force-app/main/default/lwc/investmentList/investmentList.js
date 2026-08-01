@@ -60,65 +60,6 @@ export default class InvestmentList extends LightningElement {
     console.log("ivts:", JSON.stringify(this.ivts));
   }
 
-  /*  get investments() {
-    let recordArray = [];
-    this.ivts.forEach((element) => {
-      this.totalInvested += element.Amount__c;
-      this.totalMaturity += element.Maturity_Amount__c;
-
-      const today = new Date();
-      const maturityDate = new Date(element.Maturity_Date__c);
-      const oneDay = 24 * 60 * 60 * 1000;
-      const differenceDays = Math.round(
-        Math.abs(maturityDate - today) / oneDay
-      );
-
-      const record = {
-        ...element, // clone the object
-        badgeStyle: maturityDate <= today ? "badge-red" : "badge-green",
-        daysLeft: this.convertIntoMonth(differenceDays)
-      };
-
-      recordArray.push(record);
-    });
-
-    this.totalInvested = Math.trunc(this.totalInvested);
-    this.totalMaturity = Math.trunc(this.totalMaturity);
-
-    return this.sortArray(recordArray);
-  } */
-
-  /*  @wire(getAllInvestmentByBank, { bankName: "$bankName" })
-  allInvestment(result) {
-    this.provisionedItem = result;
-    let data = result.data;
-    let error = result.error;
-    this.investments = [];
-    if (data) {
-      let myObjs = deepClone(data);
-      myObjs.forEach((element) => {
-        this.totalInvested += element.Amount__c;
-        this.totalMaturity += element.Maturity_Amount__c;
-        element.badgeStyle = "badge-green";
-        let today = new Date();
-        let maturityDate = new Date(element.Maturity_Date__c);
-        if (maturityDate <= today) {
-          element.badgeStyle = "badge-red";
-        }
-        const oneDay = 24 * 60 * 60 * 1000;
-        const differenceMs = Math.abs(maturityDate - today);
-        const differenceDays = Math.round(differenceMs / oneDay);
-        element.daysLeft = this.convertIntoMonth(differenceDays);
-        this.investments.push(element);
-      });
-      this.totalInvested = Math.trunc(this.totalInvested);
-      this.totalMaturity = Math.trunc(this.totalMaturity);
-      this.investments = this.sortArray(this.investments);
-    } else if (error) {
-      logError("Error While Fetching Investment record...");
-    }
-  } */
-
   sortArray(arr) {
     arr.sort(function (a, b) {
       let d1 = a.Maturity_Date__c;

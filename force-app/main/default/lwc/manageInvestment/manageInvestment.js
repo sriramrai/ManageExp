@@ -17,36 +17,24 @@ import createStockModal from "c/createNewStockModal";
 export default class ManageInvestment extends NavigationMixin(
   LightningElement
 ) {
-  sbiEntries = [];
-  axisEntries = [];
-  scEntries = [];
-  ppfEntries = [];
-  npsEntires = [];
   provisionedItem;
-  //activeTabName = "axis";
-  //@track activeTabName = "";
   fdTabs = ["axis", "sbi", "bob", "ubi", "sc", "hdfc", "boi"];
   futureInvestmentTabs = ["NPS", "PPF"];
-  entityOptions = [
-    { label: "Ragini", value: "Ragini" },
-    { label: "Sriram", value: "Sriram" },
-    { label: "Mom", value: "Mom" },
-    { label: "Dad", value: "Dad" }
-  ];
   selectedEntity = "Sriram";
-  get getSbiLabel() {
-    return "SBI (" + this.sbiEntries.length + ")";
-  }
-
-  get getAxisLabel() {
-    return "AXIS (" + this.axisEntries.length + ")";
-  }
-
   @track tabList = [];
 
   get shouldShowNonFdTabs() {
     let show = this.selectedEntity == "Sriram" ? true : false;
     return show;
+  }
+
+  get entityOptions() {
+    return [
+      { label: "Ragini", value: "Ragini" },
+      { label: "Sriram", value: "Sriram" },
+      { label: "Mom", value: "Mom" },
+      { label: "Dad", value: "Dad" }
+    ];
   }
 
   handleEntityChange(event) {
