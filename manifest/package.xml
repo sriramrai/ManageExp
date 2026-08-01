@@ -5,6 +5,8 @@
 		<members>Investment__c.Closed_Date__c</members>
 		<members>Investment__c.Code__c</members>
 		<members>Investment__c.Current_Price__c</members>
+		<members>Investment__c.Entity__c</members>
+		<members>Investment__c.Exchng__c</members>
 		<members>Transaction_Item__c.Amount__c</members>
 		<members>Transaction_Item__c.Date__c</members>
 		<members>Transaction_Item__c.Description__c</members>

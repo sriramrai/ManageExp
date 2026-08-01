@@ -35,6 +35,21 @@
                 <default>false</default>
                 <label>NPS</label>
             </value>
+            <value>
+                <fullName>BOB</fullName>
+                <default>false</default>
+                <label>BOB</label>
+            </value>
+            <value>
+                <fullName>BOI</fullName>
+                <default>false</default>
+                <label>BOI</label>
+            </value>
+            <value>
+                <fullName>UBI</fullName>
+                <default>false</default>
+                <label>UBI</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

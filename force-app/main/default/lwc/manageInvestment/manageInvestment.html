@@ -1,25 +1,71 @@
 <template>
-    <lightning-card >
-        <lightning-button label="New" slot="actions" onclick={createInvestment}></lightning-button>
-        <lightning-tabset active-tab-value={activeTabName}>
-            <lightning-tab label="Stocks" onactive={activeTabHandler} value="Stock">
-                <c-stock-investment-list data-id="Stock" bank-name="PPF"></c-stock-investment-list>
-            </lightning-tab>
-            <lightning-tab label={getSbiLabel} onactive={activeTabHandler} value="SBI">
-                <c-investment-list data-id="SBI" bank-name="sbi" onrefresh={refreshHandler} oncounted={counterHandler}></c-investment-list>
-            </lightning-tab>
-            <lightning-tab label={getAxisLabel} onactive={activeTabHandler} value="AXIS">
-                <c-investment-list data-id="AXIS" bank-name='axis' onrefresh={refreshHandler}></c-investment-list>
-            </lightning-tab>
-            <lightning-tab label="NPS" onactive={activeTabHandler} value="NPS">
-                <c-future-investment-list data-id="NPS" bank-name="NPS"></c-future-investment-list>
-            </lightning-tab>
-            <lightning-tab label="PPF" onactive={activeTabHandler} value="PPF">
-                <c-future-investment-list data-id="PPF" bank-name="PPF"></c-future-investment-list>
-            </lightning-tab>
-            <lightning-tab label="Treasure" onactive={activeTabHandler} value="Treasure">
-                <c-treasure-list data-id="Treasure" bank-name="Treasure"></c-treasure-list>
-            </lightning-tab>
-        </lightning-tabset>
-    </lightning-card>
+  <lightning-card>
+    <div class="slds-grid slds-grid_align-end slds-grid_vertical-align-center">
+      <div style="width: 180px; margin-right: 0.5rem">
+        <lightning-combobox
+          value={selectedEntity}
+          options={entityOptions}
+          onchange={handleEntityChange}
+          variant="label-hidden"
+        >
+        </lightning-combobox>
+      </div>
+
+      <lightning-button label="New" variant="brand" onclick={createInvestment}>
+      </lightning-button>
+    </div>
+    <template if:true={tabList}>
+      <lightning-tabset key={tabsetKey} active-tab-value={activeTabName}>
+        <template if:true={shouldShowNonFdTabs}>
+          <lightning-tab
+            label="Stocks"
+            onactive={activeTabHandler}
+            value="Stock"
+            ><c-stock-investment-list
+              data-id="Stock"
+              bank-name="PPF"
+            ></c-stock-investment-list
+          ></lightning-tab>
+        </template>
+        <template for:each={tabList} for:item="tab">
+          <lightning-tab
+            key={tab.key}
+            label={tab.label}
+            value={tab.value}
+            onactive={activeTabHandler}
+          >
+            <c-investment-list
+              key={tab.key}
+              bank-name={tab.value}
+              ivts={tab.records}
+            ></c-investment-list>
+          </lightning-tab>
+        </template>
+        <template if:true={shouldShowNonFdTabs}>
+          <lightning-tab label="NPS" onactive={activeTabHandler} value="NPS">
+            <c-future-investment-list
+              data-id="NPS"
+              bank-name="NPS"
+            ></c-future-investment-list>
+          </lightning-tab>
+          <lightning-tab label="PPF" onactive={activeTabHandler} value="PPF">
+            <c-future-investment-list
+              data-id="PPF"
+              bank-name="PPF"
+            ></c-future-investment-list>
+          </lightning-tab>
+          <lightning-tab
+            label="Treasure"
+            onactive={activeTabHandler}
+            value="Treasure"
+          >
+            <c-treasure-list
+              data-id="Treasure"
+              bank-name="Treasure"
+            ></c-treasure-list>
+          </lightning-tab>
+        </template>
+      </lightning-tabset>
+    </template>
+  </lightning-card>
 </template>
