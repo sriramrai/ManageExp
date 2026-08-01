@@ -316,6 +316,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Investment__c.Entity__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Investment__c.Exchng__c</field>
         <readable>true</readable>
     </fieldPermissions>

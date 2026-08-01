@@ -98,6 +98,13 @@ public with sharing class ExpenseManagerUtil {
   }
 
   @AuraEnabled(cacheable=true)
+  public static Map<String, List<Investment__c>> getAllInvestMentMapForEntity(
+    String entityName
+  ) {
+    return DataProvider.invetmentByBank(entityName);
+  }
+
+  @AuraEnabled(cacheable=true)
   public static List<DataProvider.FutureInvestmentWrapper> getAllFutureInvestments() {
     return DataProvider.getAllFutureInvestments();
   }

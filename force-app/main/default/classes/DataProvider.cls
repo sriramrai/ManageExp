@@ -111,6 +111,40 @@ public without sharing class DataProvider {
     return (List<Investment__c>) Database.query(query);
   }
 
+  public static List<Investment__c> getAllInvestmentsByEntity(
+    String entityName
+  ) {
+    entityName = String.isBlank(entityName) ? 'Sriram' : entityName;
+    return new List<Investment__c>(
+      [
+        SELECT
+          Id,
+          Name,
+          Account_Number__c,
+          Maturity_Amount__c,
+          Start_Date__c,
+          Amount__c,
+          Rate__c,
+          Bank__c,
+          TAX_SAVER__c,
+          Maturity_Date__c,
+          Month__c,
+          Year__c,
+          Day__c,
+          RecordTypeId,
+          RecordType.Name,
+          Entity__c
+        FROM Investment__c
+        WHERE
+          Bank__c NOT IN ('NPS', 'PPF')
+          AND RecordType.Name = 'Investment'
+          AND Entity__c = :entityName
+          AND is_closed__c = FALSE
+        ORDER BY Bank__c ASC
+      ]
+    );
+  }
+
   public static List<Investment_Line_Items__c> getAllPPFNPSContributions(
     Date sDate,
     Date eDate
@@ -175,6 +209,26 @@ public without sharing class DataProvider {
   public static Map<String, List<Investment__c>> invetmentByBank() {
     Map<String, List<Investment__c>> ivtByBank = new Map<String, List<Investment__c>>();
     List<Investment__c> allInvestments = getAllInvestments();
+    for (Investment__c ivt : allInvestments) {
+      if (String.isNotBlank(ivt.Bank__c)) {
+        String key = ivt.Bank__c.toLowerCase();
+        if (ivtByBank.containsKey(key)) {
+          ivtByBank.get(key).add(ivt);
+        } else {
+          List<Investment__c> ivts = new List<Investment__c>{ ivt };
+          ivtByBank.put(key, ivts);
+        }
+      }
+    }
+
+    return ivtByBank;
+  }
+
+  public static Map<String, List<Investment__c>> invetmentByBank(
+    String entityName
+  ) {
+    Map<String, List<Investment__c>> ivtByBank = new Map<String, List<Investment__c>>();
+    List<Investment__c> allInvestments = getAllInvestmentsByEntity(entityName);
     for (Investment__c ivt : allInvestments) {
       if (String.isNotBlank(ivt.Bank__c)) {
         String key = ivt.Bank__c.toLowerCase();
