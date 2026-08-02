@@ -1,4 +1,5 @@
 import { LightningElement } from "lwc";
+import getCurrentUserName from "@salesforce/apex/ApexUtilityClass.getCurrentUserName";
 
 const isValid = (data) => {
   console.log("inside isvalid method...");
@@ -91,7 +92,7 @@ const deepClone = (data) => {
 };
 
 const isValidValue = (data) => {
-  if (data != "" && typeof data != undefined && data != null) {
+  if (data != "" && typeof data != "undefined" && data != null) {
     return true;
   }
   return false;
@@ -104,6 +105,10 @@ const formatDate = (data) => {
     year: "2-digit"
   });
   return data ? formatter.format(new Date(data)) : "";
+};
+
+const getLoggedInUserName = async () => {
+  return await getCurrentUserName();
 };
 
 /**
@@ -149,5 +154,6 @@ export {
   formatDate,
   isMobile,
   isLaptop,
-  getDeviceType
+  getDeviceType,
+  getLoggedInUserName
 };

@@ -38,7 +38,8 @@ public without sharing class DataProvider {
 
   public static List<Investment__c> getInvestments(
     Date startDate,
-    Date endDate
+    Date endDate,
+    String entityName
   ) {
     return new List<Investment__c>(
       [
@@ -63,8 +64,9 @@ public without sharing class DataProvider {
           Start_Date__c <= :endDate
           AND Maturity_Date__c >= :startDate
           AND RecordType.Name != 'Stock'
-          AND Bank__c NOT IN ('PPF', 'NPS', 'SC')
+          AND Bank__c NOT IN ('PPF', 'NPS')
           AND is_Test__c = FALSE
+          AND Entity__c = :entityName
         ORDER BY Start_Date__c DESC
       ]
     );
@@ -245,7 +247,7 @@ public without sharing class DataProvider {
   }
 
   @AuraEnabled(cacheable=true)
-  public static List<Investment__c> maturityThisMonth() {
+  public static List<Investment__c> maturityThisMonth(String entityName) {
     Date today = Date.Today();
     Integer lastDay = Date.daysInMonth(today.year(), today.month());
     Date startDate = Date.newInstance(today.year(), today.month(), 1);
@@ -263,6 +265,7 @@ public without sharing class DataProvider {
           AND Is_Closed__c = FALSE
           AND is_Test__c = :isTestMode()
           AND RecordTypeId = :ivtRecordType
+          AND Entity__c = :entityName
       ]
     );
     return ivtList;
@@ -592,7 +595,8 @@ public without sharing class DataProvider {
 
   public static List<Investment_Line_Items__c> getAllLines(
     Date startDate,
-    Date endDate
+    Date endDate,
+    String entityName
   ) {
     return [
       SELECT
@@ -602,6 +606,7 @@ public without sharing class DataProvider {
         Investment__r.Closed_Date__c,
         Investment__r.Bank__c,
         Investment__r.Id,
+        Investment__r.Entity__c,
         Type__c,
         Amount__c,
         Tenure_Day__c,
@@ -622,7 +627,8 @@ public without sharing class DataProvider {
         OR (Maturity_Date__c >= :startDate
         AND Maturity_Date__c <= :endDate))
         /* Investment__r.Id = 'a05In000000zYyDIAU' AND */
-        AND Bank__c NOT IN ('PPF', 'NPS', 'SC')
+        AND Bank__c NOT IN ('PPF', 'NPS')
+        AND Investment__r.Entity__c = :entityName
     ];
   }
 
