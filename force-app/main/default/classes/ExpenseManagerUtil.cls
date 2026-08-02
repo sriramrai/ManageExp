@@ -210,7 +210,8 @@ public with sharing class ExpenseManagerUtil {
   public static Decimal totalFdInterest(String fy) {
     try {
       Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> interestWrapper = getInterestWrapper(
-        fy
+        fy,
+        'Sriram'
       );
       Decimal totalInterest = 0;
       for (String bankName : interestWrapper.keySet()) {
@@ -231,7 +232,8 @@ public with sharing class ExpenseManagerUtil {
 
   @AuraEnabled(cacheable=true)
   public static Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> getInterestWrapper(
-    String fy
+    String fy,
+    String entityName
   ) {
     List<Date> fyDates = constructFyDate(fy);
     List<String> fiscalYears = fy.split('-');
@@ -240,11 +242,13 @@ public with sharing class ExpenseManagerUtil {
 
     Map<String, List<Investment_Line_Items__c>> investmentLinesByBank = ExpenseManagerUtilHelper.getInvestmentLinesByBank(
       startDate,
-      endDate
+      endDate,
+      entityName
     );
     Map<String, List<Investment__c>> investmentByBank = ExpenseManagerUtilHelper.getInvestmentByBank(
       startDate,
-      endDate
+      endDate,
+      entityName
     );
     Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>> wrapperMap = new Map<String, List<ExpenseManagerUtilHelper.InterestWrapper>>();
 

@@ -5,7 +5,8 @@ import {
   logError,
   toString,
   deepClone,
-  isValidValue
+  isValidValue,
+  getLoggedInUserName
 } from "c/utilityClass";
 import { refreshApex } from "@salesforce/apex";
 import { NavigationMixin } from "lightning/navigation";
@@ -13,14 +14,18 @@ import { encodeDefaultFieldValues } from "lightning/pageReferenceUtils";
 import createRecordModal from "c/createNewRecordModal";
 import createNewFutureInvestmentModal from "c/createNewFutureInvestment";
 import createStockModal from "c/createNewStockModal";
+import { publish, MessageContext } from "lightning/messageService";
+import ENTITYCHANGE_CHANNEL from "@salesforce/messageChannel/EntityChange__c";
 
 export default class ManageInvestment extends NavigationMixin(
   LightningElement
 ) {
+  @wire(MessageContext)
+  messageContext;
   provisionedItem;
   fdTabs = ["axis", "sbi", "bob", "ubi", "sc", "hdfc", "boi"];
   futureInvestmentTabs = ["NPS", "PPF"];
-  selectedEntity = "Sriram";
+  selectedEntity;
   @track tabList = [];
 
   get shouldShowNonFdTabs() {
@@ -29,17 +34,34 @@ export default class ManageInvestment extends NavigationMixin(
   }
 
   get entityOptions() {
-    return [
-      { label: "Ragini", value: "Ragini" },
-      { label: "Sriram", value: "Sriram" },
-      { label: "Mom", value: "Mom" },
-      { label: "Dad", value: "Dad" }
-    ];
+    if (this.userName == "Sriram") {
+      return [
+        { label: "Ragini", value: "Ragini" },
+        { label: "Sriram", value: "Sriram" },
+        { label: "Mom", value: "Mom" },
+        { label: "Dad", value: "Dad" }
+      ];
+    } else {
+      return [{ label: "Ragini", value: "Ragini" }];
+    }
   }
 
   handleEntityChange(event) {
-    let selectedValue = event.target.value;
-    this.selectedEntity = selectedValue;
+    this.selectedEntity = event.target.value;
+    this.publishSelectedEntity();
+  }
+
+  publishSelectedEntity() {
+    publish(this.messageContext, ENTITYCHANGE_CHANNEL, {
+      entityName: this.selectedEntity
+    });
+  }
+
+  async connectedCallback() {
+    const userName = await getLoggedInUserName();
+    this.userName = userName == "Ragini" ? "Ragini" : "Sriram";
+    this.selectedEntity = this.userName == "Ragini" ? "Ragini" : "Sriram";
+    this.publishSelectedEntity();
   }
 
   @wire(getAllInvestMentMap, { entityName: "$selectedEntity" })
