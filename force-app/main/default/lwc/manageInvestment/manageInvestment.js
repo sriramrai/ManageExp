@@ -16,6 +16,8 @@ import createNewFutureInvestmentModal from "c/createNewFutureInvestment";
 import createStockModal from "c/createNewStockModal";
 import { publish, MessageContext } from "lightning/messageService";
 import ENTITYCHANGE_CHANNEL from "@salesforce/messageChannel/EntityChange__c";
+import { getObjectInfo } from "lightning/uiObjectInfoApi";
+import INVESTMENT_OBJECT from "@salesforce/schema/Investment__c";
 
 export default class ManageInvestment extends NavigationMixin(
   LightningElement
@@ -27,6 +29,24 @@ export default class ManageInvestment extends NavigationMixin(
   futureInvestmentTabs = ["NPS", "PPF"];
   selectedEntity;
   @track tabList = [];
+  investmentRecordTypeId;
+
+  @wire(getObjectInfo, { objectApiName: INVESTMENT_OBJECT })
+  objectInfo({ data, error }) {
+    if (data) {
+      const recordType = Object.values(data.recordTypeInfos).find(
+        (rt) => rt.name === "Investment"
+      );
+
+      this.investmentRecordTypeId = recordType?.recordTypeId;
+
+      console.log("Investment RT Id:", this.investmentRecordTypeId);
+    }
+
+    if (error) {
+      console.error(error);
+    }
+  }
 
   get shouldShowNonFdTabs() {
     let show = this.selectedEntity == "Sriram" ? true : false;
@@ -144,7 +164,22 @@ export default class ManageInvestment extends NavigationMixin(
   async logFd() {
     let contentData = {
       objectapiname: "Investment__c",
-      fieldList: this.getFieldList()
+      fieldList: this.getFieldList(false)
+    };
+
+    const result = await createRecordModal.open({
+      size: "small",
+      description: "Renewal/Close",
+      content: contentData
+    });
+
+    return result;
+  }
+
+  async logDefault() {
+    let contentData = {
+      objectapiname: "Investment__c",
+      fieldList: this.getFieldList(true)
     };
 
     const result = await createRecordModal.open({
@@ -192,7 +227,9 @@ export default class ManageInvestment extends NavigationMixin(
 
   async createInvestment(event) {
     let result;
-    if (this.fdTabs.indexOf(this.activeTabName) >= 0) {
+    if (this.activeTabName == null) {
+      result = await this.logDefault();
+    } else if (this.fdTabs.indexOf(this.activeTabName) >= 0) {
       result = await this.logFd();
     } else if (this.futureInvestmentTabs.indexOf(this.activeTabName) >= 0) {
       result = await this.logFutureInvestment();
@@ -280,8 +317,13 @@ export default class ManageInvestment extends NavigationMixin(
     return null;
   }
 
-  getFieldList() {
+  getFieldList(isDefault) {
     let applicableObj = this.getObject();
+    if (isDefault) {
+      applicableObj = {
+        RecordTypeId: this.investmentRecordTypeId
+      };
+    }
     let fieldList = [];
 
     let field1 = {
@@ -317,7 +359,7 @@ export default class ManageInvestment extends NavigationMixin(
       fieldapiname: "Bank__c",
       value: applicableObj.Bank__c,
       key: 5,
-      disabled: true,
+      disabled: isDefault ? false : true,
       required: true
     };
 
