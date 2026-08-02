@@ -39,6 +39,7 @@ public with sharing class HeaderController {
       SELECT Id, Tresuree__c, Amount__c
       FROM Treasure__c
       WHERE Tresuree__c != :GOLD
+      WITH USER_MODE
     ]) {
       totalTreasureDeposit += treasure.Amount__c;
     }
