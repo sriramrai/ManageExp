@@ -638,7 +638,7 @@ public without sharing class DataProvider {
     if (startDate != null && endDate != null) {
       queryStr += 'WHERE Date__c >= :startDate AND Date__c <= :endDate ';
     }
-    queryStr += 'ORDER BY Tresuree__c, Date__c DESC';
+    queryStr += 'ORDER BY Date__c DESC';
 
     return (List<Treasure__c>) Database.query(queryStr);
   }
