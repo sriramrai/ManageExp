@@ -395,7 +395,7 @@ No reasoning.
         return new Response(
           JSON.stringify({
             success: false,
-            error: error?.message || String(error)
+            error: "Internal server error"
           }),
           {
             status: 500,
