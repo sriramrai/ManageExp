@@ -1,0 +1,141 @@
+<aura:component
+  implements="lightning:appHomeTemplate"
+  description="Expense Manager dashboard template with header, alerts, summary, three financial regions, upcoming items, and transactions."
+  access="global"
+>
+  <!-- Header -->
+  <aura:attribute
+    name="regionHeader"
+    type="Aura.Component[]"
+    description="Header region"
+  />
+
+  <!-- Action Required -->
+  <aura:attribute
+    name="regionAlerts"
+    type="Aura.Component[]"
+    description="Action required / alerts region"
+  />
+
+  <!-- Financial Summary -->
+  <aura:attribute
+    name="regionSummary"
+    type="Aura.Component[]"
+    description="Financial summary region"
+  />
+
+  <!-- Three Main Dashboard Regions -->
+  <aura:attribute
+    name="regionExpense"
+    type="Aura.Component[]"
+    description="Expense region"
+  />
+
+  <aura:attribute
+    name="regionCashFlow"
+    type="Aura.Component[]"
+    description="Cash flow region"
+  />
+
+  <aura:attribute
+    name="regionInvestment"
+    type="Aura.Component[]"
+    description="Investment region"
+  />
+
+  <!-- Upcoming -->
+  <aura:attribute
+    name="regionUpcoming"
+    type="Aura.Component[]"
+    description="Upcoming events region"
+  />
+
+  <!-- Transactions -->
+  <aura:attribute
+    name="regionTransactions"
+    type="Aura.Component[]"
+    description="Transaction region"
+  />
+
+  <div class="slds-grid slds-grid_vertical">
+    <!-- ===================================================== -->
+    <!-- HEADER                                                -->
+    <!-- ===================================================== -->
+    <div class="slds-col">{!v.regionHeader}</div>
+
+    <!-- ===================================================== -->
+    <!-- ACTION REQUIRED                                       -->
+    <!-- ===================================================== -->
+    <div class="slds-col slds-m-top_small">{!v.regionAlerts}</div>
+
+    <!-- ===================================================== -->
+    <!-- FINANCIAL SUMMARY                                     -->
+    <!-- ===================================================== -->
+    <div class="slds-col slds-m-top_small">{!v.regionSummary}</div>
+
+    <!-- ===================================================== -->
+    <!-- MAIN THREE-COLUMN DASHBOARD                           -->
+    <!-- Expense 25% | Cash Flow 50% | Investment 25%         -->
+    <!-- ===================================================== -->
+    <div class="slds-col slds-m-top_small">
+      <lightning:layout
+        horizontalAlign="spread"
+        verticalAlign="stretch"
+        multipleRows="true"
+        pullToBoundary="small"
+      >
+        <!-- ========================= -->
+        <!-- EXPENSE - 25%             -->
+        <!-- ========================= -->
+        <lightning:layoutItem
+          size="4"
+          smallDeviceSize="12"
+          mediumDeviceSize="3"
+          largeDeviceSize="4"
+          flexibility="auto"
+          padding="around-small"
+        >
+          {!v.regionExpense}
+        </lightning:layoutItem>
+
+        <!-- ========================= -->
+        <!-- CASH FLOW - 50%           -->
+        <!-- ========================= -->
+        <lightning:layoutItem
+          size="4"
+          smallDeviceSize="12"
+          mediumDeviceSize="6"
+          largeDeviceSize="4"
+          flexibility="auto"
+          padding="around-small"
+        >
+          {!v.regionCashFlow}
+        </lightning:layoutItem>
+
+        <!-- ========================= -->
+        <!-- INVESTMENT - 25%          -->
+        <!-- ========================= -->
+        <lightning:layoutItem
+          size="4"
+          smallDeviceSize="12"
+          mediumDeviceSize="3"
+          largeDeviceSize="4"
+          flexibility="auto"
+          padding="around-small"
+        >
+          {!v.regionInvestment}
+        </lightning:layoutItem>
+      </lightning:layout>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- UPCOMING                                              -->
+    <!-- ===================================================== -->
+    <div class="slds-col slds-m-top_small">{!v.regionUpcoming}</div>
+
+    <!-- ===================================================== -->
+    <!-- TRANSACTIONS                                          -->
+    <!-- ===================================================== -->
+    <div class="slds-col slds-m-top_small">{!v.regionTransactions}</div>
+  </div>
+</aura:component>

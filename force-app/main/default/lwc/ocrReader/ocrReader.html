@@ -1,0 +1,154 @@
+<template>
+  <template if:true={isLoading}>
+    <div class="ocr-progress-overlay">
+      <div class="ocr-progress-panel">
+        <lightning-progress-bar
+          value={ocrProgress}
+          size="large"
+        ></lightning-progress-bar>
+
+        <div
+          class="slds-text-body_small slds-text-color_weak slds-text-align_center slds-m-top_x-small"
+        >
+          Reading receipt... {ocrProgress}%
+        </div>
+      </div>
+    </div>
+  </template>
+  <lightning-button
+    name="autoCreate"
+    label="Create From File"
+    variant="Brand"
+    onclick={openFilePicker}
+    style="margin-right: 5px"
+  ></lightning-button>
+
+  <!-- Hidden native file input -->
+  <input
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    onchange={handleReceiptUpload}
+    class="hidden-file-input"
+    data-file-input
+  />
+
+  <template if:true={selectedFile}>
+    <div class="slds-box slds-m-bottom_medium">
+      <div
+        class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center"
+      >
+        <!-- File information -->
+        <div class="slds-media">
+          <div class="slds-media__figure">
+            <lightning-icon
+              icon-name="doctype:image"
+              size="small"
+              alternative-text="Image"
+            >
+            </lightning-icon>
+          </div>
+
+          <div class="slds-media__body">
+            <div class="slds-text-title_bold">{selectedFile.name}</div>
+
+            <div class="slds-text-body_small slds-text-color_weak">
+              {selectedFileSize}
+            </div>
+          </div>
+        </div>
+
+        <!-- Remove button -->
+        <button
+          type="button"
+          class="slds-button slds-button_icon"
+          title="Remove file"
+          onclick={removeSelectedFile}
+        >
+          <lightning-icon
+            icon-name="utility:close"
+            size="x-small"
+            alternative-text="Remove"
+          >
+          </lightning-icon>
+        </button>
+      </div>
+
+      <!-- Image preview -->
+      <div class="slds-m-top_medium preview-container">
+        <img
+          src={previewUrl}
+          alt="FD Receipt Preview"
+          class="receipt-preview"
+        />
+      </div>
+    </div>
+  </template>
+  <template if:true={selectedFile}>
+    <div class="slds-m-bottom_medium">
+      <button
+        type="button"
+        class="slds-button slds-button_brand"
+        onclick={handleReadReceipt}
+        disabled={isProcessingOCR}
+      >
+        <template if:false={isProcessingOCR}> Read FD Receipt </template>
+
+        <template if:true={isProcessingOCR}> Reading Receipt... </template>
+      </button>
+
+      <!-- OCR Success -->
+      <template if:true={ocrSuccess}>
+        <div style="color: green; font-weight: 700" class="slds-m-top_small">
+          Review the extracted information and click Submit if it is correct.
+          Otherwise click Read FD Receipt again.
+        </div>
+
+        <div class="ocr-details slds-m-top_small" data-id="ocrResult">
+          <div>
+            <span class="label">Bank Name:</span>
+            {bankName}
+          </div>
+
+          <div>
+            <span class="label">Account Number:</span>
+            {accountNumber}
+          </div>
+
+          <div>
+            <span class="label">Start Date:</span>
+            {investmentDate}
+          </div>
+
+          <div>
+            <span class="label">Interest Rate:</span>
+            {interestRate}
+          </div>
+
+          <div>
+            <span class="label">Principal Amount:</span>
+            {principalAmount}
+          </div>
+
+          <div>
+            <span class="label">Duration:</span>
+            {duration}
+          </div>
+        </div>
+
+        <lightning-button
+          class="slds-m-top_small"
+          name="go"
+          label="Submit"
+          variant="brand"
+          onclick={handleSubmit}
+        >
+        </lightning-button>
+      </template>
+    </div>
+  </template>
+  <template if:true={ocrError}>
+    <div class="slds-text-color_error slds-m-bottom_medium">
+      {ocrError}. Click on the Read FD Receipt button again.
+    </div>
+  </template>
+</template>

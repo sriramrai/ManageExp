@@ -18,7 +18,7 @@ import { publish, MessageContext } from "lightning/messageService";
 import ENTITYCHANGE_CHANNEL from "@salesforce/messageChannel/EntityChange__c";
 import { getObjectInfo } from "lightning/uiObjectInfoApi";
 import INVESTMENT_OBJECT from "@salesforce/schema/Investment__c";
-
+import bookFdModal from "c/bookFd";
 export default class ManageInvestment extends NavigationMixin(
   LightningElement
 ) {
@@ -54,15 +54,20 @@ export default class ManageInvestment extends NavigationMixin(
   }
 
   get entityOptions() {
-    if (this.userName == "Sriram") {
+    if (this.userName == "Sriram" || this.userName == "User") {
       return [
         { label: "Ragini", value: "Ragini" },
         { label: "Sriram", value: "Sriram" },
         { label: "Mom", value: "Mom" },
         { label: "Dad", value: "Dad" }
       ];
-    } else {
+    } else if (this.userName == "Ragini") {
       return [{ label: "Ragini", value: "Ragini" }];
+    } else {
+      return [
+        { label: "Mom", value: "Mom" },
+        { label: "Dad", value: "Dad" }
+      ];
     }
   }
 
@@ -79,12 +84,20 @@ export default class ManageInvestment extends NavigationMixin(
 
   async connectedCallback() {
     const userName = await getLoggedInUserName();
-    this.userName = userName == "Ragini" ? "Ragini" : "Sriram";
-    this.selectedEntity = this.userName == "Ragini" ? "Ragini" : "Sriram";
+    if (userName == "Ragini") {
+      this.userName = "Ragini";
+    } else if (userName == "Sriram" || userName == "User") {
+      this.userName = "Sriram";
+    } else {
+      this.userName = "Dad";
+    }
+    this.selectedEntity = this.userName;
+    //this.userName = userName == "Ragini" ? "Ragini" : "Sriram";
+    //this.selectedEntity = this.userName == "Ragini" ? "Ragini" : "Sriram";
     this.publishSelectedEntity();
   }
 
-  @wire(getAllInvestMentMap, { entityName: "$selectedEntity" })
+  /* @wire(getAllInvestMentMap, { entityName: "$selectedEntity" })
   allInvestment(result) {
     //this.tabList = [];
     this.provisionedItem = result;
@@ -96,12 +109,16 @@ export default class ManageInvestment extends NavigationMixin(
       console.log("Wire data:", result.data);
       const tabs = [];
       let firstTab;
-
+      const previousTab = this.previousTabName;
       Object.keys(data).forEach((bank) => {
         const entries = [...data[bank]];
 
         if (!firstTab) {
           firstTab = bank;
+        }
+
+        if (previousTab) {
+          firstTab = previousTab;
         }
 
         tabs.push({
@@ -128,8 +145,58 @@ export default class ManageInvestment extends NavigationMixin(
     } else if (error) {
       logError("Error While Fetching Investment record...");
     }
-  }
+  } */
+  @wire(getAllInvestMentMap, { entityName: "$selectedEntity" })
+  allInvestment(result) {
+    this.provisionedItem = result;
 
+    if (result.data) {
+      console.log("Wire data:", result.data);
+
+      const previousTab = this.previousTabName;
+      const tabs = [];
+
+      Object.keys(result.data).forEach((bank) => {
+        const entries = [...result.data[bank]];
+
+        tabs.push({
+          key: `${this.selectedEntity}-${bank}`,
+          label: `${bank.toUpperCase()} (${entries.length})`,
+          value: bank,
+          dataId: bank.toUpperCase(),
+          records: entries
+        });
+      });
+
+      // Determine which tab should be active
+      const previousTabStillExists = tabs.some(
+        (tab) => tab.value === previousTab
+      );
+
+      const tabToActivate = previousTabStillExists
+        ? previousTab
+        : tabs[0]?.value;
+
+      // Remove old tabset
+      this.tabList = null;
+
+      setTimeout(() => {
+        this.tabList = tabs;
+        this.tabsetKey++;
+
+        setTimeout(() => {
+          this.activeTabName = tabToActivate;
+
+          console.log("Restoring tab:", this.activeTabName);
+
+          // Clear it after restoring
+          this.previousTabName = null;
+        }, 50);
+      }, 0);
+    } else if (result.error) {
+      logError("Error While Fetching Investment record...");
+    }
+  }
   sortArray(arr) {
     arr.sort(function (a, b) {
       let d1 = a.Maturity_Date__c;
@@ -154,7 +221,7 @@ export default class ManageInvestment extends NavigationMixin(
   }
 
   refreshHandler(event) {
-    refreshApex(this.provisionedItem);
+    return refreshApex(this.provisionedItem);
   }
 
   counterHandler(event) {
@@ -166,6 +233,20 @@ export default class ManageInvestment extends NavigationMixin(
       objectapiname: "Investment__c",
       fieldList: this.getFieldList(false)
     };
+
+    const fdResult = await bookFdModal.open({
+      size: "small",
+      description: "Book modal",
+      content: {}
+    });
+
+    if (fdResult === "createManual") {
+      contentData.fieldList = this.getFieldList(false);
+    } else if (isValidValue(fdResult)) {
+      contentData.fieldList = this.getFieldList(false, JSON.parse(fdResult));
+    } else {
+      return;
+    }
 
     const result = await createRecordModal.open({
       size: "small",
@@ -317,7 +398,7 @@ export default class ManageInvestment extends NavigationMixin(
     return null;
   }
 
-  getFieldList(isDefault) {
+  getFieldList(isDefault, cloneFrom) {
     let applicableObj = this.getObject();
     if (isDefault) {
       applicableObj = {
@@ -328,21 +409,36 @@ export default class ManageInvestment extends NavigationMixin(
 
     let field1 = {
       fieldapiname: "Account_Number__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Account_Number__c") &&
+        isValidValue(cloneFrom.Account_Number__c)
+          ? cloneFrom.Account_Number__c
+          : "",
       key: 1,
       disabled: false,
       required: true
     };
     let field2 = {
       fieldapiname: "Start_Date__c",
-      value: new Date(Date.now()).toISOString(),
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Start_Date__c") &&
+        isValidValue(cloneFrom.Start_Date__c)
+          ? cloneFrom.Start_Date__c
+          : new Date(Date.now()).toISOString(),
       key: 2,
       disabled: false,
       required: true
     };
     let field3 = {
       fieldapiname: "Amount__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Amount__c") &&
+        isValidValue(cloneFrom.Amount__c)
+          ? cloneFrom.Amount__c
+          : "",
       key: 3,
       disabled: false,
       required: true
@@ -357,7 +453,12 @@ export default class ManageInvestment extends NavigationMixin(
 
     let field5 = {
       fieldapiname: "Bank__c",
-      value: applicableObj.Bank__c,
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Bank__c") &&
+        isValidValue(cloneFrom.Bank__c)
+          ? cloneFrom.Bank__c
+          : applicableObj.Bank__c,
       key: 5,
       disabled: isDefault ? false : true,
       required: true
@@ -365,7 +466,12 @@ export default class ManageInvestment extends NavigationMixin(
 
     let field6 = {
       fieldapiname: "Rate__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Rate__c") &&
+        isValidValue(cloneFrom.Rate__c)
+          ? cloneFrom.Rate__c
+          : "",
       key: 6,
       disabled: false,
       required: true
@@ -373,15 +479,27 @@ export default class ManageInvestment extends NavigationMixin(
 
     let field7 = {
       fieldapiname: "Year__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Year__c") &&
+        isValidValue(cloneFrom.Year__c)
+          ? cloneFrom.Year__c
+          : 0,
       key: 7,
       disabled: false,
-      required: true
+      // Not individually required - at least one of Year__c/Month__c/Day__c
+      // is enforced by createNewRecordModal before save.
+      required: false
     };
 
     let field8 = {
       fieldapiname: "Month__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Month__c") &&
+        isValidValue(cloneFrom.Month__c)
+          ? cloneFrom.Month__c
+          : 0,
       key: 8,
       disabled: false,
       required: false
@@ -389,7 +507,12 @@ export default class ManageInvestment extends NavigationMixin(
 
     let field9 = {
       fieldapiname: "Day__c",
-      value: "",
+      value:
+        isValidValue(cloneFrom) &&
+        cloneFrom.hasOwnProperty("Day__c") &&
+        isValidValue(cloneFrom.Day__c)
+          ? cloneFrom.Day__c
+          : 0,
       key: 9,
       disabled: false,
       required: false
@@ -425,5 +548,18 @@ export default class ManageInvestment extends NavigationMixin(
     fieldList.push(field10);
 
     return fieldList;
+  }
+
+  async handleRefreshData(event) {
+    console.log("inside handleRefreshData....");
+
+    // Save currently selected tab
+    this.previousTabName = this.activeTabName;
+
+    console.log("Saving previous tab:", this.previousTabName);
+
+    this.refreshHandler();
+
+    console.log("refreshApex completed");
   }
 }

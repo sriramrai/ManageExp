@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
     <flexiPageRegions>
         <itemInstances>
@@ -19,18 +19,6 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>transactionLog</componentName>
-                <identifier>c_transactionLog</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
-                <componentName>fyIntrestMonitor</componentName>
-                <identifier>c_fyIntrestMonitor</identifier>
-            </componentInstance>
-        </itemInstances>
-        <itemInstances>
-            <componentInstance>
                 <componentName>fixedDepositeReport</componentName>
                 <identifier>c_fixedDepositeReport</identifier>
             </componentInstance>
@@ -49,8 +37,8 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>naamJaapTracker</componentName>
-                <identifier>c_naamJaapTracker</identifier>
+                <componentName>transactionLog</componentName>
+                <identifier>c_transactionLog</identifier>
             </componentInstance>
         </itemInstances>
         <name>region2</name>
@@ -71,6 +59,12 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
+                <componentName>fyIntrestMonitor</componentName>
+                <identifier>c_fyIntrestMonitor</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
                 <componentName>declarationComp</componentName>
                 <identifier>c_declarationComp</identifier>
             </componentInstance>
@@ -85,6 +79,12 @@
             <componentInstance>
                 <componentName>oneView</componentName>
                 <identifier>c_oneView</identifier>
+            </componentInstance>
+        </itemInstances>
+        <itemInstances>
+            <componentInstance>
+                <componentName>naamJaapTracker</componentName>
+                <identifier>c_naamJaapTracker</identifier>
             </componentInstance>
         </itemInstances>
         <name>region3</name>
