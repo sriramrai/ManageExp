@@ -140,6 +140,68 @@ const getDeviceType = () => {
   return isMobile() ? "mobile" : "laptop";
 };
 
+/**
+ * Converts a total number of days (measured from startDate) into a
+ * calendar-accurate [years, months, days] breakdown. Mirrors the logic
+ * used for interpreting FD tenure such as "555 days" against a start date.
+ *
+ * @param {string|Date} startDateInput - Start date (e.g. "YYYY-MM-DD").
+ * @param {number} totalDays - Total number of days to add to the start date.
+ * @returns {number[]} [years, months, days], or [0, 0, 0] on invalid input.
+ */
+const getCalendarDurationFromDays = (startDateInput, totalDays) => {
+  if (!isValidValue(startDateInput) || !isValidValue(totalDays)) {
+    return [0, 0, 0];
+  }
+
+  const parsedStart = new Date(startDateInput);
+
+  if (isNaN(parsedStart.getTime()) || isNaN(Number(totalDays))) {
+    return [0, 0, 0];
+  }
+
+  const startDate = new Date(
+    Date.UTC(
+      parsedStart.getUTCFullYear(),
+      parsedStart.getUTCMonth(),
+      parsedStart.getUTCDate()
+    )
+  );
+
+  const maturityDate = new Date(startDate);
+  maturityDate.setUTCDate(maturityDate.getUTCDate() + Number(totalDays));
+
+  let years = maturityDate.getUTCFullYear() - startDate.getUTCFullYear();
+  let tempDate = new Date(startDate);
+  tempDate.setUTCFullYear(tempDate.getUTCFullYear() + years);
+
+  if (tempDate > maturityDate) {
+    years--;
+    tempDate = new Date(startDate);
+    tempDate.setUTCFullYear(tempDate.getUTCFullYear() + years);
+  }
+
+  let months = 0;
+
+  while (true) {
+    const nextDate = new Date(tempDate);
+    nextDate.setUTCMonth(nextDate.getUTCMonth() + 1);
+
+    if (nextDate <= maturityDate) {
+      months++;
+      tempDate = nextDate;
+    } else {
+      break;
+    }
+  }
+
+  const days = Math.round(
+    (maturityDate.getTime() - tempDate.getTime()) / (24 * 60 * 60 * 1000)
+  );
+
+  return [years, months, days];
+};
+
 export {
   isValid,
   log,
@@ -155,5 +217,6 @@ export {
   isMobile,
   isLaptop,
   getDeviceType,
-  getLoggedInUserName
+  getLoggedInUserName,
+  getCalendarDurationFromDays
 };

@@ -4,9 +4,15 @@
     <template if:true={modalObj}>
       <lightning-record-edit-form
         object-api-name={modalObj.objectapiname}
+        onsubmit={handleSubmit}
         onsuccess={handleSuccess}
         onerror={handleError}
       >
+        <template if:true={durationError}>
+          <div class="slds-text-color_error slds-m-bottom_small">
+            {durationError}
+          </div>
+        </template>
         <lightning-layout multiple-rows="true">
           <template for:each={modalObj.fieldList} for:item="currentItem">
             <lightning-layout-item key={currentItem.key} size="6">

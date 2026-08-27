@@ -1,0 +1,70 @@
+<design:component label="Expense Manager Dashboard">
+  <flexipage:template>
+    <!-- Header -->
+    <flexipage:region name="regionHeader" label="Header" defaultWidth="XLARGE">
+    </flexipage:region>
+
+    <!-- Action Required -->
+    <flexipage:region
+      name="regionAlerts"
+      label="Action Required"
+      defaultWidth="XLARGE"
+    >
+    </flexipage:region>
+
+    <!-- Financial Summary -->
+    <flexipage:region
+      name="regionSummary"
+      label="Financial Summary"
+      defaultWidth="XLARGE"
+    >
+    </flexipage:region>
+
+    <!-- Expense -->
+    <flexipage:region
+      name="regionExpense"
+      label="Expenses"
+      defaultWidth="SMALL"
+    >
+    </flexipage:region>
+
+    <!-- Cash Flow -->
+    <flexipage:region
+      name="regionCashFlow"
+      label="Cash Flow"
+      defaultWidth="LARGE"
+    >
+    </flexipage:region>
+
+    <!-- Investment -->
+    <flexipage:region
+      name="regionInvestment"
+      label="Investments"
+      defaultWidth="SMALL"
+    >
+    </flexipage:region>
+
+    <!-- Upcoming -->
+    <flexipage:region
+      name="regionUpcoming"
+      label="Upcoming"
+      defaultWidth="XLARGE"
+    >
+    </flexipage:region>
+
+    <!-- Transactions -->
+    <flexipage:region
+      name="regionTransactions"
+      label="Transactions"
+      defaultWidth="XLARGE"
+    >
+    </flexipage:region>
+  </flexipage:template>
+
+  <!-- Support Desktop and Phone -->
+  <design:supportedFormFactors>
+    <design:supportedFormFactor type="Small" />
+
+    <design:supportedFormFactor type="Large" />
+  </design:supportedFormFactors>
+</design:component>

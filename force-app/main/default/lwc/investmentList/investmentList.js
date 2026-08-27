@@ -90,7 +90,8 @@ export default class InvestmentList extends LightningElement {
       content: selectedRecord
     });
     if (result == "refresh") {
-      refreshApex(this.provisionedItem);
+      const refreshdata = new CustomEvent("refreshdata");
+      this.dispatchEvent(refreshdata);
     }
   }
 

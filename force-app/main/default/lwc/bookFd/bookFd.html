@@ -1,0 +1,17 @@
+<template>
+  <lightning-modal-header label="New"></lightning-modal-header>
+
+  <lightning-modal-body>
+    <div class="slds-m-bottom_medium">
+      <lightning-button
+        name="createManual"
+        label="Create Manually"
+        variant="Brand"
+        onclick={buttonClickHandler}
+        style="margin-right: 5px"
+      >
+      </lightning-button>
+      <c-ocr-reader onhandlesubmit={submitHandler}></c-ocr-reader>
+    </div>
+  </lightning-modal-body>
+</template>
