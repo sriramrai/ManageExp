@@ -1,139 +1,155 @@
-import { LightningElement, api, wire, track } from 'lwc';
-import getCCStatements from '@salesforce/apex/ExpenseController.getCCStatements';
-import {log, logError, isValid, toString} from 'c/utilityClass';
-import updatePayment from '@salesforce/apex/ExpenseController.updateCCStatements'
-
+import { LightningElement, api, wire, track } from "lwc";
+import getCCStatements from "@salesforce/apex/ExpenseController.getCCStatements";
+import { log, logError, isValid, toString } from "c/utilityClass";
+import updatePayment from "@salesforce/apex/ExpenseController.updateCCStatements";
 
 export default class CreditCardMonitor extends LightningElement {
-    total = 0;
-    data = [];
-    selectedMonth;
-    selectedYear;
-    currentMonthDue = [];
-    nextMonthDue = [];
-    @track currentMonthTotal = {};
-    @track nextMonthTotal = {};
+  total = 0;
+  data = [];
+  selectedMonth;
+  selectedYear;
+  currentMonthDue = [];
+  nextMonthDue = [];
+  @track currentMonthTotal = {};
+  @track nextMonthTotal = {};
 
-    connectedCallback() {
-        let today = new Date();
-        this.selectedMonth = today.getMonth()+1;
-        this.selectedYear = today.getFullYear();
-        this.fetchData();
+  isNextMonthExpanded = false;
+
+  get nextMonthIcon() {
+    return this.isNextMonthExpanded ? "▼" : "▶";
+  }
+
+  toggleNextMonth() {
+    this.isNextMonthExpanded = !this.isNextMonthExpanded;
+  }
+
+  connectedCallback() {
+    let today = new Date();
+    this.selectedMonth = today.getMonth() + 1;
+    this.selectedYear = today.getFullYear();
+    this.fetchData();
+  }
+
+  async fetchData(event) {
+    try {
+      this.recordMap = await getCCStatements({
+        month: this.selectedMonth,
+        year: this.selectedYear
+      });
+      log("Data retrieved successful...." + toString(this.recordMap));
+      this.initData();
+    } catch (error) {
+      logError("Error Occured imp..." + toString(error));
     }
+  }
 
-    async fetchData(event) {
-        try {
-            this.recordMap = await getCCStatements({month: this.selectedMonth, year : this.selectedYear});
-            log('Data retrieved successful....'+toString(this.recordMap));
-            this.initData();
-        } catch(error) {
-            logError('Error Occured imp...'+toString(error));
+  initData() {
+    this.currentMonthDue = [];
+    this.nextMonthDue = [];
+    for (const key in this.recordMap) {
+      let bankName = key.split(" ")[0];
+      for (let obj of this.recordMap[key]) {
+        obj["hrefURL"] = "/" + obj["recordId"];
+        if (key.includes("DUETM")) {
+          this.currentMonthDue.push(obj);
+        } else {
+          this.nextMonthDue.push(obj);
         }
+      }
     }
-    
-    initData() {
-        this.currentMonthDue = [];
-        this.nextMonthDue = [];
-        for(const key in this.recordMap) {
-            let bankName = key.split(' ')[0];
-            for(let obj of this.recordMap[key]) {
-                obj['hrefURL'] = '/'+obj['recordId'];
-                if(key.includes('DUETM')) {
-                    this.currentMonthDue.push(obj);
-                }else {
-                    this.nextMonthDue.push(obj)
-                }
-            }
-        }
-        this.currentMonthTotal = this.calculateTotal(this.currentMonthDue);
-        this.nextMonthTotal = this.calculateTotal(this.nextMonthDue);
-    }
+    this.currentMonthTotal = this.calculateTotal(this.currentMonthDue);
+    this.nextMonthTotal = this.calculateTotal(this.nextMonthDue);
+  }
 
-    get months() {
-        return [
-            {label: 'Jan', value: 1},
-            {label: 'Feb', value: 2},
-            {label: 'Mar', value: 3},
-            {label: 'Apr', value: 4},
-            {label: 'May', value: 5},
-            {label: 'Jun', value: 6},
-            {label: 'Jul', value: 7},
-            {label: 'Aug', value: 8},
-            {label: 'Sep', value: 9},
-            {label: 'Oct', value: 10},
-            {label: 'Nov', value: 11},
-            {label: 'Dec', value: 12},
-        ];
-    }
+  get months() {
+    return [
+      { label: "Jan", value: 1 },
+      { label: "Feb", value: 2 },
+      { label: "Mar", value: 3 },
+      { label: "Apr", value: 4 },
+      { label: "May", value: 5 },
+      { label: "Jun", value: 6 },
+      { label: "Jul", value: 7 },
+      { label: "Aug", value: 8 },
+      { label: "Sep", value: 9 },
+      { label: "Oct", value: 10 },
+      { label: "Nov", value: 11 },
+      { label: "Dec", value: 12 }
+    ];
+  }
 
-    get years() {
-        return [
-            {label: '2025', value: 2025},
-            {label: '2026', value: 2026},
-            {label: '2027', value: 2027},
-            {label: '2028', value: 2028},
-            {label: '2029', value: 2029},
-            {label: '2030', value: 2030},
-        ];
-    }
+  get years() {
+    return [
+      { label: "2025", value: 2025 },
+      { label: "2026", value: 2026 },
+      { label: "2027", value: 2027 },
+      { label: "2028", value: 2028 },
+      { label: "2029", value: 2029 },
+      { label: "2030", value: 2030 }
+    ];
+  }
 
-    get banks() {
-        return [
-            {label: 'Axis', value: 'Axis CC'},
-            {label: 'ICICI', value: 'ICICI CC'}
-        ];
-    }
+  get banks() {
+    return [
+      { label: "Axis", value: "Axis CC" },
+      { label: "ICICI", value: "ICICI CC" }
+    ];
+  }
 
-    optionChangeHandler(event) {
-        let value = event.target.value;
-        let fieldName = event.target.name;
-        if(fieldName === 'month') {
-            this.selectedMonth = parseInt(value);
-        }else {
-            this.selectedYear = parseInt(value);
-        }
+  optionChangeHandler(event) {
+    let value = event.target.value;
+    let fieldName = event.target.name;
+    if (fieldName === "month") {
+      this.selectedMonth = parseInt(value);
+    } else {
+      this.selectedYear = parseInt(value);
     }
+  }
 
-    settleHander(event) {
-        const today = new Date(); // Or your specific Date object
-        const formattedDate = today.toLocaleDateString('en-GB');
-        let paymentDate = prompt('Enter the payment Date in (dd/mm/yyyy)', formattedDate);
-        let recordId = event.currentTarget.dataset.id;
-        if(isValid(paymentDate)) {
-            updatePayment({recordId: recordId, paymentDate : paymentDate})
-            .then(success => {
-                log('Data updated successfully...');
-                this.fetchData();
-            }).catch(error => {
-                logError('Data Update Failed..... : '+toString(error));
-            })
-        }
-    }
-    
-    calculateTotal(records) {
-        let result = {
-            'ICICI' : 0,
-            'AXIS' : 0,
-            'Total' : 0,
-            'TotalDue': 0
-        };
-        records.forEach(item => {
-            let amount = parseInt(item.amount);
-            if(item.bank == 'Axis CC') {
-                result['AXIS'] += amount;
-            }else {
-                result['ICICI'] += amount;
-            }
-            result['Total'] += amount;
-            if(!item.isSettled) {
-                result['TotalDue'] += amount;
-            }
+  settleHander(event) {
+    const today = new Date(); // Or your specific Date object
+    const formattedDate = today.toLocaleDateString("en-GB");
+    let paymentDate = prompt(
+      "Enter the payment Date in (dd/mm/yyyy)",
+      formattedDate
+    );
+    let recordId = event.currentTarget.dataset.id;
+    if (isValid(paymentDate)) {
+      updatePayment({ recordId: recordId, paymentDate: paymentDate })
+        .then((success) => {
+          log("Data updated successfully...");
+          this.fetchData();
+        })
+        .catch((error) => {
+          logError("Data Update Failed..... : " + toString(error));
         });
-        return result;
     }
+  }
 
-    get displayUpcomingRow() {
-        let renderText = this.nextMonthDue.length > 0 ? true : false;
-        return renderText;
-    }
+  calculateTotal(records) {
+    let result = {
+      ICICI: 0,
+      AXIS: 0,
+      Total: 0,
+      TotalDue: 0
+    };
+    records.forEach((item) => {
+      let amount = parseInt(item.amount);
+      if (item.bank == "Axis CC") {
+        result["AXIS"] += amount;
+      } else {
+        result["ICICI"] += amount;
+      }
+      result["Total"] += amount;
+      if (!item.isSettled) {
+        result["TotalDue"] += amount;
+      }
+    });
+    return result;
+  }
+
+  get displayUpcomingRow() {
+    let renderText = this.nextMonthDue.length > 0 ? true : false;
+    return renderText;
+  }
 }

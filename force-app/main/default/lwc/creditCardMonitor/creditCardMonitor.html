@@ -1,158 +1,239 @@
 <template>
-    <lightning-card>
-        <div class="slds-align_absolute-center">
-            <lightning-layout horizontal-align="center" style="width: 100%;">
-                <lightning-layout-item style="padding: 5px; padding-right: 15px;" size="3">
-                    <lightning-combobox
-                        name="month"
-                        label="Month"
-                        value={selectedMonth}
-                        options={months}
-                        variant="label-hidden"
-                        onchange={optionChangeHandler}>
-                    </lightning-combobox>
-                </lightning-layout-item>
-                <lightning-layout-item style="padding: 5px; padding-right: 15px;" size="3">
-                    <lightning-combobox
-                        name="Year"
-                        label="Year"
-                        value={selectedYear}
-                        options={years}
-                        variant="label-hidden"
-                        onchange={optionChangeHandler}>
-                    </lightning-combobox>
-                </lightning-layout-item>
-                <lightning-layout-item style="padding-top: 5px;" size="2">
-                    <lightning-button brand="submit" onclick={fetchData} label="Go"></lightning-button>
-                </lightning-layout-item>
-            </lightning-layout>
+  <lightning-card>
+    ```
+    <!-- Filters -->
+    <div class="filter-container">
+      <lightning-layout horizontal-align="center" style="width: 100%">
+        <lightning-layout-item size="3" class="filter-item">
+          <lightning-combobox
+            name="month"
+            label="Month"
+            value={selectedMonth}
+            options={months}
+            variant="label-hidden"
+            onchange={optionChangeHandler}
+          >
+          </lightning-combobox>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="3" class="filter-item">
+          <lightning-combobox
+            name="Year"
+            label="Year"
+            value={selectedYear}
+            options={years}
+            variant="label-hidden"
+            onchange={optionChangeHandler}
+          >
+          </lightning-combobox>
+        </lightning-layout-item>
+
+        <lightning-layout-item size="2" class="go-button">
+          <lightning-button variant="brand" onclick={fetchData} label="Go">
+          </lightning-button>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div>
+
+    <!-- Current Month Summary -->
+    <template if:true={currentMonthTotal}>
+      <div class="summary-container">
+        <div class="summary-header">
+          <div></div>
+          <div>Current Month</div>
+          <div>Upcoming Month</div>
         </div>
 
-        <div class="table-container">
-            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_striped">
-                <thead>
-                    <tr>
-                        <th>CC Card</th>
-                        <th>Amount</th>
-                        <th>Purchased</th>
-                        <th>Due Date</th>
-                        <th>Details</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template for:each={currentMonthDue} for:item="record">
-                        <tr key={record.Id}>
-                            <td><a href={record.hrefURL} target="_blank">{record.bank}</a></td>
-                            <td>{record.amount}</td>
-                            <td>{record.purchasedDate}</td>
-                            <td>{record.dueDate}</td>
-                            <td style="word-wrap: auto;">{record.details}</td>
-                            <td>
-                                <span if:false={record.isSettled}><a href="javascript:void(0)" onclick={settleHander} data-id={record.recordId}>Settle</a></span>
-                                <span if:true={record.isSettled}><a href="javascript:void(0)" style="pointer-events: none;">Paid</a></span>
-                            </td>
-                        </tr>
-                    </template>
-                    <template if:true={displayUpcomingRow}>
-                        <tr>
-                            <td colspan="6"><strong>Upcoming month expenses</strong></td>
-                        </tr>
-                    </template>
-                    <template for:each={nextMonthDue} for:item="record">
-                        
-                        <tr key={record.Id}>
-                            <td><a href={record.hrefURL} target="_blank">{record.bank}</a></td>
-                            <td>{record.amount}</td>
-                            <td>{record.purchasedDate}</td>
-                            <td>{record.dueDate}</td>
-                            <td style="word-wrap: auto;">{record.details}</td>
-                            <td>
-                                <span if:false={record.isSettled}><a href="javascript:void(0)" onclick={settleHander} data-id={record.recordId}>Settle</a></span>
-                                <span if:true={record.isSettled}><a href="javascript:void(0)" style="pointer-events: none;">Paid</a></span>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-                <tfoot if:true={currentMonthTotal}>
-                    <tr>
-                        <td colspan="4">ICICI CC</td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={currentMonthTotal.ICICI}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={nextMonthTotal.ICICI}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">AXIS CC</td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={currentMonthTotal.AXIS}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={nextMonthTotal.AXIS}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Total:</td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={currentMonthTotal.Total}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={nextMonthTotal.Total}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">Total Due:</td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={currentMonthTotal.TotalDue}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                        <td class="total-value">
-                            <lightning-formatted-number 
-                                value={nextMonthTotal.TotalDue}
-                                format-style="currency"
-                                currency-code="INR"
-                                maximum-fraction-digits="0"
-                            ></lightning-formatted-number>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+        <!-- ICICI -->
+        <div class="summary-row">
+          <div class="summary-label">ICICI CC</div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={currentMonthTotal.ICICI}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={nextMonthTotal.ICICI}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
         </div>
-    </lightning-card>
+
+        <!-- AXIS -->
+        <div class="summary-row">
+          <div class="summary-label">AXIS CC</div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={currentMonthTotal.AXIS}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={nextMonthTotal.AXIS}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="summary-row total-row">
+          <div class="summary-label">Total</div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={currentMonthTotal.Total}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
+
+          <div class="summary-value">
+            <lightning-formatted-number
+              value={nextMonthTotal.Total}
+              format-style="currency"
+              currency-code="INR"
+              maximum-fraction-digits="0"
+            >
+            </lightning-formatted-number>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Transaction Table -->
+    <div class="table-container">
+      <table
+        class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-table_striped"
+      >
+        <thead>
+          <tr>
+            <th>CC Card</th>
+            <th>Amount</th>
+            <th>Purchased</th>
+            <th>Due Date</th>
+            <th>Details</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Current Month Transactions -->
+          <template for:each={currentMonthDue} for:item="record">
+            <tr key={record.Id}>
+              <td>
+                <a href={record.hrefURL} target="_blank"> {record.bank} </a>
+              </td>
+
+              <td>{record.amount}</td>
+              <td>{record.purchasedDate}</td>
+              <td>{record.dueDate}</td>
+              <td>{record.details}</td>
+
+              <td>
+                <span if:false={record.isSettled}>
+                  <a
+                    href="javascript:void(0)"
+                    onclick={settleHander}
+                    data-id={record.recordId}
+                  >
+                    Settle
+                  </a>
+                </span>
+
+                <span if:true={record.isSettled}>
+                  <a href="javascript:void(0)" style="pointer-events: none">
+                    Paid
+                  </a>
+                </span>
+              </td>
+            </tr>
+          </template>
+
+          <!-- Next Month Collapsible Header -->
+          <template if:true={displayUpcomingRow}>
+            <tr class="next-month-header" onclick={toggleNextMonth}>
+              <td colspan="6">
+                <div class="next-month-content">
+                  <div class="next-month-title">
+                    <span class="toggle-icon"> {nextMonthIcon} </span>
+
+                    <strong>Next month</strong>
+                  </div>
+
+                  <div class="next-month-totals">
+                    <span>
+                      Total:
+                      <lightning-formatted-number
+                        value={nextMonthTotal.Total}
+                        format-style="currency"
+                        currency-code="INR"
+                        maximum-fraction-digits="0"
+                      >
+                      </lightning-formatted-number>
+                    </span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </template>
+
+          <!-- Next Month Transactions -->
+          <template if:true={isNextMonthExpanded}>
+            <template for:each={nextMonthDue} for:item="record">
+              <tr key={record.Id}>
+                <td>
+                  <a href={record.hrefURL} target="_blank"> {record.bank} </a>
+                </td>
+
+                <td>{record.amount}</td>
+                <td>{record.purchasedDate}</td>
+                <td>{record.dueDate}</td>
+                <td>{record.details}</td>
+
+                <td>
+                  <span if:false={record.isSettled}>
+                    <a
+                      href="javascript:void(0)"
+                      onclick={settleHander}
+                      data-id={record.recordId}
+                    >
+                      Settle
+                    </a>
+                  </span>
+
+                  <span if:true={record.isSettled}>
+                    <a href="javascript:void(0)" style="pointer-events: none">
+                      Paid
+                    </a>
+                  </span>
+                </td>
+              </tr>
+            </template>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </lightning-card>
+  ```
 </template>

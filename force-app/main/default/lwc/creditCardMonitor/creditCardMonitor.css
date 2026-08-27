@@ -1,31 +1,125 @@
+.filter-container {
+  padding: 0.5rem 1rem 0.75rem;
+}
+
+.filter-item {
+  padding: 5px;
+  padding-right: 15px;
+}
+
+.go-button {
+  padding-top: 5px;
+}
+
+/* Summary */
+.summary-container {
+  margin: 0 1rem 0.75rem;
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.summary-header,
+.summary-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  align-items: center;
+}
+
+.summary-header {
+  background: #f3f3f3;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #444;
+  border-bottom: 1px solid #dddbda;
+}
+
+.summary-header > div,
+.summary-row > div {
+  padding: 0.35rem 0.75rem;
+}
+
+.summary-header > div:not(:first-child),
+.summary-row > div:not(:first-child) {
+  text-align: right;
+}
+
+.summary-row {
+  border-bottom: 1px solid #eeeeee;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-weight: 500;
+}
+
+.summary-value {
+  font-size: 0.85rem;
+}
+
+.total-row {
+  font-weight: 600;
+  border-top: 1px solid #dddbda;
+}
+
+/* Scrollable transaction table */
 .table-container {
-  max-height: 250px; /* Set a maximum height for the container */
-  overflow-y: auto; /* Enable vertical scrolling for the container */
+  margin: 0 1rem;
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #dddbda;
 }
 
-table {
+/* Keep table header visible while scrolling */
+.table-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f3f3f3;
+}
+
+/* Next month header */
+.next-month-header {
+  cursor: pointer;
+}
+
+.next-month-header td {
+  padding: 0 !important;
+  background: #f3f3f3;
+}
+
+.next-month-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  border-collapse: collapse; /* Optional: for cleaner borders */
+  padding: 0.55rem 0.75rem;
 }
 
-thead {
-  position: sticky; /* Make the header sticky */
-  top: 0; /* Stick to the top of its scrolling container */
-  background-color: #f2f2f2; /* Optional: Add a background to the header */
-  z-index: 1; /* Ensure header stays above scrolling content */
+.next-month-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-tfoot td {
-  text-align: right; /* Aligns "Total:" to the right within its cell */
-  font-weight: bold; /* Optional: Makes the "Total:" text bold */
+.toggle-icon {
+  font-size: 0.7rem;
+  width: 12px;
 }
 
-.total-value {
-  text-align: right; /* Aligns the total value to the right */
+.next-month-totals {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
-/* th, td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-} */
+.next-month-totals span {
+  white-space: nowrap;
+}
