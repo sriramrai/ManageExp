@@ -1,65 +1,149 @@
-.radio-combo-inline .slds-form-element__control .slds-radio
-{
-    display: inline-block !important;
+.radio-combo-inline .slds-form-element__control .slds-radio {
+  display: inline-block !important;
 }
 
 /* entire switch */
 .switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 30px;
 }
 
 /* hide the checkbox */
 .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
 .slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background-color: #ccc;
-    border-radius: 30px;
-    transition: .4s;
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: 30px;
+  transition: 0.4s;
 }
 
 /* circle knob */
 .slider:before {
-    content: "";
-    position: absolute;
-    height: 24px;
-    width: 24px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: .4s;
+  content: "";
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
 }
 
 /* move knob when enabled */
 input:checked + .slider:before {
-    transform: translateX(30px);
+  transform: translateX(30px);
 }
 
 /* background when enabled */
 input:checked + .slider {
-    background-color: #28a745;
+  background-color: #28a745;
 }
 
 /* ON / OFF text */
 .switch-text {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 6px;
-    left: 0;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    pointer-events: none;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  top: 6px;
+  left: 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  pointer-events: none;
 }
-
+.header-container {
+  width: 100%;
+} /* Top row */
+.top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px 4px;
+}
+.total {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.selected-period {
+  font-size: 14px;
+  font-weight: 500;
+  color: #444;
+  white-space: nowrap;
+} /* Action row */
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 6px;
+}
+.search {
+  flex: 1;
+  min-width: 0;
+}
+.toggle-container {
+  flex: 0 0 auto;
+}
+.add-button,
+.filter-button {
+  flex: 0 0 auto;
+} /* Filter panel */
+.filter-panel {
+  margin: 2px 8px 8px;
+  border: 1px solid #dddbda;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-bottom: 1px solid #dddbda;
+}
+.filter-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+.filter-body {
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px 4px;
+}
+.filter-field {
+  flex: 1;
+  min-width: 0;
+}
+.filter-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 10px 9px;
+}
+@media only screen and (max-width: 480px) {
+  .top-row {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .action-row {
+    padding-left: 6px;
+    padding-right: 6px;
+    gap: 5px;
+  }
+  .total {
+    font-size: 15px;
+  }
+  .selected-period {
+    font-size: 13px;
+  }
+}
