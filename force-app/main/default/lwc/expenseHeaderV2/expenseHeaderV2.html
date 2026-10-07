@@ -1,45 +1,188 @@
 <template>
-
-    <lightning-layout>
-        <lightning-layout-item padding="" style="padding-top: 5px; padding-right: 15px;" size="5">
-            <lightning-combobox name="duration" value={selectedDuration} options={durations} onchange={changedDuration}
-                variant="label-hidden">
-            </lightning-combobox>
-        </lightning-layout-item>
-        <lightning-layout-item padding="" style="padding-top: 5px; padding-right: 15px;" size="5">
-            <lightning-combobox name="frequency" value={selectedfrequency} options={frequencies}
-                onchange={changedFrequency} variant="label-hidden">
-            </lightning-combobox>
-        </lightning-layout-item>
-        <lightning-layout-item size="2" style="text-align: right; margin-top: 4px;">
-            <lightning-icon size="x-small" icon-name="action:refresh" onclick={refetchRecords}></lightning-icon>
-        </lightning-layout-item>
-    </lightning-layout>
-
-    <lightning-layout>
-        <lightning-layout-item padding="around-small" size="3">
-            <strong>
-                <lightning-formatted-number format-style="currency" currency-code="INR" value={total}
-                    maximum-fraction-digits=0>
-                </lightning-formatted-number>
-            </strong>
-        </lightning-layout-item>
-
-        <lightning-layout-item padding="" size="4" style="margin-top: 5px;text-align: center;">
-            <lightning-input type="search" name="searchbox" placeholder="Enter to Search" variant="label-hidden"
-                onchange={searchHandler}>
-            </lightning-input>
-        </lightning-layout-item>
-        <lightning-layout-item size="2" style="padding-left: 5px; padding-top: 5px;">
-            <label class="switch">
-                <input type="checkbox" checked={isOn} onchange={handleToggle}>
-                <span class="slider">
-                    <span class="switch-text">{switchText}</span>
-                </span>
-            </label>
-        </lightning-layout-item>
-        <lightning-layout-item padding="" size="3" style="padding-top: 5px;text-align:end;">
-            <lightning-button variant="brand" label="New" onclick={createRecord}></lightning-button>
-        </lightning-layout-item>
-    </lightning-layout>
+  <div class="header-container">
+    <!-- Top Row: Amount + Selected Month/Year -->
+    <div class="top-row">
+      <div class="total">
+        <lightning-formatted-number
+          format-style="currency"
+          currency-code="INR"
+          value={total}
+          maximum-fraction-digits="0"
+        >
+        </lightning-formatted-number>
+      </div>
+      <div class="selected-period">{selectedMonthLabel} - {selectedYear}</div>
+    </div>
+    <!-- Action Row -->
+    <div class="action-row">
+      <!-- Search -->
+      <div class="search">
+        <lightning-input
+          type="search"
+          name="searchbox"
+          placeholder="Search"
+          variant="label-hidden"
+          onchange={searchHandler}
+        >
+        </lightning-input>
+      </div>
+      <!-- Toggle -->
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" checked={isOn} onchange={handleToggle} />
+          <span class="slider">
+            <span class="switch-text">{switchText}</span>
+          </span>
+        </label>
+      </div>
+      <!-- Add -->
+      <div class="add-button">
+        <lightning-button-icon
+          icon-name="utility:add"
+          alternative-text="New"
+          title="New"
+          variant="brand"
+          size="small"
+          onclick={createRecord}
+        >
+        </lightning-button-icon>
+      </div>
+      <!-- Filter -->
+      <div class="filter-button">
+        <lightning-button-icon
+          icon-name="utility:filterList"
+          alternative-text="Filters"
+          title="Filters"
+          variant="border-filled"
+          size="small"
+          onclick={toggleFilters}
+        >
+        </lightning-button-icon>
+      </div>
+    </div>
+    <!-- Filter Panel -->
+    <template if:true={showFilters}>
+      <div class="filter-panel">
+        <div class="filter-header">
+          <span class="filter-title">Filters</span>
+          <lightning-button-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            title="Close"
+            variant="bare"
+            size="small"
+            onclick={toggleFilters}
+          >
+          </lightning-button-icon>
+        </div>
+        <!-- Filter Type -->
+        <div class="filter-type">
+          <label class="radio-option">
+            <input
+              type="radio"
+              name="filterType"
+              value="single"
+              checked={isSingleMonth}
+              onchange={handleFilterTypeChange}
+            />
+            <span>Single Month</span>
+          </label>
+          <label class="radio-option">
+            <input
+              type="radio"
+              name="filterType"
+              value="range"
+              checked={isDateRange}
+              onchange={handleFilterTypeChange}
+            />
+            <span>Date Range</span>
+          </label>
+        </div>
+        <!-- Single Month -->
+        <template if:true={isSingleMonth}>
+          <div class="filter-body">
+            <div class="filter-field">
+              <lightning-combobox
+                name="month"
+                label="Month"
+                value={selectedMonth}
+                options={months}
+                onchange={changedMonth}
+              >
+              </lightning-combobox>
+            </div>
+            <div class="filter-field">
+              <lightning-combobox
+                name="year"
+                label="Year"
+                value={selectedYear}
+                options={years}
+                onchange={changedYear}
+              >
+              </lightning-combobox>
+            </div>
+          </div>
+        </template>
+        <!-- Date Range -->
+        <template if:true={isDateRange}>
+          <div class="range-section">
+            <div class="range-label">From</div>
+            <div class="filter-body">
+              <div class="filter-field">
+                <lightning-combobox
+                  name="fromMonth"
+                  label="Month"
+                  value={fromMonth}
+                  options={months}
+                  onchange={changedFromMonth}
+                >
+                </lightning-combobox>
+              </div>
+              <div class="filter-field">
+                <lightning-combobox
+                  name="fromYear"
+                  label="Year"
+                  value={fromYear}
+                  options={years}
+                  onchange={changedFromYear}
+                >
+                </lightning-combobox>
+              </div>
+            </div>
+            <div class="range-label">To</div>
+            <div class="filter-body">
+              <div class="filter-field">
+                <lightning-combobox
+                  name="toMonth"
+                  label="Month"
+                  value={toMonth}
+                  options={months}
+                  onchange={changedToMonth}
+                >
+                </lightning-combobox>
+              </div>
+              <div class="filter-field">
+                <lightning-combobox
+                  name="toYear"
+                  label="Year"
+                  value={toYear}
+                  options={years}
+                  onchange={changedToYear}
+                >
+                </lightning-combobox>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div class="filter-footer">
+          <lightning-button
+            label="Apply"
+            variant="brand"
+            onclick={applyFilters}
+          >
+          </lightning-button>
+        </div>
+      </div>
+    </template>
+  </div>
 </template>

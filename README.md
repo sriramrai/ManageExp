@@ -21,11 +21,13 @@ https://www.pantherschools.com/setup-ci-cd-using-github-actions/
 
 sf org create scratch --definition-file config/project-scratch-def.json --alias MyHub --set-default --target-dev-hub ExpenseApp --duration-days 30 (Make Sure that ExpenseApp should have same name as the hub name which you want to connect to , you can find out that using sf org list)
 
-sf project deploy start -a 58.0
+sf project deploy start -a 62.0
 sf project retrieve start -o ExpenseApp -x ./package.xml
 sf project retrieve start --ignore-conflicts -o ExpenseApp -x ./package.xml
 
 sf org assign permset --name ExpenseManager
+
+4AFDBCB5436BC46449F4C5CA58E9210A0130E84078A6DB73E7BD76F8E776B91D CS
 
 // Data export
 SSELECT Id, Bank**c, Amount**c, Account_Number**c, Start_Date**c, Is_Closed**c, Year**c, Month**c, Day**c, Rate**c FROM Investment**c where Account_Number**c != 'TEST' AND Bank**c = 'SBI'
