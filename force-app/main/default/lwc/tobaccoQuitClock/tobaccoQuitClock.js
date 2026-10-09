@@ -1,8 +1,9 @@
 import { LightningElement } from "lwc";
+import QuitDateTime from "@salesforce/label/c.TobaccoQuiteDateAndTime";
 
 export default class TobaccoQuitClock extends LightningElement {
   // Store your quit date/time here
-  quitDateTime = "07/10/2026 17:15:00";
+  quitDateTime = QuitDateTime;
 
   elapsedTime = "0D 00H 00M 00S";
 

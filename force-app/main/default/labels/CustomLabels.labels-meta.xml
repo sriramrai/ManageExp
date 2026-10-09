@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
         <fullName>mylabs</fullName>
@@ -13,5 +13,12 @@
         <protected>true</protected>
         <shortDescription>testlab</shortDescription>
         <value>test label</value>
+    </labels>
+    <labels>
+        <fullName>TobaccoQuiteDateAndTime</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TobaccoQuiteDateAndTime</shortDescription>
+        <value>09/10/2026 09:50:00</value>
     </labels>
 </CustomLabels>
