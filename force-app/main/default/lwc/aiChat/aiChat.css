@@ -4,7 +4,7 @@
 }
 
 .chat-card {
-  height: 700px;
+  height: 400px;
 }
 
 .header {
@@ -24,7 +24,7 @@
 }
 
 .chat-body {
-  height: 500px;
+  height: 300px;
   overflow-y: auto;
   background: #fafafa;
   padding: 8px;

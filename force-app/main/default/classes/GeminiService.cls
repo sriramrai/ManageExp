@@ -53,7 +53,12 @@ public with sharing class GeminiService {
     Object toolResult
   ) {
     String prompt = Util_Prompt.buildResponsePrompt(userQuestion, toolResult);
-
+    System.debug('Gemini Response Prompt userQuestion:**** ' + userQuestion);
+    System.debug(
+      'Gemini Response Prompt toolResult:**** ' +
+      JSON.serializePretty(toolResult)
+    );
+    System.debug('Gemini Response Prompt:**** ' + prompt);
     String geminiResponse = callGemini(prompt);
 
     return geminiResponse;
@@ -65,7 +70,7 @@ public with sharing class GeminiService {
     HttpRequest req = new HttpRequest();
 
     req.setEndpoint(
-      'callout:Gemini/v1beta/models/gemini-3.1-flash-lite:generateContent?key=AQ.Ab8RN6KkGP5IlfwOv05UD4Y1j07ysnnDOW3GU7KyVpDcNkBWJQ'
+      'callout:Gemini/v1beta/models/gemini-3.1-flash-lite:generateContent'
     );
 
     req.setMethod('POST');

@@ -637,4 +637,24 @@ public without sharing class DataProvider {
       ORDER BY LastModifiedDate DESC
     ];
   }
+
+  public static List<Expense__c> getAllExpenseByMonth(Date sDate, Date eDate) {
+    return [
+      SELECT Id, Name, Start_Date__c, End_Date__c, Other__c, Ragini__c
+      FROM Expense__c
+      WHERE Start_Date__c >= :sDate AND End_Date__c <= :eDate
+    ];
+  }
+
+  public static List<Expense_Line_Item__c> getAllExpenseLineItems(
+    Date sDate,
+    Date eDate
+  ) {
+    return [
+      SELECT Id, Amount__c, Details__c, Debited_by__c, Date__c, Category__c
+      FROM Expense_Line_Item__c
+      WHERE Date__c >= :sDate AND Date__c <= :eDate
+      ORDER BY Date__c DESC
+    ];
+  }
 }

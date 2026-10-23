@@ -11,25 +11,35 @@ public with sharing class ExpenseTool implements IAgentTool {
     ToolResult result = new ToolResult();
     try {
       String action = (String) arguments.get('action');
+      System.debug(
+        'Executing action: ' + action + ' with arguments: ' + arguments
+      );
       switch on action {
         when 'monthlyExpense' {
           result.success = true;
           result.data = Repository_Expense.getMonthlyExpense(arguments);
+        }
+        when 'expenseByPerson' {
+          result.success = true;
+          result.data = Repository_Expense.getExpenseByPerson(arguments);
+        }
+        when 'expenseByCategory' {
+          result.success = true;
+          result.data = Repository_Expense.getExpenseByCategory(arguments);
+        }
+        when 'expenseTrend' {
+          result.success = true;
+          //result.data = Repository_Expense.getExpenseTrend(arguments);
+        }
+        when 'createExpense' {
+          result.success = true;
+          result.data = Repository_Expense.createExpense(arguments);
         }
         when else {
           result.success = false;
           result.errorMessage = 'Unsupported action: ' + action;
         }
       }
-      /* if (action == 'currentMonthExpense') {
-        result.success = true;
-        result.data = Repository_Expense.getCurrentMonthExpense();
-        return result;
-      } else if (action == 'monthlyExpense') {
-        result.success = true;
-        result.data = Repository_Expense.getMonthlyExpense(arguments);
-        return result;
-      } */
       return result;
     } catch (Exception e) {
       result.success = false;
@@ -44,7 +54,8 @@ public with sharing class ExpenseTool implements IAgentTool {
       'expenseTrend',
       'expenseByCategory',
       'expenseByPerson',
-      'monthlyExpense'
+      'monthlyExpense',
+      'createExpense'
     };
   }
 }

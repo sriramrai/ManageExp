@@ -7,9 +7,9 @@ public class ChatRequest {
 
   public class ChatMessage {
     @AuraEnabled
-    public String role;
+    public String role { get; set; }
 
     @AuraEnabled
-    public String content;
+    public String content { get; set; }
   }
 }

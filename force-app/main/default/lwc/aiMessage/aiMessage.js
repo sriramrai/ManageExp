@@ -1,5 +1,5 @@
 import { LightningElement, api } from "lwc";
-
+import { parseMarkdown } from "c/markdownParser";
 export default class AiMessage extends LightningElement {
   @api message;
 
@@ -13,5 +13,8 @@ export default class AiMessage extends LightningElement {
 
   get bubbleStyle() {
     return this.isUser ? "bubble user-bubble" : "bubble assistant-bubble";
+  }
+  get formattedMessage() {
+    return parseMarkdown(this.message.text);
   }
 }

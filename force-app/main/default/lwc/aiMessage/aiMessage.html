@@ -1,7 +1,11 @@
 <template>
   <div class={bubbleClass}>
     <div class={bubbleStyle}>
-      <div class="message-text">{message.text}</div>
+      <div class="message-text">
+        <lightning-formatted-rich-text
+          value={formattedMessage}
+        ></lightning-formatted-rich-text>
+      </div>
     </div>
   </div>
 </template>
