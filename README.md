@@ -75,3 +75,5 @@ HDFC Bank -- 7 bonus record is missing
 Tata Motors commercial needs to be created
 Nazara Technologies Stocks needs to be corrected its details number of stock is not correct.
 field permission for Current Price and Code needs to be given to expense manager
+
+https://homeexp-dev-ed.my.site.com/whatsappvforcesite/services/apexrest/whatsapp/webhook
