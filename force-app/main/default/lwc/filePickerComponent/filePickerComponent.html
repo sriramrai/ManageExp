@@ -1,0 +1,35 @@
+<template>
+  <div class="file-picker">
+    <lightning-input
+      type="file"
+      label={label}
+      accept={accept}
+      onchange={handleFileChange}
+    >
+    </lightning-input>
+
+    <template if:true={fileName}>
+      <div class="file-info">
+        <lightning-icon icon-name="doctype:attachment" size="small">
+        </lightning-icon>
+
+        <div class="file-details">
+          <div class="file-name">{fileName}</div>
+          <div class="file-size">{fileSize}</div>
+        </div>
+
+        <lightning-button-icon
+          icon-name="utility:close"
+          alternative-text="Remove file"
+          title="Remove file"
+          onclick={handleRemove}
+        >
+        </lightning-button-icon>
+      </div>
+    </template>
+
+    <template if:true={errorMessage}>
+      <div class="error-message">{errorMessage}</div>
+    </template>
+  </div>
+</template>

@@ -1,0 +1,37 @@
+.file-picker {
+  width: 100%;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid #dddbda;
+  border-radius: 5px;
+  background: #fafaf9;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.file-size {
+  font-size: 11px;
+  color: #706e6b;
+  margin-top: 3px;
+}
+
+.error-message {
+  color: #ba0517;
+  font-size: 12px;
+  margin-top: 8px;
+}

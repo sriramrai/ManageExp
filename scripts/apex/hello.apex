@@ -1,3 +1,13 @@
+
+System.debug(GeminiConnectionTest.testConnection());
+
+Map<String, Object> result = GeminiReceiptService.extractReceipt(null, null);
+System.debug('result*** : '+JSON.serialize(result));
+
+
+
+
+
 String data = '[{"attributes":{"type":"Expense__c","url":"/services/data/v65.0/sobjects/Expense__c/a0TGA00000k5c8o2AA"},"OwnerId":"0057F000002MzEsQAK","Id":"a0TGA00000k5c8o2AA","End_Date__c":"2025-12-31","Name":"Dec 25","Start_Date__c":"2025-12-01"}]';
 String objectName = 'Expense__c';
 Schema.SObjectType targetType = Schema.getGlobalDescribe().get(objectName);
