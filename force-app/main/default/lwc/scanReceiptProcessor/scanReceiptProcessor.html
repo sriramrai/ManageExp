@@ -1,0 +1,192 @@
+<template>
+  <div class="scanner-container">
+    <template if:false={isScanned}>
+      <div class="scanner-header">
+        <div>
+          <!-- <h2>Scan Receipt</h2> -->
+          <p>Select an invoice or receipt to extract expense details.</p>
+        </div>
+        <lightning-icon
+          icon-name="utility:scan"
+          size="medium"
+          alternative-text="Scan receipt"
+        >
+        </lightning-icon>
+      </div>
+
+      <div class="">
+        <!-- <lightning-icon
+        icon-name="utility:upload"
+        size="large"
+        alternative-text="Upload"
+      >
+      </lightning-icon> -->
+
+        <!-- <p class="upload-title">Choose a receipt</p>
+      <p class="upload-subtitle">JPG, PNG or PDF</p> -->
+        <lightning-input
+          class="file-input"
+          type="file"
+          accept="image/jpeg,image/png,application/pdf"
+          onchange={handleFileSelection}
+        >
+        </lightning-input>
+
+        <!-- <input
+        class="file-input"
+        type="file"
+        accept="image/jpeg,image/png,application/pdf"
+        onchange={handleFileSelection}
+      /> -->
+      </div>
+    </template>
+    <template lwc:if={file}>
+      <div class="file-details">
+        <div class="file-info">
+          <lightning-icon icon-name={fileIcon} size="medium"> </lightning-icon>
+
+          <div class="file-name-container">
+            <p class="file-name">{file.name}</p>
+            <p class="file-size">{fileSize}</p>
+          </div>
+        </div>
+
+        <template if:false={isScanned}>
+          <lightning-button-icon
+            icon-name="utility:close"
+            alternative-text="Remove file"
+            title="Remove file"
+            onclick={handleRemoveFile}
+          >
+          </lightning-button-icon
+        ></template>
+      </div>
+
+      <template lwc:if={isImage}>
+        <div class="preview-container">
+          <img src={previewUrl} alt="Receipt preview" />
+        </div>
+      </template>
+
+      <template lwc:if={isPdf}>
+        <div class="pdf-preview">
+          <lightning-icon icon-name="doctype:pdf" size="large">
+          </lightning-icon>
+          <span
+            >PDF selected. Preview will be available in the next
+            iteration.</span
+          >
+        </div>
+      </template>
+
+      <template if:true={isScanning}>
+        <lightning-spinner alternative-text="Scanning receipt" size="small">
+        </lightning-spinner>
+      </template>
+
+      <template if:false={isScanned}>
+        <div class="action-area">
+          <lightning-button
+            label={reviewButtonLabel}
+            variant="brand"
+            onclick={handleReview}
+            disabled={isScanning}
+          >
+          </lightning-button></div
+      ></template>
+    </template>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <template lwc:if={showModal}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="modal-heading"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <lightning-button-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            variant="bare-inverse"
+            class="slds-modal__close"
+            onclick={handleCancel}
+          >
+          </lightning-button-icon>
+
+          <h2 id="modal-heading" class="slds-text-heading_medium">
+            Confirm Expense Details
+          </h2>
+          <p class="modal-subtitle">
+            Review and correct the extracted information before creating the
+            expense.
+          </p>
+        </header>
+
+        <div class="slds-modal__content slds-p-around_medium">
+          <div class="form-field">
+            <lightning-input
+              type="date"
+              label="Expense Date"
+              value={expenseDate}
+              data-id="expenseDate"
+              onchange={handleDateChange}
+              required
+            >
+            </lightning-input>
+          </div>
+
+          <div class="form-field">
+            <lightning-input
+              type="text"
+              label="Short Description"
+              value={description}
+              data-id="description"
+              onchange={handleDescriptionChange}
+              maxlength="255"
+              required
+            >
+            </lightning-input>
+          </div>
+
+          <div class="form-field">
+            <lightning-input
+              type="number"
+              label="Amount"
+              value={amount}
+              onchange={handleAmountChange}
+              min="0.01"
+              step="0.01"
+              data-id="amount"
+              required
+            >
+            </lightning-input>
+          </div>
+
+          <div class="selected-file">
+            <lightning-icon icon-name={fileIcon} size="small"> </lightning-icon>
+            <span>{file.name}</span>
+          </div>
+        </div>
+
+        <footer class="slds-modal__footer">
+          <lightning-button label="Cancel" onclick={handleCancel}>
+          </lightning-button>
+
+          <lightning-button
+            label="Confirm"
+            variant="brand"
+            onclick={handleConfirm}
+            class="slds-m-left_small"
+          >
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

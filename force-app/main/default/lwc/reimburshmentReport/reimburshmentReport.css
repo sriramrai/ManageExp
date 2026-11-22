@@ -1,0 +1,173 @@
+.workspace {
+  padding: 8px;
+  background: #ffffff;
+  font-size: 12px;
+}
+
+.create-header {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  max-width: 650px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 2px 10px;
+  border-bottom: 1px solid #dddbda;
+}
+
+.claim-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #181818;
+}
+
+.sub-heading {
+  font-size: 11px;
+  color: #706e6b;
+  margin-top: 2px;
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 11px;
+  color: #706e6b;
+}
+
+.total strong {
+  font-size: 16px;
+  color: #181818;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0 6px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.table-container {
+  width: 100%;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.table-container thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #f3f3f3;
+}
+
+.expense-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.expense-table th {
+  background: #f3f3f3;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: left;
+  padding: 7px 5px;
+  border-bottom: 1px solid #dddbda;
+}
+
+.expense-table td {
+  padding: 3px 5px;
+  border-bottom: 1px solid #eeeeee;
+  vertical-align: middle;
+}
+
+.expense-table th:nth-child(1) {
+  width: 105px;
+}
+
+.expense-table th:nth-child(2) {
+  width: 180px;
+}
+
+.expense-table th:nth-child(3) {
+  width: 105px;
+}
+
+.expense-table th:nth-child(4),
+.expense-table th:nth-child(5) {
+  width: 175px;
+}
+
+.expense-table th:nth-child(6) {
+  width: 35px;
+}
+
+.file-status {
+  display: block;
+  font-size: 10px;
+  color: #706e6b;
+  margin-top: 2px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 2px;
+  font-size: 11px;
+  border-top: 1px solid #dddbda;
+}
+.email-body {
+  display: block;
+  --slds-c-textarea-sizing-min-height: 170px;
+}
+
+.slds-modal__container {
+  max-width: 700px;
+  width: 90%;
+  min-height: 600px;
+}
+
+.slds-modal__content {
+  min-height: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Compact standard Lightning input controls */
+.expense-table lightning-input {
+  --slds-c-input-font-size: 11px;
+  --slds-c-input-spacing-horizontal-start: 5px;
+  --slds-c-input-spacing-horizontal-end: 5px;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .workspace {
+    padding: 4px;
+  }
+
+  .create-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .claim-name {
+    font-size: 13px;
+  }
+
+  .total strong {
+    font-size: 14px;
+  }
+}

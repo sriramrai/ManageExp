@@ -1,30 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Automation_Switch__c.Disable_Trigger__c</members>
-		<members>Investment__c.Closed_Date__c</members>
-		<members>Investment__c.Code__c</members>
-		<members>Investment__c.Current_Price__c</members>
-		<members>Investment__c.Entity__c</members>
-		<members>Investment__c.Exchng__c</members>
-		<members>Transaction_Item__c.Amount__c</members>
-		<members>Transaction_Item__c.Date__c</members>
-		<members>Transaction_Item__c.Description__c</members>
-		<members>Transaction_Item__c.Transaction__c</members>
-		<members>Transaction_Item__c.Type__c</members>
-		<members>Transaction_Updator__e.Updated__c</members>
-		<members>Transaction__c.Balance__c</members>
-		<members>Transaction__c.Total_Credited__c</members>
-		<members>Transaction__c.Total_Debited__c</members>
+		<members>ContentVersion.Receipt_Type__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
+		<members>Reimburshment_Line__c</members>
+		<members>Reimburshments__c</members>
 		<members>Transaction_Updator__e</members>
 		<name>CustomObject</name>
 	</types>
 	<types>
+		<members>ReimburshmentM</members>
+		<members>Reimburshments__c</members>
 		<members>Transaction__c</members>
 		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>Gemini_External_Credential</members>
+		<name>ExternalCredential</name>
 	</types>
 	<types>
 		<members>Expense_Line_Item_Record_Page</members>
@@ -39,9 +33,15 @@
 	</types>
 	<types>
 		<members>NaamJapp__c-NaamJapp Layout</members>
+		<members>Reimburshment_Line__c-Reimburshment Line Layout</members>
+		<members>Reimburshments__c-Reimburshment Layout</members>
 		<members>Transaction_Item__c-Transaction Item Layout</members>
 		<members>Transaction__c-Transaction Layout</members>
 		<name>Layout</name>
+	</types>
+	<types>
+		<members>Gemini_API</members>
+		<name>NamedCredential</name>
 	</types>
 	<types>
 		<members>ExpenseManager</members>
@@ -51,5 +51,9 @@
 		<members>cloudflare</members>
 		<name>RemoteSiteSetting</name>
 	</types>
-	<version>67.0</version>
+	<types>
+		<members>JSZip</members>
+		<name>StaticResource</name>
+	</types>
+	<version>68.0</version>
 </Package>

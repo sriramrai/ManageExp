@@ -1,0 +1,312 @@
+<template>
+  <!-- <c-scan-receipt-processor></c-scan-receipt-processor> -->
+  <div class="workspace">
+    <template if:false={showWorkspace}>
+      <div class="selection-panel">
+        <div class="claim-heading">Expense Reimbursement</div>
+
+        <div class="mode-selector">
+          <lightning-button
+            label="Existing Reimbursement"
+            variant={existingButtonVariant}
+            onclick={showExisting}
+          >
+          </lightning-button>
+
+          <lightning-button
+            label="Create New"
+            variant={newButtonVariant}
+            onclick={showNew}
+          >
+          </lightning-button>
+        </div>
+
+        <template if:true={isExistingMode}>
+          <lightning-combobox
+            label="Select Reimbursement"
+            value={selectedReimbursementId}
+            options={reimbursementOptions}
+            onchange={handleExistingSelection}
+            placeholder="Choose reimbursement"
+          >
+          </lightning-combobox>
+
+          <lightning-button
+            label="Open Reimbursement"
+            variant="brand"
+            onclick={openExistingReimbursement}
+            disabled={isExistingSelectionDisabled}
+          >
+          </lightning-button>
+        </template>
+
+        <template if:true={isNewMode}>
+          <lightning-input
+            label="Reimbursement Name"
+            value={reimbursementName}
+            onchange={handleNameChange}
+            placeholder="Enter reimbursement name"
+          >
+          </lightning-input>
+
+          <lightning-button
+            label="Create Reimbursement"
+            variant="brand"
+            onclick={createReimbursement}
+          >
+          </lightning-button>
+        </template>
+      </div>
+    </template>
+
+    <template if:true={reimbursementId}>
+      <div class="header">
+        <div>
+          <div class="claim-name">{reimbursementName}</div>
+          <div class="sub-heading">{lineItems.length} line items</div>
+        </div>
+
+        <div class="total">
+          <span>Total</span>
+          <strong>
+            <lightning-formatted-number
+              value={totalAmount}
+              format-style="currency"
+              currency-code="INR"
+            >
+            </lightning-formatted-number>
+          </strong>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <span class="section-title">Reimbursement Line Items</span>
+
+        <lightning-button
+          label="Add Line"
+          icon-name="utility:add"
+          onclick={addLineItem}
+        >
+        </lightning-button>
+      </div>
+
+      <div class="table-container" data-id="lineItemsBottom">
+        <table
+          class="expense-table slds-table slds-table_cell-buffer slds-table_bordered"
+        >
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th class="amount-column">Amount (₹)</th>
+              <th>Scan Receipt</th>
+              <th>Payment Receipt</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <template if:true={lineItems.length}>
+            <tbody>
+              <template for:each={lineItems} for:item="item">
+                <tr key={item.id}>
+                  <td>
+                    <lightning-input
+                      type="date"
+                      variant="label-hidden"
+                      value={item.expenseDate}
+                      data-id={item.id}
+                      data-field="expenseDate"
+                      onchange={handleFieldChange}
+                    >
+                    </lightning-input>
+                  </td>
+
+                  <td>
+                    <lightning-input
+                      type="text"
+                      variant="label-hidden"
+                      value={item.description}
+                      placeholder="Short description"
+                      data-id={item.id}
+                      data-field="description"
+                      onchange={handleFieldChange}
+                    >
+                    </lightning-input>
+                  </td>
+
+                  <td>
+                    <lightning-input
+                      type="number"
+                      variant="label-hidden"
+                      value={item.amount}
+                      min="0"
+                      step="0.01"
+                      data-id={item.id}
+                      data-field="amount"
+                      onchange={handleFieldChange}
+                    >
+                    </lightning-input>
+                  </td>
+
+                  <td>
+                    <c-scan-receipt-processor
+                      onreceiptconfirm={handleReceiptConfirm}
+                      onscannererror={handleScannerError}
+                      file={item.invoiceFile}
+                      is-scanned={item.isScanned}
+                    >
+                    </c-scan-receipt-processor>
+
+                    <!-- <lightning-file-upload
+                    label=""
+                    name="scanReceipt"
+                    accept={acceptedFormats}
+                    record-id={item.id}
+                    file-field-name="Attachment_Type__c"
+                    file-field-value="SCAN_RECEIPT"
+                    data-line-id={item.id}
+                    onuploadfinished={handleScanUpload}
+                  >
+                  </lightning-file-upload> -->
+
+                    <!-- <span class="file-status"> {item.scanStatus} </span> -->
+                  </td>
+
+                  <td>
+                    <c-file-picker-component
+                      label="Scan Receipt"
+                      accept=".jpg,.jpeg,.png,.pdf"
+                      onfilechange={handleScanFileChange}
+                      data-id={item.id}
+                      file-name={item.paymentFileName}
+                      file-size={item.paymentFileSize}
+                    >
+                    </c-file-picker-component>
+                    <!-- <lightning-file-upload
+                    label=""
+                    name="paymentReceipt"
+                    accept={acceptedFormats}
+                    record-id={item.id}
+                    file-field-name="Attachment_Type__c"
+                    file-field-value="PAYMENT_RECEIPT"
+                    data-line-id={item.id}
+                    onuploadfinished={handlePaymentUpload}
+                  >
+                  </lightning-file-upload>
+
+                  <span class="file-status"> {item.paymentStatus} </span> -->
+                  </td>
+
+                  <td>
+                    <lightning-button-icon
+                      icon-name="utility:delete"
+                      alternative-text="Delete line"
+                      title="Delete line"
+                      data-id={item.id}
+                      onclick={deleteLineItem}
+                    >
+                    </lightning-button-icon>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </template>
+        </table>
+      </div>
+
+      <div class="footer">
+        <span>{completedItems} / {lineItems.length} complete</span>
+
+        <lightning-button
+          label="Export ZIP"
+          title="Export reimbursement with Excel and attachments"
+          icon-name="utility:download"
+          onclick={handleExport}
+          disabled={isExportDisabled}
+        >
+        </lightning-button>
+        <lightning-button
+          label="Email Report"
+          title="Email reimbursement report and receipts"
+          icon-name="utility:email"
+          onclick={openEmailModal}
+          disabled={isExportDisabled}
+        >
+        </lightning-button>
+      </div>
+      <template if:true={isEmailModalOpen}>
+        <section
+          role="dialog"
+          tabindex="-1"
+          aria-modal="true"
+          class="slds-modal slds-fade-in-open"
+        >
+          <div class="slds-modal__container">
+            <header class="slds-modal__header">
+              <h2 class="slds-text-heading_medium">Email Reimbursement</h2>
+            </header>
+
+            <div class="slds-modal__content slds-p-around_medium">
+              <lightning-input
+                type="email"
+                label="Recipient Email"
+                value={recipientEmail}
+                onchange={handleRecipientChange}
+                required
+              >
+              </lightning-input>
+              <lightning-input
+                type="text"
+                label="CC"
+                placeholder="Enter email addresses separated by commas"
+                value={ccEmails}
+                onchange={handleCcChange}
+              >
+              </lightning-input>
+              <lightning-input
+                type="text"
+                label="Subject"
+                value={emailSubject}
+                onchange={handleSubjectChange}
+                class="slds-m-top_small"
+              >
+              </lightning-input>
+
+              <lightning-textarea
+                label="Email Body"
+                value={emailBody}
+                onchange={handleEmailBodyChange}
+                rows="10"
+                class="email-body"
+              >
+              </lightning-textarea>
+
+              <div class="slds-m-top_medium">
+                <p><strong>Attachments:</strong></p>
+                <p>
+                  1 Excel report and all available Invoice and Payment receipts.
+                </p>
+              </div>
+            </div>
+
+            <footer class="slds-modal__footer">
+              <lightning-button label="Cancel" onclick={closeEmailModal}>
+              </lightning-button>
+
+              <lightning-button
+                label="Send Email"
+                variant="brand"
+                onclick={handleSendEmail}
+                disabled={isSendingEmail}
+                class="slds-m-left_small"
+              >
+              </lightning-button>
+            </footer>
+          </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      </template>
+    </template>
+  </div>
+</template>

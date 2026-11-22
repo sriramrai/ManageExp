@@ -1,0 +1,142 @@
+.scanner-container {
+  border: 1px solid #dddbda;
+  border-radius: 6px;
+  padding: 12px;
+  background: #fff;
+}
+
+.scanner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.scanner-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.scanner-header p {
+  font-size: 11px;
+  color: #706e6b;
+  margin-top: 3px;
+}
+
+.upload-area {
+  border: 1px dashed #a8a8a8;
+  border-radius: 5px;
+  padding: 20px 10px;
+  text-align: center;
+  background: #fafaf9;
+}
+
+.upload-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 7px;
+}
+
+.upload-subtitle {
+  font-size: 11px;
+  color: #706e6b;
+  margin: 3px 0 10px;
+}
+
+.file-input {
+  max-width: 100%;
+  font-size: 11px;
+}
+
+.file-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 2px;
+  border-bottom: 1px solid #eee;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.file-name-container {
+  min-width: 0;
+}
+
+.file-name {
+  font-size: 12px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.file-size {
+  font-size: 10px;
+  color: #706e6b;
+}
+
+.preview-container {
+  margin-top: 10px;
+  text-align: center;
+  max-height: 250px;
+  overflow: auto;
+  background: #f3f3f3;
+  padding: 5px;
+}
+
+.preview-container img {
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: contain;
+}
+
+.pdf-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  background: #f3f3f3;
+  font-size: 11px;
+}
+
+.action-area {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.modal-subtitle {
+  font-size: 11px;
+  color: #706e6b;
+  margin-top: 5px;
+}
+
+.form-field {
+  margin-bottom: 12px;
+}
+
+.selected-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: #f3f3f3;
+  border-radius: 4px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .slds-modal__container {
+    margin: 0;
+    padding: 0;
+  }
+
+  .slds-modal__content {
+    max-height: 65vh;
+  }
+}
