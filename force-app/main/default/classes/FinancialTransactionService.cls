@@ -109,6 +109,16 @@ public class FinancialTransactionService {
         }
       }
 
+      // Log unexpected DML exception.
+      ErrorLogger.log(
+        ex,
+        'FinancialTransactionService',
+        'process',
+        'Failed while creating expense line item. Email Message ID: ' +
+        request.emailMessageId
+      );
+      ErrorLogger.saveLog();
+
       return buildResponse(
         false,
         'ERROR',

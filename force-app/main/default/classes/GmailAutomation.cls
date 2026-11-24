@@ -30,6 +30,15 @@ global with sharing class GmailAutomation {
       res.statusCode = statusCode;
       res.responseBody = Blob.valueOf(JSON.serialize(response));
     } catch (Exception ex) {
+      ErrorLogger.log(
+        ex,
+        'GmailAutomation',
+        'doPost',
+        'Failed while processing REST request'
+      );
+
+      ErrorLogger.saveLog();
+
       FinancialTransactionResponseDTO response = new FinancialTransactionResponseDTO();
 
       response.success = false;

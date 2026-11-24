@@ -12,12 +12,12 @@ public class FinancialTransactionValidator {
       return 'Provider is required.';
     }
 
-    if (
+    /* if (
       request.provider.trim().toUpperCase() != 'ICICI' &&
       request.provider.trim().toUpperCase() != 'AXIS'
     ) {
       return 'Unsupported provider. Supported providers: ICICI, Axis.';
-    }
+    } */
 
     if (request.transactionDate == null) {
       return 'Transaction date is required.';

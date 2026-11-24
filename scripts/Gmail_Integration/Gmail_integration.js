@@ -1,5 +1,5 @@
 const FINANCIAL_TRANSACTION_CONFIG = {
-  gmailQuery: "after:2026/11/22 {ICICI Axis}",
+  gmailQuery: "after:2026/11/24 {ICICI Axis}",
 
   processedLabel: "EXPENSE_SF_PROCESSED",
   reviewLabel: "ICICI_SF_REVIEW",
@@ -7,23 +7,25 @@ const FINANCIAL_TRANSACTION_CONFIG = {
   salesforceEndpoint: "/services/apexrest/gmail/expenses/"
 };
 
-const AUTOMATION_START_DATE = new Date("2026-11-21T00:00:00+05:30");
+const AUTOMATION_START_DATE = new Date("2026-11-25T00:00:00+05:30");
 
 function identifyProvider_(message) {
-  const subject = message.getSubject();
-  const body = message.getPlainBody();
-  const sender = message.getFrom();
+  const subject = message.getSubject() || "";
+  const body = message.getPlainBody() || "";
+  const sender = message.getFrom() || "";
 
   // ICICI identification
   if (/ICICI Bank Credit Card/i.test(body)) {
     return "ICICI";
   }
 
-  // Axis identification
+  // Axis Bank transaction identification
   if (
-    /Axis Bank/i.test(subject) ||
-    /Axis Bank/i.test(body) ||
-    /axisbank/i.test(sender)
+    /INR\s*[\d,]+(?:\.\d{1,2})?\s*was\s+debited/i.test(subject) ||
+    (/axisbank/i.test(sender) &&
+      /Amount\s+Debited\s*:/i.test(body) &&
+      /Date\s*&\s*Time\s*:/i.test(body) &&
+      /Transaction\s+Info\s*:/i.test(body))
   ) {
     return "AXIS";
   }
@@ -52,19 +54,65 @@ function parseTransaction_(message, provider) {
   }
 
   // Common fields for every provider
-  transaction.provider = provider;
+  //transaction.provider = provider;
   transaction.emailMessageId = message.getId();
   transaction.source = "GMAIL";
   return transaction;
 }
 
 function parseAxisEmail_(message) {
-  // Axis parsing will be implemented after
-  // confirming the actual notification format.
+  const subject = message.getSubject() || "";
+  const body = message.getPlainBody() || "";
 
-  Logger.log("Axis parser not implemented yet: " + message.getId());
+  let amountMatch = body.match(
+    /Amount\s+Debited\s*:\s*INR\s*([\d,]+(?:\.\d{1,2})?)/i
+  );
 
-  return null;
+  if (!amountMatch) {
+    amountMatch = subject.match(
+      /INR\s*([\d,]+(?:\.\d{1,2})?)\s*was\s+debited/i
+    );
+  }
+
+  if (!amountMatch) return null;
+
+  const amount = parseFloat(amountMatch[1].replace(/,/g, ""));
+
+  const dateMatch = body.match(
+    /Date\s*&\s*Time\s*:\s*(\d{2})-(\d{2})-(\d{2,4})/i
+  );
+
+  if (!dateMatch) return null;
+
+  let year = dateMatch[3];
+  if (year.length === 2) year = "20" + year;
+
+  const transactionDate = year + "-" + dateMatch[2] + "-" + dateMatch[1];
+
+  const transactionInfoMatch = body.match(
+    /Transaction\s+Info\s*:\s*([^\r\n]+)/i
+  );
+
+  if (!transactionInfoMatch) return null;
+
+  const merchant = transactionInfoMatch[1].trim().replace(/\|.*$/, "").trim();
+
+  const referenceMatch = merchant.match(/^UPI\/[^/]+\/([^/]+)\//);
+
+  const transaction = {
+    transactionDate: transactionDate,
+    merchant: merchant,
+    amount: amount,
+    cardLastFour: null,
+    transactionReference: referenceMatch ? referenceMatch[1] : null,
+    emailMessageId: message.getId()
+  };
+
+  transaction.provider = /^UPI\//i.test(merchant) ? "Phone" : "AXIS";
+  transaction.emailMessageId = message.getId();
+  transaction.source = "GMAIL";
+
+  return transaction;
 }
 
 /**
@@ -261,7 +309,7 @@ function markMessageStatus_(messageId, status, provider, error) {
 }
 
 function isProviderParserReady_(provider) {
-  const readyProviders = ["ICICI"];
+  const readyProviders = ["ICICI", "AXIS"];
 
   return readyProviders.indexOf(String(provider).toUpperCase()) !== -1;
 }
@@ -329,7 +377,8 @@ function parseICICIEmail_(message) {
     amount: amount,
     cardLastFour: cardMatch ? cardMatch[1] : null,
     transactionReference: null,
-    emailMessageId: message.getId()
+    emailMessageId: message.getId(),
+    provider: "ICICI"
   };
 }
 
@@ -579,4 +628,20 @@ function createHourlyTrigger() {
     .create();
 
   Logger.log("Hourly trigger created successfully.");
+}
+
+function deleteAllTransactionLedgerProperties() {
+  const properties = PropertiesService.getScriptProperties();
+  const allProperties = properties.getProperties();
+
+  let deletedCount = 0;
+
+  Object.keys(allProperties).forEach(function (key) {
+    if (key.startsWith("FT_MSG")) {
+      properties.deleteProperty(key);
+      deletedCount++;
+    }
+  });
+
+  Logger.log("Deleted ledger properties: " + deletedCount);
 }
