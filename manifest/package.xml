@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
 		<members>ContentVersion.Receipt_Type__c</members>
+		<members>Expense_Line_Item__c.Email_Message_Id__c</members>
+		<members>Expense_Line_Item__c.Transaction_Reference__c</members>
 		<name>CustomField</name>
 	</types>
 	<types>
@@ -15,6 +17,10 @@
 		<members>Reimburshments__c</members>
 		<members>Transaction__c</members>
 		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>Gmail_Intergration</members>
+		<name>ExternalClientApplication</name>
 	</types>
 	<types>
 		<members>Gemini_External_Credential</members>
